@@ -12,6 +12,8 @@ django-environ = "*"
 ipython = "*"
 ipdb = "*"
 django-registration-redux = "*"
+psycopg2 = "*"
+django-heroku = "*"
 
 [requires]
 python_version = "3.7"
