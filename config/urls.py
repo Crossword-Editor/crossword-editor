@@ -21,6 +21,7 @@ from editor import views as ed_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('registration.backends.default.urls')),
     path('', ed_views.test, name='test'),
 ]
 

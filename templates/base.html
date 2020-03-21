@@ -1,1 +1,19 @@
-Hello world
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block meta %}
+    {% endblock meta %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}
+    <title>Document</title>
+    {% endblock title %}
+</head>
+<body>
+
+    {% block content %}
+        Hello world
+    {% endblock content %}
+
+</body>
+</html>
