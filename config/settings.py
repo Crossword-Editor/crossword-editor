@@ -19,7 +19,7 @@ import environ
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False),
-    )
+)
 environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / ...
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
 
     # Third-party
     'debug_toolbar',
@@ -150,4 +151,5 @@ REGISTRATION_AUTO_LOGIN = True
 
 # Configure Django App for Heroku.
 django_heroku.settings(locals())
+
 del DATABASES['default']['OPTIONS']['sslmode']
