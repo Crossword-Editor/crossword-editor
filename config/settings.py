@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
     # Project-specific
     'users',
+    'editor',
 ]
 
 MIDDLEWARE = [

@@ -17,8 +17,11 @@ from django.contrib import admin
 from django.conf import settings
 from django.urls import include, path
 
+from editor import views as ed_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', ed_views.test, name='test'),
 ]
 
 if settings.DEBUG:
