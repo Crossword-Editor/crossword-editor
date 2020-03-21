@@ -9,6 +9,9 @@ django-extensions = "*"
 django-debug-toolbar = "*"
 werkzeug = "*"
 django-environ = "*"
+ipython = "*"
+ipdb = "*"
+django-registration-redux = "*"
 
 [requires]
 python_version = "3.7"
