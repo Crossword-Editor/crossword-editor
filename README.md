@@ -15,11 +15,13 @@ createuser -d editor
 createdb -U editor editor
 ```
 This sets up a username and db, both with the same name, `editor`, which is the same name as our django app.
+These are the names used in the updated .env.sample, so it is important to use them (or change them and update the .env file).
 
 I also updated `config/.env.sample` so that the database url point to the right location, which requires the above names exactly.  So if you rerun:
 ```shell
 cp config/.env.sample config/.env
 ```
+then you should have the updated environment variables needed for postgres to work.
 
 At this point, since we're using a new database, we need to migrate again:
 ```shell
