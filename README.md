@@ -1,9 +1,5 @@
----
-marp: false
----
-
 # NY Times style crossword editor
-A tool to write NY Times style crosswords.
+A tool to write NY Times style crosswords. [Deployed site](https://crossword-editor.herokuapp.com/)
 
 ## Postgres Setup
 After then `posgres-heroku` branch has been merged into master and you've pulled the changes to your local repo,
@@ -20,20 +16,16 @@ createdb -U editor editor
 ```
 This sets up a username and db, both with the same name, `editor`, which is the same name as our django app.
 
-I also updated `config/.env.sample` so that the database url point to the right location, which requires the above names exactly.  So if you run
+I also updated `config/.env.sample` so that the database url point to the right location, which requires the above names exactly.  So if you rerun:
 ```shell
 cp config/.env.sample config/.env
 ```
-again, the postgres part should work.
 
 At this point, since we're using a new database, we need to migrate again:
 ```shell
 python manage.py migrate
 ```
 Hopefully, you see a lot of OK's.  Then try running the server to make sure everything is working.
-
-## Heroku Deployment
-
 
 
 ## Viewing the pitch slides

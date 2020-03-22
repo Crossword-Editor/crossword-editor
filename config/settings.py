@@ -32,6 +32,8 @@ BASE_DIR = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# note: Needed to add Postgres to Heroku thorugh the online dashboard
+# before git push would work
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
