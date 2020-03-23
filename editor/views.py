@@ -1,10 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponse
-from django.conf import settings
+from django.http import JsonResponse
 from django.contrib.auth.models import User
-from .models import Puzzle
 from django.contrib.auth.decorators import login_required
-
 
 from .models import Puzzle
 
