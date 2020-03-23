@@ -13,4 +13,4 @@ class Puzzle(models.Model):
     completed = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return f"{self.owner.username}'s puzzle started: {self.created_at}"
