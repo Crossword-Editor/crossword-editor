@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="user-home-title">My Crossword Editor</h2>
+<div class="puzzle-list">
+
+  {% for puzzle in puzzles %}
+<div class="edit-puzzle">
+    <a href="{% url 'edit_puzzle' puzzle.id %}">
+      <div class="display-title">
+        <h4 class="puzzle-title-diplay">{{puzzle.title}}</h4>
+        <span class="display">My Crossword</span>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+
+</div>
+
+{% endblock content %}
