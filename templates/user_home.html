@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2 class="user-home-title">My Crossword Editor</h2>
+<h2 class="user-home-title">My Crossword Maker</h2>
 <div class="puzzle-list">
 
   {% for puzzle in puzzles %}
@@ -10,7 +10,7 @@
     <a href="{% url 'edit_puzzle' puzzle.id %}">
       <div class="display-title">
         <h4 class="puzzle-title-diplay">{{puzzle.title}}</h4>
-        <span class="display">My Crossword</span>
+        <span class="display">My Crosswords</span>
       </div>
     </a>
   </div>

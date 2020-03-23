@@ -1,0 +1,97 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Source Sans Pro";
+}
+
+a {
+  text-decoration: none;
+  color: #4b6beb;
+}
+
+/* Top Navigation
+_______________________________________________________ */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 75px;
+  background-color: whitesmoke;
+}
+
+.navbar .logo {
+  font-size: 32px;
+  margin-left: 50px;
+  font-weight: 600;
+}
+
+.navbar .nav-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  margin-right: 20px;
+}
+
+.navbar .nav-links a:hover {
+  color: #4b6beb;
+}
+
+/* Welcome Index
+________________________________________________ */
+
+.welcome h1 {
+  font-size: 50px;
+  font-family: Montserrat;
+  text-align: center;
+  margin: 50px 0 30px;
+}
+
+.flex-grid {
+  display: flex;
+  flex-flow: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.you-box {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  box-shadow: 0 0 5px grey;
+  margin: 0 10px 20px;
+  padding: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+  text-align: center;
+  height: 200px;
+  width: 300px;
+}
+
+.you-box:hover {
+  box-shadow: 0 0 5px #4b6beb;
+}
+
+.you-box .novice {
+  font-size: 20px;
+  font-weight: 400;
+  color: black;
+}
+
+.you-box .expert {
+  font-size: 20px;
+  font-weight: 400;
+  color: black;
+}
+
+.you-box .master-class {
+  font-size: 20px;
+  font-weight: 400;
+  color: black;
+}
