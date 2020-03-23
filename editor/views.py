@@ -11,8 +11,26 @@ def home(request):
         return render(request, 'editor/welcome.html')
     drafts = request.user.puzzles.filter(completed=False)
     completes = request.user.puzzles.filter(completed=True)
-    context = {'drafts': drafts, 'completes':completes}
+    context = {'drafts': drafts, 'completes': completes}
     return render(request, 'editor/user_home.html', context=context)
+
+
+@login_required
+def experimental_view(request, pk):
+    puzzle = get_object_or_404(Puzzle, pk=pk)
+    if request.user == puzzle.owner:
+        print(puzzle.data)
+        context = {'puzzle': puzzle.data, 'pk': pk}
+        return render(request, 'editor/experiment.html', context=context)
+    else:
+        redirect('home')
+
+
+# def launch_home(request):
+#     if request.user.is_authenticated:
+#         return user_profile(request)
+#     else:
+#         return render(request, 'editor/base.html')
 
 
 # @login_required(login_url='/accounts/login')
