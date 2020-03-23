@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
 
 from users.models import User
@@ -12,7 +11,7 @@ class Puzzle(models.Model):
     data = JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    puzzle_status = models.CharField(max_length=1)
+    completed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
