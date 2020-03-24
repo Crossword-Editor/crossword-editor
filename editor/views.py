@@ -6,19 +6,21 @@ from django.contrib.auth.decorators import login_required
 from .models import Puzzle
 
 
-# def launch_home(request):
-#     if request.user.is_authenticated:
-#         return user_profile(request)
-#     else:
-#         return render(request, 'editor/base.html')
+def home(request):
+    if not request.user.is_authenticated:
+        return render(request, 'editor/welcome.html')
+    drafts = request.user.puzzles.filter(completed=False)
+    completes = request.user.puzzles.filter(completed=True)
+    context = {'drafts': drafts, 'completes':completes}
+    return render(request, 'editor/user_home.html', context=context)
 
 
 # @login_required(login_url='/accounts/login')
-# def puzzles_list(request):
+# def puzzles_complete(request):
 #     user = User.objects.get(username=request.user.username)
 #     puzzles = Puzzle.objects.all()
 #     context = {'puzzles': puzzles}
-#     return render(request, 'editor/puzzles_list.html', context=context)
+#     return render(request, 'editor/puzzles_complete.html', context=context)
 
 
 # @login_required(login_url='/accounts/login')
