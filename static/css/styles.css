@@ -125,17 +125,24 @@ ________________________________________________ */
 }
 
 /* --------Experiment page----------- */
-.grid {
+
+/* .grid {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
   width: 300px;
   height: 300px;
-}
+} */
+
+/* .grid {
+  display: grid;
+  grid-template-columns: repeat(15, 20px [col-start]);
+} */
 
 .cell {
-  width: 35px;
+  /* width: 35px; */
+  padding: 5px;
   text-align: center;
   cursor: pointer;
 }
