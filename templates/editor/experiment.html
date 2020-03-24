@@ -109,7 +109,7 @@
           this.activeCell = (this.activeCell+1) % (this.length)
         }
         else {
-
+          this.activeCell = (this.activeCell+this.colN) % (this.length)
         }
       }
     },
@@ -118,7 +118,6 @@
     }
   });
 
-  //window.addEventListener('keyup',editor.handleClick  )
 </script>
 
 {% endblock content %}
