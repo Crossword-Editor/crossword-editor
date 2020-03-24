@@ -17,16 +17,12 @@ from django.contrib import admin
 from django.conf import settings
 from django.urls import include, path
 
-from django.contrib import admin
-from django.conf import settings
-from django.urls import include, path
-
-# from editor import views as editor_views
+from editor import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('editor.urls')),
     path('accounts/', include('registration.backends.default.urls')),
+    path('', views.home, name="home"),
 ]
 
 if settings.DEBUG:

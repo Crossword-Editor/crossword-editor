@@ -18,7 +18,7 @@
 <body class='container'>
   <header>
     <nav class="navbar">
-      <a class="logo" href="{% url 'welcome' %}">Crossword Maker</a>
+      <a class="logo" href="{% url 'home' %}">Crossword Maker</a>
       <div class="nav-links">
         {% if not user.is_authenticated %}
         <a href="{% url 'auth_login' %}">Login </a>

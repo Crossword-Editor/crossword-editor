@@ -6,16 +6,10 @@ from django.contrib.auth.decorators import login_required
 from .models import Puzzle
 
 
-def welcome(request):
-    return render(request, 'editor/welcome.html')
-
-
-@login_required(login_url='/accounts/login')
-def user_home(request):
-    if request.user.is_authenticated:
-        return render(request, 'editor/user_home.html')
-    else:
+def home(request):
+    if not request.user.is_authenticated:
         return render(request, 'editor/welcome.html')
+    return render(request, 'editor/user_home.html')
 
 
 # @login_required(login_url='/accounts/login')
