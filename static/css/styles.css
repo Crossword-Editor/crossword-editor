@@ -118,19 +118,7 @@ ________________________________________________ */
   box-shadow: 0 0 5px #4b6beb;
 }
 
-.feature-box .feature1 {
-  font-size: 20px;
-  font-weight: 400;
-  color: black;
-}
-
-.feature-box .feature2 {
-  font-size: 20px;
-  font-weight: 400;
-  color: black;
-}
-
-.feature-box .feature3 {
+.feature-box .feature {
   font-size: 20px;
   font-weight: 400;
   color: black;
