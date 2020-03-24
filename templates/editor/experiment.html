@@ -2,28 +2,36 @@
 {% load static %}
 
 {% block meta %}
+<link rel="styleshet" href="{% static 'css/experiment.css' %}">
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endblock meta %}
+
+
 
 
 {% block content %}
 
 
-<div id="editor">
-  <p>[[ puzzle.answers.across ]]</p>
-  <p>[[ puzzle.answers.down ]]</p>
-  <div v-for="(entry, idx) in puzzle.grid" :key='idx'>
-    <cell :content="entry"></cell>
+<div id="editor-app">
+
+  <table class="grid">
+    <div v-for="entry in puzzle.grid" class="cell">[[entry]]</div>
+  </table>
+
+
+  <div>
+    <b>Across:</b>
+    <ul>
+      <li v-for="clue in puzzle.clues.across">[[clue]]</li>
+    </ul>
+    <b>Down:</b>
+    <ul>
+      <li v-for="clue in puzzle.clues.down">Down: [[clue]]</li>
+    </ul>
   </div>
-
-  <ul>
-    <li v-for="clue in puzzle.clues.across">Acc: [[clue]]</li>
-    <li v-for="clue in puzzle.clues.down">Down: [[clue]]</li>
-  </ul>
-
-
-
 </div>
+
+
 <!-- Pass in puzzle json from Django template context -->
 {{ puzzle|json_script:"puzzle-data" }}
 
@@ -31,36 +39,49 @@
   // get json string store it in a variable
   var puzzleData = JSON.parse(document.querySelector('#puzzle-data').textContent);
 
-  Vue.component('cell', {
-    props: ['content'],
+  Vue.component('x-cell', {
+    props: {
+      content: String
+    },
+    delimiters: ['[[', ']]'],
+    data: function () {
+      return {
+        isActive: false,
+        input: '',
+        count: 0,
+      }
+    },
+    computed: {
+      handle() {
+        alert('hi')
+      }
+    },
+    template: `<div class="cell">[[input]] and [[count]]</div>`
+  })
+
+
+
+  Vue.component('x-clues', {
+    props: ['across', 'down'],
     delimiters: ['[[', ']]'],
     template: `<p>Hi: [[content]]</p>`
   })
 
 
 
-
-  Vue.component('blog-post', {
-    props: ['title'],
+  Vue.component('x-grid', {
+    props: ['puzzle'],
     delimiters: ['[[', ']]'],
-    template: '<h3>[[title]]</h3>'
+    template: `<div class="grid"><slot></slot></div>`
   })
 
 
-
-
-
   const editor = new Vue({
-    el: '#editor',
+    el: '#editor-app',
     delimiters: ['[[', ']]'],
     data: {
       puzzle: puzzleData,
-      posts: [
-        { id: 1, title: 'My journey with Vue' },
-        { id: 2, title: 'Blogging with Vue' },
-        { id: 3, title: 'Why Vue is so fun' }
-      ]
-    }
+    },
   });
 </script>
 

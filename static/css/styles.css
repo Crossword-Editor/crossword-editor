@@ -123,3 +123,17 @@ ________________________________________________ */
   font-weight: 400;
   color: black;
 }
+
+/* --------Experiment page----------- */
+.grid {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 300px;
+}
+
+.cell {
+  /* width: 35px */
+}
