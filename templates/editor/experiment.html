@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+{% endblock meta %}
+
+
+{% block content %}
+
+
+<div id="editor">
+  <p>[[ puzzle.answers.across ]]</p>
+  <p>[[ puzzle.answers.down ]]</p>
+  <div v-for="(entry, idx) in puzzle.grid" :key='idx'>
+    <cell :content="entry"></cell>
+  </div>
+
+  <ul>
+    <li v-for="clue in puzzle.clues.across">Acc: [[clue]]</li>
+    <li v-for="clue in puzzle.clues.down">Down: [[clue]]</li>
+  </ul>
+
+
+
+</div>
+<!-- Pass in puzzle json from Django template context -->
+{{ puzzle|json_script:"puzzle-data" }}
+
+<script>
+  // get json string store it in a variable
+  var puzzleData = JSON.parse(document.querySelector('#puzzle-data').textContent);
+
+  Vue.component('cell', {
+    props: ['content'],
+    delimiters: ['[[', ']]'],
+    template: `<p>Hi: [[content]]</p>`
+  })
+
+
+
+
+  Vue.component('blog-post', {
+    props: ['title'],
+    delimiters: ['[[', ']]'],
+    template: '<h3>[[title]]</h3>'
+  })
+
+
+
+
+
+  const editor = new Vue({
+    el: '#editor',
+    delimiters: ['[[', ']]'],
+    data: {
+      puzzle: puzzleData,
+      posts: [
+        { id: 1, title: 'My journey with Vue' },
+        { id: 2, title: 'Blogging with Vue' },
+        { id: 3, title: 'Why Vue is so fun' }
+      ]
+    }
+  });
+</script>
+
+{% endblock content %}
