@@ -14,8 +14,9 @@
 
 
 <div id="editor-app">
-  <div class='grid' :style="gridStyle">
-    <x-cell v-for="n in length" :idx='n' :activeCell="activecell" :id="'cell'+n" @x-clicked="handleClick">[[ grid[n-1]
+  <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
+    <x-cell v-for="n in length" :idx='n-1' :input-area="inputArea" :active-cell="activeCell" :id="'cell'+n"
+      @x-clicked="handleClick">[[ grid[n-1]
       ]]
     </x-cell>
   </div>
@@ -33,16 +34,15 @@
   <div class="cell" :class="{active: isActive}" @click="clicked">
     <slot></slot>
   </div>`,
-    props: ["idx", "activecell", "inputArea"],
+    props: ["idx", "activeCell", "inputArea"],
     data: function () {
       return {
         test: 1
-        //isActive: false
       };
     },
     computed: {
       isActive() {
-        return this.idx === this.activecell;
+        return this.idx === this.activeCell;
       },
       currentInput() {
         return this.idx === this.inputArea;
@@ -50,7 +50,7 @@
     },
     methods: {
       clicked() {
-        console.log([this.idx, this.activecell]);
+        console.log([this.idx, this.activeCell]);
         this.$emit("x-clicked", this.idx);
       }
     }
@@ -65,7 +65,7 @@
       down: puzzleData.clues.down,
       rowN: puzzleData.size.rows,
       colN: puzzleData.size.cols,
-      activecell: 0,
+      activeCell: 0,
       isVertical: false,
       inputArea: 0
     },
@@ -89,15 +89,36 @@
     methods: {
       handleClick(idx) {
         console.log(idx);
-        this.activecell = idx;
+        this.activeCell = idx;
         //this.updateGrid(idx, "CCC")
       },
 
       updateGrid(idx, value) {
-        this.grid.splice(idx - 1, 1, value);
+        this.grid.splice(idx , 1, value);
+      },
+
+      keyhandle(event) {
+        //console.log(event.key)
+        console.log(this.activeCell)
+        this.updateGrid(this.activeCell, event.key)
+        this.nextCell()
+      },
+
+      nextCell(){
+        if (!this.isVertical){
+          this.activeCell = (this.activeCell+1) % (this.length)
+        }
+        else {
+
+        }
       }
+    },
+    created: function () {
+      window.addEventListener('keypress', this.keyhandle)
     }
   });
+
+  //window.addEventListener('keyup',editor.handleClick  )
 </script>
 
 {% endblock content %}
