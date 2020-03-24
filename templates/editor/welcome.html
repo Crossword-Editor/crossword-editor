@@ -1,29 +1,35 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% comment %} <script src="{% static 'js/welcome.js' %}" defer></script> {% endcomment %}
+{% comment %}
+<script src="{% static 'js/welcome.js' %}" defer></script> {% endcomment %}
 
 {% block content %}
 
 <div class="welcome">
-    <div class="flex-grid">
-        <div class="col">
-        <h2>Crossword Maker Is Just For You!</h2>
-            <a class="you-box">
-                <p class="novice">Novice. Begin your very first crossword</p>
-                <p class="expert">Expert. Design your dream-themed puzzle</p>
-                <p class="master-class">Master-Class. Construct and submit to the New York Times!</p>
-            </a>
-        </div>
-        <div class="col">
-        <h2>Features</h2>
-            <a class="feature-box">
-                <p class="feature">It Can Do This.</p>
-                <p class="feature">That.</p>
-                <p class="feature">And, the other!</p>
-            </a>
-        </div>
+  <div class="flex-grid">
+    <div class="col">
+      <h2>Crossword Maker Is Just For You!</h2>
+      <a class="you-box">
+        <p class="novice">Novice. Begin your very first crossword</p>
+        <p class="expert">Expert. Design your dream-themed puzzle</p>
+        <p class="master-class">Master-Class. Construct and submit to the New York Times!</p>
+      </a>
     </div>
+    <div class="col">
+      <h2>Features</h2>
+      <a class="feature-box">
+        <p class="feature">It Can Do This.</p>
+        <p class="feature">That.</p>
+        <p class="feature">And, the other!</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div>
+  <b style="color: red">Add another opportunity to login/register at the bottom of the page, once it's fleshed out
+    more.</b>
 </div>
 
 {% endblock content %}
