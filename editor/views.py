@@ -9,7 +9,10 @@ from .models import Puzzle
 def home(request):
     if not request.user.is_authenticated:
         return render(request, 'editor/welcome.html')
-    return render(request, 'editor/user_home.html')
+    drafts = request.user.puzzles.filter(completed=False)
+    completes = request.user.puzzles.filter(completed=True)
+    context = {'drafts': drafts, 'completes':completes}
+    return render(request, 'editor/user_home.html', context=context)
 
 
 # @login_required(login_url='/accounts/login')
