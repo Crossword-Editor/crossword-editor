@@ -1,16 +1,33 @@
 {% extends 'base.html' %}
 
+
+
 {% block content %}
 
-<h2 class="user-home-title">My Crossword Maker</h2>
-<div class="puzzle-list">
+<!-- <h2 class="user-home-title">Crossword Maker</h2> -->
 
-  {% for puzzle in puzzles %}
-<div class="edit-puzzle">
-    <a href="{% url 'edit_puzzle' puzzle.id %}">
+
+<div>
+
+  <h3 class="display">My Crosswords</h3>
+  <h4>Drafts</h4>
+  {% for puzzle in drafts %}
+  <div>
+    <a href="">
       <div class="display-title">
-        <h4 class="puzzle-title-diplay">{{puzzle.title}}</h4>
-        <span class="display">My Crosswords</span>
+        <h5 class="puzzle-title-diplay">My puzzle start at: {{puzzle.created_at}}</h5>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+
+
+  <h4>Completed Puzzles</h4>
+  {% for puzzle in completes %}
+  <div>
+    <a href="">
+      <div class="display-title">
+        <h5 class="puzzle-title-diplay">My puzzle start at: {{puzzle.created_at}}</h5>
       </div>
     </a>
   </div>
