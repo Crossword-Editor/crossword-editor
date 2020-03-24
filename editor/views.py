@@ -19,7 +19,6 @@ def home(request):
 def experimental_view(request, pk):
     puzzle = get_object_or_404(Puzzle, pk=pk)
     if request.user == puzzle.owner:
-        print(puzzle.data)
         context = {'puzzle': puzzle.data, 'pk': pk}
         return render(request, 'editor/experiment.html', context=context)
     else:

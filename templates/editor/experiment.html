@@ -6,83 +6,91 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endblock meta %}
 
-
-
-
 {% block content %}
-
-
-<div id="editor-app">
-
-  <table class="grid">
-    <div v-for="entry in puzzle.grid" class="cell">[[entry]]</div>
-  </table>
-
-
-  <div>
-    <b>Across:</b>
-    <ul>
-      <li v-for="clue in puzzle.clues.across">[[clue]]</li>
-    </ul>
-    <b>Down:</b>
-    <ul>
-      <li v-for="clue in puzzle.clues.down">Down: [[clue]]</li>
-    </ul>
-  </div>
-</div>
-
-
 <!-- Pass in puzzle json from Django template context -->
 {{ puzzle|json_script:"puzzle-data" }}
 
+
+
+
+<div id="editor-app">
+  <div class='grid'>
+  <x-cell v-for="n in length" :idx='n' :activeCell="activecell" :id="'cell'+n" @x-clicked="handleClick">[[ grid[n-1] ]]
+  </x-cell>
+</div>
+
+</div>
+
+
 <script>
-  // get json string store it in a variable
-  var puzzleData = JSON.parse(document.querySelector('#puzzle-data').textContent);
+// get json string store it in a variable
+var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
+import xCell from './x-cell.vue'
 
-  Vue.component('x-cell', {
-    props: {
-      content: String
+Vue.component("x-cell", {
+  template: `
+  <div class="cell" :class="{active: isActive}" @click="clicked">
+    <slot></slot>
+  </div>`,
+  props: ["idx", "activecell", "inputArea"],
+  data: function() {
+    return {
+      test: 1
+      //isActive: false
+    };
+  },
+  computed: {
+    isActive() {
+      return this.idx === this.activecell;
     },
-    delimiters: ['[[', ']]'],
-    data: function () {
-      return {
-        isActive: false,
-        input: '',
-        count: 0,
+    currentInput() {
+      return this.idx === this.inputArea;
+    }
+  },
+  methods: {
+    clicked() {
+      console.log([this.idx, this.activecell]);
+      this.$emit("x-clicked", this.idx);
+    }
+  }
+});
+
+const editor = new Vue({
+  el: "#editor-app",
+  delimiters: ["[[", "]]"],
+  data: {
+    grid: puzzleData.grid,
+    across: puzzleData.clues.across,
+    down: puzzleData.clues.down,
+    rowN: puzzleData.size.rows,
+    colN: puzzleData.size.cols,
+    activecell: 0,
+    isVertical: false,
+    inputArea: 0
+  },
+  computed: {
+    length() {
+      return this.rowN * this.colN;
+    },
+    testArr() {
+      if (this.grid[0] === "CCC") {
+        return [1, 2, 3];
       }
+      return ["a", "b", "c"];
+    }
+  },
+  methods: {
+    handleClick(idx) {
+      console.log(idx);
+      this.activecell = idx;
+      //this.updateGrid(idx, "CCC")
     },
-    computed: {
-      handle() {
-        alert('hi')
-      }
-    },
-    template: `<div class="cell">[[input]] and [[count]]</div>`
-  })
 
-
-
-  Vue.component('x-clues', {
-    props: ['across', 'down'],
-    delimiters: ['[[', ']]'],
-    template: `<p>Hi: [[content]]</p>`
-  })
-
-
-
-  Vue.component('x-grid', {
-    props: ['puzzle'],
-    delimiters: ['[[', ']]'],
-    template: `<div class="grid"><slot></slot></div>`
-  })
-
-
-  const editor = new Vue({
-    el: '#editor-app',
-    delimiters: ['[[', ']]'],
-    data: {
-      puzzle: puzzleData,
-    },
-  });
+    updateGrid(idx, value) {
+      this.grid.splice(idx - 1, 1, value);
+    }
+  }
+});
 </script>
 
 {% endblock content %}
