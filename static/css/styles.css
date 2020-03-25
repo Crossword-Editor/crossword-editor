@@ -16,110 +16,194 @@ a {
 /* Top Navigation
 _______________________________________________________ */
 
-.navbar {
+.navbar-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 75px;
-  background-color: whitesmoke;
+  height: 100px;
+  background-color: #17202a;
 }
 
-.navbar .logo {
-  font-size: 32px;
+.navbar-top .logo {
+  font-size: 40px;
   margin-left: 50px;
   font-weight: 600;
+  color: whitesmoke;
 }
 
-.navbar .nav-links {
+.navbar-top .nav-top-links {
   display: flex;
   justify-content: center;
   align-items: center;
   list-style: none;
   margin-right: 20px;
+  color: whitesmoke;
 }
 
-.navbar .nav-links a:hover {
-  color: #4b6beb;
+.navbar-top .nav-top-links a {
+  color: whitesmoke;
+  padding: 15px;
+  transition: all 0.2s ease;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.navbar-top .nav-top-links a:hover {
+  color: #d5d8dc;
 }
 
 /* Welcome Index
 ________________________________________________ */
 
 .welcome h1 {
-  font-size: 50px;
+  font-size: 40px;
   font-family: Montserrat;
   text-align: center;
   margin: 50px 0 30px;
+  color: grey;
+}
+
+.welcome h3 {
+  font-size: 30px;
+  font-family: Montserrat;
+  color: #17202a;
+  text-align: center;
+  margin-left: 75px;
+  width: 95%;
 }
 
 .flex-grid {
   display: flex;
   flex-flow: wrap;
+  padding: 15px;
   justify-content: center;
   align-items: center;
   margin-top: 20px;
+  margin-left: 10px;
+  width: 95%;
 }
 
-.col {
-  flex: 2;
+.you-box h2 {
+  font-size: 30px;
+  margin-left: 100px;
+  font-family: Montserrat;
+  color: #17202a;
+  text-align: center;
+  width: 95%;
+  padding: 15px;
 }
 
 .you-box {
+  border-radius: 10px;
   display: flex;
   flex-flow: column;
   align-items: center;
   box-shadow: 0 0 5px grey;
-  margin: 0 10px 20px;
+  margin-left: 10px;
+  /* margin: 0 10px 20px; */
   padding: 10px;
   cursor: pointer;
   transition: box-shadow 0.2s ease;
-  text-align: center;
+  text-align: left;
   height: 200px;
-  width: 300px;
+  width: 500px;
 }
 
 .you-box:hover {
-  box-shadow: 0 0 5px #4b6beb;
+  box-shadow: 0 0 5px #17202a;
 }
 
-.you-box .novice {
-  font-size: 20px;
-  font-weight: 400;
-  color: black;
+.you-box h2 {
+  font-size: 50px;
+  font-weight: 600;
 }
 
-.you-box .expert {
-  font-size: 20px;
-  font-weight: 400;
-  color: black;
-}
-
-.you-box .master-class {
-  font-size: 20px;
+.you-box p {
+  font-size: 16px;
   font-weight: 400;
   color: black;
 }
 
 .feature-box {
+  border-radius: 10px;
   display: flex;
   flex-flow: column;
   align-items: center;
   box-shadow: 0 0 5px grey;
-  margin: 0 10px 20px;
+  margin-left: 10px;
+  /* margin: 0 10px 20px; */
   padding: 10px;
   cursor: pointer;
   transition: box-shadow 0.2s ease;
-  text-align: center;
+  text-align: left;
   height: 200px;
-  width: 300px;
+  width: 500px;
 }
 
 .feature-box:hover {
-  box-shadow: 0 0 5px #4b6beb;
+  box-shadow: 0 0 5px #17202a;
 }
 
-.feature-box .feature {
-  font-size: 20px;
+.feature-box h2 {
+  font-size: 50px;
+  font-weight: 600;
+}
+
+.feature-box p {
+  font-size: 16px;
   font-weight: 400;
   color: black;
+}
+
+/* Bottom nav-bar
+________________________________________________ */
+
+.motto-bottom h2 {
+  font-size: 30px;
+  font-family: Montserrat;
+  text-align: center;
+  margin: 50px 0 30px;
+}
+
+.navbar-bottom {
+  display: flex;
+  position: fixed;
+  overflow: hidden;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
+  width: 100%;
+  bottom: 0;
+  background-color: #17202a;
+}
+
+.navbar-bottom .nav-bottom-links {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  overflow: hidden;
+  align-items: center;
+  list-style: none;
+  margin-right: 20px;
+  color: whitesmoke;
+  background-color: #17202a;
+  bottom: 0;
+  height: 100px;
+  width: 100%;
+}
+
+.navbar-bottom .nav-bottom-links a {
+  font-size: 40px;
+  display: block;
+  margin-left: 50px;
+  list-style: none;
+  justify-content: center;
+  align-items: center;
+  color: whitesmoke;
+  margin-left: 50px;
+  font-weight: 600;
+}
+
+.navbar-bottom .nav-bottom-links a:hover {
+  color: #d5d8dc;
 }

@@ -10,7 +10,7 @@
   <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,700,900|Montserrat:400,500,600,700,900"
     rel="stylesheet" type="text/css">
   {% load static %}
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 
   {% block title %}<title>Crossword Maker</title>{% endblock %}
 </head>
@@ -19,9 +19,9 @@
 
   {% block topbar %}
   <header>
-    <nav class="navbar">
-      <a class="logo" href="{% url 'home' %}"><h1>Crossword Maker</h1></a>
-      <div class="nav-links">
+    <nav class="navbar-top">
+      <a class="logo" href="{% url 'home' %}"><h1>The Crossinator</h1></a>
+      <ul class="nav-top-links">
         {% if not user.is_authenticated %}
         <a href="{% url 'auth_login' %}">Login </a>
         |
@@ -29,7 +29,7 @@
         {% else %}
         <a href="{% url 'auth_logout' %}">Logout </a>
         {% endif %}
-      </div>
+      </ul>
     </nav>
   </header>
   {% endblock topbar %}
