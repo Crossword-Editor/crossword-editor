@@ -13,7 +13,7 @@
   <h4>Drafts</h4>
   {% for puzzle in drafts %}
   <div>
-    <a href="">
+    <a href="{% url 'edit' puzzle.pk %}">
       <div class="display-title">
         <h5 class="puzzle-title-diplay">My puzzle started at: {{puzzle.created_at}}</h5>
       </div>
