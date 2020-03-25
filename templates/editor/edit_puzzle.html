@@ -13,17 +13,20 @@
 
 
 <div id="editor-app">
-  <div class="clue-input-container">
-    <input type="text" v-model="currentClue">
-  </div>
 
-  <div class="grid-container">
-    <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
-      <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
-        :highlighted="highlighted" @x-clicked="handleClick">
-        <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
-        <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
-      </x-cell>
+  <div class="input-container">
+    <div class="clue-input-container">
+      <input type="text" v-model="currentClue" placeholder="Enter a clue . . ." :disabled="grid[activeCell]==='.'">
+    </div>
+
+    <div class="grid-container">
+      <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
+        <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
+          :highlighted="highlighted" @x-clicked="handleClick">
+          <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
+          <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
+        </x-cell>
+      </div>
     </div>
   </div>
 
