@@ -30,6 +30,7 @@
 <script>
   // get json string store it in a variable
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
+  const BLACK = '.'
 
 
   Vue.component("x-cell", {
@@ -52,23 +53,24 @@
         return this.idx === this.inputArea;
       },
       isBlack() {
-        return this.grid[this.idx] === '.'
-      }
+        return this.grid[this.idx] === BLACK
+      },
     },
     methods: {
       clicked() {
-        console.log([this.idx, this.activeCell]);
         this.$emit("x-clicked", this.idx);
       }
     }
   });
 
+
+
   const editor = new Vue({
     el: "#editor-app",
     delimiters: ["[[", "]]"],
     data: {
-      grid: puzzleData.grid,
-      numbers: puzzleData.gridnums,
+      grid: puzzleData.grid, // flat array representation of the grid (left->right, top->bottom)
+      //numbers: puzzleData.gridnums,
       across: puzzleData.clues.across,
       down: puzzleData.clues.down,
       rowN: puzzleData.size.rows,
@@ -77,15 +79,10 @@
       isVertical: false,
       inputArea: 0
     },
+
     computed: {
       length() {
-        return this.rowN * this.colN;
-      },
-      testArr() {
-        if (this.grid[0] === "CCC") {
-          return [1, 2, 3];
-        }
-        return ["a", "b", "c"];
+        return this.grid.length
       },
       gridStyle() {
         return {
@@ -93,27 +90,60 @@
           'grid-template-columns': `repeat(${this.colN}, 1fr [col-start])`,
           'grid-auto-rows': '1fr'
         }
+      },
+      numbers() {
+        let returnArr = []
+        let count = 0
+        for (let i = 0; i < this.length; i++) {
+          if (this.isNumberedCell(i)) {
+            count+=1
+            returnArr.push(count)
+          }
+          else {
+            returnArr.push(0)
+          }
+        }
+        return returnArr
       }
     },
+
     methods: {
+
       handleClick(idx) {
-        console.log(idx);
         this.activeCell = idx;
-        //this.updateGrid(idx, "CCC")
       },
 
       updateGrid(idx, value) {
         this.grid.splice(idx, 1, value);
       },
 
+      toggleVertical() {
+        this.isVertical = !this.isVertical
+      },
+
+      isNumberedCell(idx) {
+        if (this.grid[idx] === BLACK) {
+          return false
+        }
+        return this.lookUp(idx) || this.lookLeft(idx)
+      },
+
+      lookUp(idx) {
+        return (idx < this.colN) || (this.grid[idx - this.rowN] === BLACK)
+      },
+      lookLeft(idx) {
+        return (idx % this.colN === 0) || (this.grid[idx - 1] === BLACK)
+      },
+
       keyhandle(event) {
         const key = event.key.toUpperCase()
-        const validEntries = '.ABCDEFGHIJKLMOPQRSTUVWXYZ*@#'
+        const validEntries = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#'
+        const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER']
         if (validEntries.includes(key)) {
           this.updateGrid(this.activeCell, key)
           this.nextCell()
         }
-        else {
+        else if (validDirectives.includes(key)) {
           event.preventDefault()
           this.enterArrowsDeleteBackspace(key)
         }
@@ -129,6 +159,7 @@
           this.activeCell += (this.activeCell + this.colN <= this.length) ? this.colN : 0
         }
       },
+
       prevCell() {
         if (!this.isVertical) {
           if (this.activeCell > 0) {
@@ -137,16 +168,15 @@
         }
         else {
           this.activeCell -= (this.activeCell - this.colN >= 0) ? this.colN : 0
-        // this.activeCell = (this.activeCell + this.colN) % (this.length)
         }
-      },
-      toggleVertical() {
-        this.isVertical = !this.isVertical
       },
 
       enterArrowsDeleteBackspace(key) {
-        console.log(key)
-        if (key === 'DELETE' || key === 'BACKSPACE') {
+        if (key === 'DELETE') {
+          this.updateGrid(this.activeCell, '')
+        }
+        else if (key === 'BACKSPACE') {
+          this.prevCell()
           this.updateGrid(this.activeCell, '')
         }
         else if (key === 'ENTER') {
@@ -184,14 +214,12 @@
             this.prevCell()
           }
         }
-
-
       }
 
     },
     created: function () {
       document.addEventListener('keydown', this.keyhandle)
-      document.addEventListener('keyup', this.enterArrowsDeleteBackspace)
+      //document.addEventListener('keyup', this.enterArrowsDeleteBackspace)
     }
   });
 
