@@ -266,3 +266,10 @@ ________________________________________________ */
   background-color: var(--active-black-color);
   color: var(--active-black-color);
 }
+
+.clue-input-container {
+  width: 100%;
+  background-color: aliceblue;
+  border-radius: 5px;
+}
+

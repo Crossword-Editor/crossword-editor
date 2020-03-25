@@ -13,14 +13,23 @@
 
 
 <div id="editor-app">
+  <div class="clue-input-container">
+    <input type="text" v-model="currentClue">
+  </div>
+
   <div class="grid-container">
     <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
       <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
-        :highlights="highlights" @x-clicked="handleClick">
+        :highlighted="highlighted" @x-clicked="handleClick">
         <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
         <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
       </x-cell>
     </div>
+  </div>
+
+  <div class="clue-list-container">
+    <div class="across-list"></div>
+    <div class="down-list"></div>
   </div>
 </div>
 
@@ -37,7 +46,7 @@
     <slot name="number"></slot>
     <slot name="entry"></slot>
   </div>`,
-    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlights'],
+    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted'],
     data: function () {
       return {
         test: 1
@@ -54,7 +63,7 @@
         return this.grid[this.idx] === BLACK
       },
       isHighlighted() {
-        return this.highlights.includes(this.idx)
+        return this.highlighted.includes(this.idx)
       },
       cellClasses() {
         return { active: this.isActive, black: this.isBlack, highlighted: this.isHighlighted }
@@ -75,8 +84,9 @@
     data: {
       grid: puzzleData.grid, // flat array representation of the grid (left->right, top->bottom)
       //numbers: puzzleData.gridnums,
-      across: puzzleData.clues.across,
-      down: puzzleData.clues.down,
+      clues: puzzleData.clues,
+      // across: puzzleData.clues.across,
+      // down: puzzleData.clues.down,
       rowN: puzzleData.size.rows,
       colN: puzzleData.size.cols,
       activeCell: 0,
@@ -97,6 +107,12 @@
         }
       },
 
+      currentClue() {
+        const direction = this.isVertical ? 'down' : 'across'
+        const number = this.numbers[this.highlighted[0]]
+        return this.clues[direction][number]
+      },
+
       numbers() {
         let returnArr = []
         let count = 0
@@ -112,7 +128,7 @@
         return returnArr
       },
 
-      highlights() {
+      highlighted() {
         let returnArr = []
         if (this.grid[this.activeCell] === BLACK) {
           return returnArr
