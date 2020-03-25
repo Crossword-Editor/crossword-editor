@@ -156,6 +156,27 @@ ________________________________________________ */
   color: black;
 }
 
+/* User Display
+________________________________________________ */
+
+.display h1 {
+  font-size: 40px;
+  font-family: Montserrat, sans-serif;
+  text-align: center;
+  margin: 50px 0 30px;
+  color: #e6401d;
+  /* color: grey; */
+}
+
+.display h3 {
+  font-size: 30px;
+  font-family: Montserrat, sans-serif;
+  color: #17202a;
+  text-align: center;
+  margin-left: 75px;
+  width: 95%;
+}
+
 /* Bottom nav-bar
 ________________________________________________ */
 
@@ -230,7 +251,7 @@ ________________________________________________ */
   flex-flow: column nowrap;
   align-items: center;
   cursor: pointer;
-  border: .5px solid gray;
+  border: 0.5px solid gray;
   height: 35px;
 }
 
@@ -259,7 +280,7 @@ ________________________________________________ */
 
 .black {
   background-color: black;
-  color: black
+  color: black;
 }
 
 .black.active {
