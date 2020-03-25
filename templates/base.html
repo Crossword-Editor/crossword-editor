@@ -23,9 +23,11 @@
       <a class="logo" href="{% url 'home' %}"><h1>The Crossinator</h1></a>
       <ul class="nav-top-links">
         {% if not user.is_authenticated %}
-        <li><a href="{% url 'auth_login' %}">Login </a></li>
-        <li><a href="{% url 'registration_register' %}">Register</a></li>
-        <li><a href="{% url 'auth_logout' %}">Logout </a></li>
+        <a href="{% url 'auth_login' %}">Login </a>
+        |
+        <a href="{% url 'registration_register' %}">Register</a>
+        {% else %}
+        <a href="{% url 'auth_logout' %}">Logout </a>
         {% endif %}
       </ul>
     </nav>
