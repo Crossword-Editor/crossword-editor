@@ -16,8 +16,8 @@
 <div id="editor-app">
   <div class="grid-container">
     <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
-      <x-cell v-for="n in length" :idx='n-1' :grid="grid" :input-area="inputArea" :active-cell="activeCell"
-        :id="'cell'+n" @x-clicked="handleClick" :key="n">
+      <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
+        :highlights="highlights" @x-clicked="handleClick">
         <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
         <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
       </x-cell>
@@ -34,11 +34,11 @@
 
   Vue.component("x-cell", {
     template: `
-  <div class="cell" :class="{active: isActive, black: isBlack}" @click="clicked">
+  <div class="cell" :class="cellClasses" @click="clicked">
     <slot name="number"></slot>
     <slot name="entry"></slot>
   </div>`,
-    props: ["idx", "activeCell", "inputArea", "grid"],
+    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlights'],
     data: function () {
       return {
         test: 1
@@ -54,6 +54,12 @@
       isBlack() {
         return this.grid[this.idx] === BLACK
       },
+      isHighlighted() {
+        return this.highlights.includes(this.idx)
+      },
+      cellClasses() {
+        return { active: this.isActive, black: this.isBlack, highlighted: this.isHighlighted }
+      }
     },
     methods: {
       clicked() {
@@ -107,7 +113,7 @@
         return returnArr
       },
 
-      highlighted() {
+      highlights() {
         let returnArr = []
         if (this.grid[this.activeCell] === BLACK) {
           return returnArr
@@ -138,7 +144,7 @@
       }
     },
 
-      methods: {
+    methods: {
 
       handleClick(idx) {
         this.activeCell = idx;

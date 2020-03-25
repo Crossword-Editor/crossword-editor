@@ -151,6 +151,10 @@ ________________________________________________ */
   height: 35px;
 }
 
+.highlighted {
+  background-color: #a7d8ff;
+}
+
 .active {
   background-color: #ffda00;
 }
