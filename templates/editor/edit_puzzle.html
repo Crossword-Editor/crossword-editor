@@ -10,21 +10,24 @@
 {{ puzzle|json_script:"puzzle-data" }}
 
 
-
-
 <div id="editor-app">
 
   <div class="input-container">
+    <span v-if="grid[activeCell]==='.'" style="visibility: hidden">Hide</span>
+    <span class="clue-input-label" v-if="grid[activeCell]!=='.'">
+      ${ numbers[highlighted[0]] } ${direction}:
+    </span>
     <div class="clue-input-container">
-      <input type="text" v-model="currentClue" placeholder="Enter a clue . . ." :disabled="grid[activeCell]==='.'">
+      <span v-if="grid[activeCell]==='.'" style="visibility: hidden">Hide</span>
+      <input v-else :contenteditable="grid[activeCell]!=='.'" v-model="currentClue">
     </div>
 
     <div class="grid-container">
       <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
         <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
           :highlighted="highlighted" @x-clicked="handleClick">
-          <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
-          <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
+          <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">${ numbers[n-1] }</span></div>
+          <div slot="entry" class="entry">${ grid[n-1] }</div>
         </x-cell>
       </div>
     </div>
@@ -83,7 +86,7 @@
 
   const editor = new Vue({
     el: "#editor-app",
-    delimiters: ["[[", "]]"],
+    delimiters: ["${", "}"],
     data: {
       grid: puzzleData.grid, // flat array representation of the grid (left->right, top->bottom)
       //numbers: puzzleData.gridnums,
@@ -102,6 +105,10 @@
         return this.grid.length
       },
 
+      direction() {
+        return this.isVertical ? 'down' : 'across'
+      },
+
       gridStyle() {
         return {
           display: 'grid',
@@ -110,10 +117,17 @@
         }
       },
 
-      currentClue() {
-        const direction = this.isVertical ? 'down' : 'across'
-        const number = this.numbers[this.highlighted[0]]
-        return this.clues[direction][number]
+      currentClue: {
+        get () {
+          const direction = this.direction
+          const number = this.numbers[this.highlighted[0]]
+          return this.clues[direction][number]
+        },
+        set (newValue) {
+          const direction = this.direction
+          const number = this.numbers[this.highlighted[0]]
+          this.clues[direction][number] = newValue
+        }
       },
 
       numbers() {
