@@ -60,7 +60,8 @@ ________________________________________________ */
   font-family: Montserrat;
   text-align: center;
   margin: 50px 0 30px;
-  color: grey;
+  color: #e6401d;
+  /* color: grey; */
 }
 
 .welcome h3 {
@@ -75,11 +76,8 @@ ________________________________________________ */
 .flex-grid {
   display: flex;
   flex-flow: wrap;
-  padding: 15px;
   justify-content: center;
-  align-items: center;
   margin-top: 20px;
-  margin-left: 10px;
   width: 95%;
 }
 
@@ -90,7 +88,6 @@ ________________________________________________ */
   color: #17202a;
   text-align: center;
   width: 95%;
-  padding: 15px;
 }
 
 .you-box {
@@ -99,27 +96,27 @@ ________________________________________________ */
   flex-flow: column;
   align-items: center;
   box-shadow: 0 0 5px grey;
-  margin-left: 10px;
-  /* margin: 0 10px 20px; */
+  margin: right;
   padding: 10px;
   cursor: pointer;
   transition: box-shadow 0.2s ease;
   text-align: left;
   height: 200px;
-  width: 500px;
+  width: 600px;
 }
 
 .you-box:hover {
   box-shadow: 0 0 5px #17202a;
 }
 
-.you-box h2 {
+/* .you-box h2 {
   font-size: 50px;
   font-weight: 600;
-}
+  font-weight: 600;
+} */
 
 .you-box p {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
   color: black;
 }
@@ -131,13 +128,13 @@ ________________________________________________ */
   align-items: center;
   box-shadow: 0 0 5px grey;
   margin-left: 10px;
-  /* margin: 0 10px 20px; */
+  margin: 15px;
   padding: 10px;
   cursor: pointer;
   transition: box-shadow 0.2s ease;
   text-align: left;
   height: 200px;
-  width: 500px;
+  width: 700px;
 }
 
 .feature-box:hover {
@@ -150,7 +147,7 @@ ________________________________________________ */
 }
 
 .feature-box p {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
   color: black;
 }
@@ -163,6 +160,7 @@ ________________________________________________ */
   font-family: Montserrat;
   text-align: center;
   margin: 50px 0 30px;
+  color: #e6401d;
 }
 
 .navbar-bottom {
@@ -202,6 +200,7 @@ ________________________________________________ */
   color: whitesmoke;
   margin-left: 50px;
   font-weight: 600;
+  color: #e6401d;
 }
 
 .navbar-bottom .nav-bottom-links a:hover {
