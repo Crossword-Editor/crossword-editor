@@ -7,29 +7,58 @@
 {% block content %}
 
 <div class="welcome">
+<h1>Fasinated by crosswords?</h1>
+<h3>Welcome to <strong>The Crossinator</strong>, the tool designed for authoring</h3>
+<h3>New York Times-styled crossword puzzles</h3>
+
   <div class="flex-grid">
     <div class="col">
-      <h2>Crossword Maker Is Just For You!</h2>
+      <h2 class=>The Crossinator Is Just For You!</h2>
       <a class="you-box">
-        <p class="novice">Novice. Begin your very first crossword</p>
-        <p class="expert">Expert. Design your dream-themed puzzle</p>
-        <p class="master-class">Master-Class. Construct and submit to the New York Times!</p>
+        <ul>
+          <p><strong>✓Novice.</strong> Begin your very first crossword</p><br>
+          <p><strong>✓Expert.</strong> Design your dream-themed puzzle</p><br>
+          <p><strong>✓Master-Class.</strong> Construct and submit to the New York Times!</p>
+        </ul>
       </a>
     </div>
     <div class="col">
-      <h2>Features</h2>
+      <h2>Features include</h2>
       <a class="feature-box">
-        <p class="feature">It Can Do This.</p>
-        <p class="feature">That.</p>
-        <p class="feature">And, the other!</p>
+        <ul>
+          <p>Fill in a puzzle grid, clues, title and description of a crossword</p><br>
+          <p>Grid numbering automatically completed</p><br>
+          <p>Black square symmetry automatically completed</p><br>
+          <p>Save drafts and make them public/private</p><br>
+          <p>Mimic the style of the web and mobile crossword apps from the NY Times</p>
+        </ul>
       </a>
     </div>
+
+    <div class="motto-bottom">
+      <h2>Already have an account? Login. Or, Register Today!</h2>
+    </div>
+    
+  {% block bottombar %}
+    <div class="navbar-bottom">
+      <ul class="nav-bottom-links">
+        {% if not user.is_authenticated %}
+        <li><a href="{% url 'auth_login' %}">Login </a></li>
+        <li><a href="{% url 'registration_register' %}">Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  {% endblock bottombar %}
+
   </div>
 </div>
 
-<div>
+{% comment %} <div>
   <b style="color: red">Add another opportunity to login/register at the bottom of the page, once it's fleshed out
     more.</b>
-</div>
+</div> {% endcomment %}
+
 
 {% endblock content %}
+
+
