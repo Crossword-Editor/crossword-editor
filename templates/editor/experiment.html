@@ -15,15 +15,15 @@
 
 <div id="editor-app">
   <div class="grid-container">
-  <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
-    <x-cell v-for="n in length" :idx='n-1' :input-area="inputArea" :active-cell="activeCell" :id="'cell'+n"
-      @x-clicked="handleClick">
-      <div slot="number" class="number" ><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
-      <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
-      ]]
-    </x-cell>
+    <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
+      <x-cell v-for="n in length" :idx='n-1' :grid="grid" :input-area="inputArea" :active-cell="activeCell" :id="'cell'+n"
+        @x-clicked="handleClick">
+        <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
+        <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
+        ]]
+      </x-cell>
+    </div>
   </div>
-</div>
 </div>
 
 
@@ -38,7 +38,7 @@
     <slot name="number"></slot>
     <slot name="entry"></slot>
   </div>`,
-    props: ["idx", "activeCell", "inputArea"],
+    props: ["idx", "activeCell", "inputArea", "grid"],
     data: function () {
       return {
         test: 1
@@ -50,6 +50,9 @@
       },
       currentInput() {
         return this.idx === this.inputArea;
+      },
+      isBlack() {
+        return this.grid[this.idx] === '.'
       }
     },
     methods: {
@@ -100,27 +103,37 @@
       },
 
       updateGrid(idx, value) {
-        this.grid.splice(idx , 1, value);
+        this.grid.splice(idx, 1, value);
       },
 
       keyhandle(event) {
-        //console.log(event.key)
+        const entry = event.key.toUpperCase()
         console.log(this.activeCell)
-        this.updateGrid(this.activeCell, event.key)
+        this.updateGrid(this.activeCell, entry)
         this.nextCell()
       },
 
-      nextCell(){
-        if (!this.isVertical){
-          this.activeCell = (this.activeCell+1) % (this.length)
+      nextCell() {
+        if (!this.isVertical) {
+          if (this.activeCell < this.length-1) {
+            this.activeCell = (this.activeCell + 1) % (this.length)
+          }
         }
         else {
-          this.activeCell = (this.activeCell+this.colN) % (this.length)
+          this.activeCell = (this.activeCell + this.colN) % (this.length)
         }
+      },
+      enterArrowsDeleteBackspace(event) {
+        const key = event.key
+        console.log(key)
+
+
       }
+
     },
     created: function () {
       window.addEventListener('keypress', this.keyhandle)
+      window.addEventListener('keydown', this.enterArrowsDeleteBackspace)
     }
   });
 

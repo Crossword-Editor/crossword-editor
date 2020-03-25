@@ -126,15 +126,6 @@ ________________________________________________ */
 
 /* --------Experiment page----------- */
 
-/* .grid {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: center;
-  width: 300px;
-  height: 300px;
-} */
-
 .grid-container {
   width:40%;
   margin: 1rem;
@@ -175,4 +166,9 @@ ________________________________________________ */
   font-weight: bold;
   width: 100%;
   height: 10%;
+}
+
+.black {
+  background-color: black;
+  color: black
 }
