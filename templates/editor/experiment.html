@@ -16,8 +16,8 @@
 <div id="editor-app">
   <div class="grid-container">
     <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
-      <x-cell v-for="n in length" :idx='n-1' :grid="grid" :input-area="inputArea" :active-cell="activeCell" :id="'cell'+n"
-        @x-clicked="handleClick">
+      <x-cell v-for="n in length" :idx='n-1' :grid="grid" :input-area="inputArea" :active-cell="activeCell"
+        :id="'cell'+n" @x-clicked="handleClick">
         <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
         <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
         ]]
@@ -107,33 +107,91 @@
       },
 
       keyhandle(event) {
-        const entry = event.key.toUpperCase()
-        console.log(this.activeCell)
-        this.updateGrid(this.activeCell, entry)
-        this.nextCell()
+        const key = event.key.toUpperCase()
+        const validEntries = '.ABCDEFGHIJKLMOPQRSTUVWXYZ*@#'
+        if (validEntries.includes(key)) {
+          this.updateGrid(this.activeCell, key)
+          this.nextCell()
+        }
+        else {
+          event.preventDefault()
+          this.enterArrowsDeleteBackspace(key)
+        }
       },
 
       nextCell() {
         if (!this.isVertical) {
-          if (this.activeCell < this.length-1) {
-            this.activeCell = (this.activeCell + 1) % (this.length)
+          if (this.activeCell < this.length - 1) {
+            this.activeCell = this.activeCell + 1
           }
         }
         else {
-          this.activeCell = (this.activeCell + this.colN) % (this.length)
+          this.activeCell += (this.activeCell + this.colN <= this.length) ? this.colN : 0
         }
       },
-      enterArrowsDeleteBackspace(event) {
-        const key = event.key
+      prevCell() {
+        if (!this.isVertical) {
+          if (this.activeCell > 0) {
+            this.activeCell = this.activeCell - 1
+          }
+        }
+        else {
+          this.activeCell -= (this.activeCell - this.colN >= 0) ? this.colN : 0
+        // this.activeCell = (this.activeCell + this.colN) % (this.length)
+        }
+      },
+      toggleVertical() {
+        this.isVertical = !this.isVertical
+      },
+
+      enterArrowsDeleteBackspace(key) {
         console.log(key)
+        if (key === 'DELETE' || key === 'BACKSPACE') {
+          this.updateGrid(this.activeCell, '')
+        }
+        else if (key === 'ENTER') {
+          this.toggleVertical()
+        }
+        else if (key === "ARROWRIGHT") {
+          if (this.isVertical) {
+            this.toggleVertical()
+          }
+          else {
+            this.nextCell()
+          }
+        }
+        else if (key === "ARROWLEFT") {
+          if (this.isVertical) {
+            this.toggleVertical()
+          }
+          else {
+            this.prevCell()
+          }
+        }
+        else if (key === "ARROWDOWN") {
+          if (!this.isVertical) {
+            this.toggleVertical()
+          }
+          else {
+            this.nextCell()
+          }
+        }
+        else if (key === "ARROWUP") {
+          if (!this.isVertical) {
+            this.toggleVertical()
+          }
+          else {
+            this.prevCell()
+          }
+        }
 
 
       }
 
     },
     created: function () {
-      window.addEventListener('keypress', this.keyhandle)
-      window.addEventListener('keydown', this.enterArrowsDeleteBackspace)
+      document.addEventListener('keydown', this.keyhandle)
+      document.addEventListener('keyup', this.enterArrowsDeleteBackspace)
     }
   });
 
