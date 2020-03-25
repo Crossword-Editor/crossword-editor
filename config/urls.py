@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('registration.backends.default.urls')),
     path('', views.home, name="home"),
+    path('edit/<int:pk>', views.edit, name='edit'),
 ]
 
 if settings.DEBUG:
