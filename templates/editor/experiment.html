@@ -17,10 +17,9 @@
   <div class="grid-container">
     <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
       <x-cell v-for="n in length" :idx='n-1' :grid="grid" :input-area="inputArea" :active-cell="activeCell"
-        :id="'cell'+n" @x-clicked="handleClick">
+        :id="'cell'+n" @x-clicked="handleClick" :key="n">
         <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
         <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
-        ]]
       </x-cell>
     </div>
   </div>
@@ -84,6 +83,7 @@
       length() {
         return this.grid.length
       },
+
       gridStyle() {
         return {
           display: 'grid',
@@ -91,12 +91,13 @@
           'grid-auto-rows': '1fr'
         }
       },
+
       numbers() {
         let returnArr = []
         let count = 0
         for (let i = 0; i < this.length; i++) {
           if (this.isNumberedCell(i)) {
-            count+=1
+            count += 1
             returnArr.push(count)
           }
           else {
@@ -104,10 +105,40 @@
           }
         }
         return returnArr
+      },
+
+      highlighted() {
+        let returnArr = []
+        if (this.grid[this.activeCell] === BLACK) {
+          return returnArr
+        }
+        let start = this.activeCell
+        let stop = this.activeCell
+        let inc = this.isVertical ? this.rowN : 1
+        if (this.isVertical) {
+          while (!this.lookUp(start)) {
+            start -= inc
+          }
+          while (!this.lookDown(stop)) {
+            stop += inc
+          }
+        }
+        else {
+          while (!this.lookLeft(start)) {
+            start -= inc
+          }
+          while (!this.lookRight(stop)) {
+            stop += inc
+          }
+        }
+        for (let i = start; i <= stop; i += inc) {
+          returnArr.push(i)
+        }
+        return returnArr
       }
     },
 
-    methods: {
+      methods: {
 
       handleClick(idx) {
         this.activeCell = idx;
@@ -129,10 +160,20 @@
       },
 
       lookUp(idx) {
+        // return true if idx is in row 1 or is below black square
         return (idx < this.colN) || (this.grid[idx - this.rowN] === BLACK)
       },
+      lookDown(idx) {
+        // return true if idx is in row 1 or is below black square
+        return (idx >= this.length - this.colN) || (this.grid[idx + this.rowN] === BLACK)
+      },
       lookLeft(idx) {
+        // return true if idx is in column 1 or to the right of a black square
         return (idx % this.colN === 0) || (this.grid[idx - 1] === BLACK)
+      },
+      lookRight(idx) {
+        // return true if idx is in column 1 or to the right of a black square
+        return (idx % this.colN === this.colN - 1) || (this.grid[idx + 1] === BLACK)
       },
 
       keyhandle(event) {
@@ -219,7 +260,6 @@
     },
     created: function () {
       document.addEventListener('keydown', this.keyhandle)
-      //document.addEventListener('keyup', this.enterArrowsDeleteBackspace)
     }
   });
 
