@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<link rel="styleshet" href="{% static 'css/experiment.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+{% endblock meta %}
+
+{% block content %}
+<!-- Pass in puzzle json from Django template context -->
+{{ puzzle|json_script:"puzzle-data" }}
+
+
+
+
+<div id="editor-app">
+  <div class="grid-container">
+    <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
+      <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
+        :highlights="highlights" @x-clicked="handleClick">
+        <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
+        <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
+      </x-cell>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // get json string store it in a variable
+  var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
+  const BLACK = '.'
+
+
+  Vue.component("x-cell", {
+    template: `
+  <div class="cell" :class="cellClasses" @click="clicked">
+    <slot name="number"></slot>
+    <slot name="entry"></slot>
+  </div>`,
+    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlights'],
+    data: function () {
+      return {
+        test: 1
+      };
+    },
+    computed: {
+      isActive() {
+        return this.idx === this.activeCell;
+      },
+      currentInput() {
+        return this.idx === this.inputArea;
+      },
+      isBlack() {
+        return this.grid[this.idx] === BLACK
+      },
+      isHighlighted() {
+        return this.highlights.includes(this.idx)
+      },
+      cellClasses() {
+        return { active: this.isActive, black: this.isBlack, highlighted: this.isHighlighted }
+      }
+    },
+    methods: {
+      clicked() {
+        this.$emit("x-clicked", this.idx);
+      }
+    }
+  });
+
+
+
+  const editor = new Vue({
+    el: "#editor-app",
+    delimiters: ["[[", "]]"],
+    data: {
+      grid: puzzleData.grid, // flat array representation of the grid (left->right, top->bottom)
+      //numbers: puzzleData.gridnums,
+      across: puzzleData.clues.across,
+      down: puzzleData.clues.down,
+      rowN: puzzleData.size.rows,
+      colN: puzzleData.size.cols,
+      activeCell: 0,
+      isVertical: false,
+      inputArea: 0
+    },
+
+    computed: {
+      length() {
+        return this.grid.length
+      },
+
+      gridStyle() {
+        return {
+          display: 'grid',
+          'grid-template-columns': `repeat(${this.colN}, 1fr [col-start])`,
+          'grid-auto-rows': '1fr'
+        }
+      },
+
+      numbers() {
+        let returnArr = []
+        let count = 0
+        for (let i = 0; i < this.length; i++) {
+          if (this.isNumberedCell(i)) {
+            count += 1
+            returnArr.push(count)
+          }
+          else {
+            returnArr.push(0)
+          }
+        }
+        return returnArr
+      },
+
+      highlights() {
+        let returnArr = []
+        if (this.grid[this.activeCell] === BLACK) {
+          return returnArr
+        }
+        let start = this.activeCell
+        let stop = this.activeCell
+        let inc = this.isVertical ? this.rowN : 1
+        if (this.isVertical) {
+          while (!this.lookUp(start)) {
+            start -= inc
+          }
+          while (!this.lookDown(stop)) {
+            stop += inc
+          }
+        }
+        else {
+          while (!this.lookLeft(start)) {
+            start -= inc
+          }
+          while (!this.lookRight(stop)) {
+            stop += inc
+          }
+        }
+        for (let i = start; i <= stop; i += inc) {
+          returnArr.push(i)
+        }
+        return returnArr
+      }
+    },
+
+    methods: {
+
+      handleClick(idx) {
+        this.activeCell = idx;
+      },
+
+      updateGrid(idx, value) {
+        this.grid.splice(idx, 1, value);
+      },
+
+      toggleVertical() {
+        this.isVertical = !this.isVertical
+      },
+
+      isNumberedCell(idx) {
+        if (this.grid[idx] === BLACK) {
+          return false
+        }
+        return this.lookUp(idx) || this.lookLeft(idx)
+      },
+
+      lookUp(idx) {
+        // return true if idx is in row 1 or is below black square
+        return (idx < this.colN) || (this.grid[idx - this.rowN] === BLACK)
+      },
+      lookDown(idx) {
+        // return true if idx is in row 1 or is below black square
+        return (idx >= this.length - this.colN) || (this.grid[idx + this.rowN] === BLACK)
+      },
+      lookLeft(idx) {
+        // return true if idx is in column 1 or to the right of a black square
+        return (idx % this.colN === 0) || (this.grid[idx - 1] === BLACK)
+      },
+      lookRight(idx) {
+        // return true if idx is in column 1 or to the right of a black square
+        return (idx % this.colN === this.colN - 1) || (this.grid[idx + 1] === BLACK)
+      },
+
+      keyhandle(event) {
+        const key = event.key.toUpperCase()
+        const validEntries = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#'
+        const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER']
+        if (validEntries.includes(key)) {
+          this.updateGrid(this.activeCell, key)
+          this.nextCell()
+        }
+        else if (validDirectives.includes(key)) {
+          event.preventDefault()
+          this.enterArrowsDeleteBackspace(key)
+        }
+      },
+
+      nextCell() {
+        if (!this.isVertical) {
+          if (this.activeCell < this.length - 1) {
+            this.activeCell = this.activeCell + 1
+          }
+        }
+        else {
+          this.activeCell += (this.activeCell + this.colN <= this.length) ? this.colN : 0
+        }
+      },
+
+      prevCell() {
+        if (!this.isVertical) {
+          if (this.activeCell > 0) {
+            this.activeCell = this.activeCell - 1
+          }
+        }
+        else {
+          this.activeCell -= (this.activeCell - this.colN >= 0) ? this.colN : 0
+        }
+      },
+
+      enterArrowsDeleteBackspace(key) {
+        if (key === 'DELETE') {
+          this.updateGrid(this.activeCell, '')
+        }
+        else if (key === 'BACKSPACE') {
+          this.prevCell()
+          this.updateGrid(this.activeCell, '')
+        }
+        else if (key === 'ENTER') {
+          this.toggleVertical()
+        }
+        else if (key === "ARROWRIGHT") {
+          if (this.isVertical) {
+            this.toggleVertical()
+          }
+          else {
+            this.nextCell()
+          }
+        }
+        else if (key === "ARROWLEFT") {
+          if (this.isVertical) {
+            this.toggleVertical()
+          }
+          else {
+            this.prevCell()
+          }
+        }
+        else if (key === "ARROWDOWN") {
+          if (!this.isVertical) {
+            this.toggleVertical()
+          }
+          else {
+            this.nextCell()
+          }
+        }
+        else if (key === "ARROWUP") {
+          if (!this.isVertical) {
+            this.toggleVertical()
+          }
+          else {
+            this.prevCell()
+          }
+        }
+      }
+
+    },
+    created: function () {
+      document.addEventListener('keydown', this.keyhandle)
+    }
+  });
+
+</script>
+
+{% endblock content %}
