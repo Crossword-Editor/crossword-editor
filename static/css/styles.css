@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: "Source Sans Pro";
+  font-family: "Source Sans Pro", sans-serif;
 }
 
 a {
@@ -57,7 +57,7 @@ ________________________________________________ */
 
 .welcome h1 {
   font-size: 40px;
-  font-family: Montserrat;
+  font-family: Montserrat, sans-serif;
   text-align: center;
   margin: 50px 0 30px;
   color: grey;
@@ -65,7 +65,7 @@ ________________________________________________ */
 
 .welcome h3 {
   font-size: 30px;
-  font-family: Montserrat;
+  font-family: Montserrat, sans-serif;
   color: #17202a;
   text-align: center;
   margin-left: 75px;
@@ -86,7 +86,7 @@ ________________________________________________ */
 .you-box h2 {
   font-size: 30px;
   margin-left: 100px;
-  font-family: Montserrat;
+  font-family: Montserrat, sans-serif;
   color: #17202a;
   text-align: center;
   width: 95%;
@@ -160,7 +160,7 @@ ________________________________________________ */
 
 .motto-bottom h2 {
   font-size: 30px;
-  font-family: Montserrat;
+  font-family: Montserrat, sans-serif;
   text-align: center;
   margin: 50px 0 30px;
 }
