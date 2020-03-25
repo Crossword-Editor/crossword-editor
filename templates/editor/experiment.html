@@ -14,13 +14,16 @@
 
 
 <div id="editor-app">
+  <div class="grid-container">
   <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
     <x-cell v-for="n in length" :idx='n-1' :input-area="inputArea" :active-cell="activeCell" :id="'cell'+n"
-      @x-clicked="handleClick">[[ grid[n-1]
+      @x-clicked="handleClick">
+      <div slot="number" class="number" ><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
+      <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
       ]]
     </x-cell>
   </div>
-
+</div>
 </div>
 
 
@@ -31,8 +34,9 @@
 
   Vue.component("x-cell", {
     template: `
-  <div class="cell" :class="{active: isActive}" @click="clicked">
-    <slot></slot>
+  <div class="cell" :class="{active: isActive, black: isBlack}" @click="clicked">
+    <slot name="number"></slot>
+    <slot name="entry"></slot>
   </div>`,
     props: ["idx", "activeCell", "inputArea"],
     data: function () {
@@ -61,6 +65,7 @@
     delimiters: ["[[", "]]"],
     data: {
       grid: puzzleData.grid,
+      numbers: puzzleData.gridnums,
       across: puzzleData.clues.across,
       down: puzzleData.clues.down,
       rowN: puzzleData.size.rows,
@@ -82,7 +87,8 @@
       gridStyle() {
         return {
           display: 'grid',
-          'grid-template-columns': `repeat(${this.colN}, 35px [col-start])`
+          'grid-template-columns': `repeat(${this.colN}, 1fr [col-start])`,
+          'grid-auto-rows': '1fr'
         }
       }
     },
