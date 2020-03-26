@@ -22,7 +22,7 @@
         v-model.trim="currentClue"></textarea>
     </div>
 
-    <div class="grid-container" tabindex="0" >
+    <div class="grid-container" tabindex="0">
       <div class='grid' :style="gridStyle">
         <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
           :highlighted="highlighted" @cell-clicked="handleCellClick">
@@ -37,20 +37,20 @@
     <div class="clue-list">
       <p class="clue-list-title">Across:</p>
       <ul>
-        <x-clue v-for="(clue, number) in clues.across" :key="number" :direction="direction" :numbers="numbers"
+        <x-clue v-for="number in clueNumbers.across" :key="number" :direction="direction" :numbers="numbers"
           :highlighted="highlighted" :clue-type="across" :number="number" :cross-numbers="getNumberInterval(across)"
           @clue-clicked="handleClueClick">
-          <span class="clue-number">${ number }:</span> ${ clue }
+          <span class="clue-number">${ number }:</span> ${ clues.across[String(number)] }
         </x-clue>
       </ul>
     </div>
     <div class="clue-list">
       <p class="clue-list-title">Down:</p>
       <ul>
-        <x-clue v-for="(clue, number) in clues.down" :key="number" :direction="direction" :numbers="numbers"
+        <x-clue v-for="number in clueNumbers.down" :key="number" :direction="direction" :numbers="numbers"
           :highlighted="highlighted" :clue-type="down" :number="number" :cross-numbers="getNumberInterval(down)"
           @clue-clicked="handleClueClick">
-          <span class="clue-number">${ number }:</span> ${ clue }
+          <span class="clue-number">${ number }:</span> ${ clues.down[String(number)] }
         </x-clue>
       </ul>
     </div>
@@ -61,7 +61,7 @@
 
 <script>
   // get json string store it in a variable
-  var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
+  //var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
 
   function blankPuzzle(rows, cols) {
     let obj = { size: { rows, cols } }
@@ -76,7 +76,7 @@
     return obj
   }
 
-  // var puzzleData = blankPuzzle(10,15)
+   var puzzleData = blankPuzzle(10,15)
 
 
 
@@ -188,6 +188,21 @@
           'grid-template-columns': `repeat(${this.colN}, 1fr [col-start])`,
           'grid-auto-rows': '1fr'
         }
+      },
+
+      clueNumbers() {
+        let numbs = { across: [], down: [] }
+        this.numbers.map((number, idx) => {
+          if (this.isNumberedCell(idx)) {
+            if (this.lookLeft(idx)) {
+              numbs.across.push(String(number))
+            }
+            if (this.lookUp(idx)) {
+              numbs.down.push(String(number))
+            }
+          }
+        })
+        return numbs
       },
 
       currentClue: {
