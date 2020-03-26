@@ -260,8 +260,13 @@
           this.updateGrid(this.activeCell, '')
         }
         else if (key === 'BACKSPACE') {
-          this.prevCell()
-          this.updateGrid(this.activeCell, '')
+          if (this.grid[this.activeCell] === ''){
+            this.prevCell()
+            this.updateGrid(this.activeCell, '')
+          }
+          else {
+            this.updateGrid(this.activeCell, '')
+          }
         }
         else if (key === 'ENTER') {
           this.toggleVertical()
