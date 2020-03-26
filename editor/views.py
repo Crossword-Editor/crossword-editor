@@ -40,6 +40,10 @@ def save(request):
     return JsonResponse({"message": "Puzzle saved to database"})
 
 
+@login_required
+def new(request):
+    pass
+
 # @login_required(login_url='/accounts/login')
 # def puzzles_complete(request):
 #     user = User.objects.get(username=request.user.username)
@@ -55,10 +59,3 @@ def save(request):
 #     puzzle = Puzzle.objects.get(pk=pk)
 #     context = {'puzzle': puzzle, 'pk': pk}
 #     return render(request, 'editor/puzzle_details.html', context=context)
-
-
-# @login_required(login_url='/accounts/login')
-# def add_puzzle(request, pk):
-#     puzzles = Puzzle.objects.all()
-#     context = {'puzzles': puzzles}
-#     return render(request, 'editor/add_puzzle.html', context=context)

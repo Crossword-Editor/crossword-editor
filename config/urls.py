@@ -25,6 +25,7 @@ urlpatterns = [
     path('', views.home, name="home"),
     path('edit/<int:pk>', views.edit, name='edit'),
     path('save/',views.save, name='save'),
+    path('new/',views.save, name='new'),
 ]
 
 if settings.DEBUG:
