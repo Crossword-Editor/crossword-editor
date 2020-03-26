@@ -134,6 +134,7 @@ ________________________________________________ */
   margin-left: 10px;
   margin: 15px;
   padding: 10px;
+  /* Why is the cursor set?  It looks like a link when hovering */
   cursor: pointer;
   transition: box-shadow 0.2s ease;
   text-align: left;
@@ -213,23 +214,28 @@ ________________________________________________ */
 
 /* -------- Crossword pages ----------- */
 
-.grid-container {
-  width: 40%;
-  margin: 1rem;
+#editor-app {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
 }
 
-.grid-container:after {
+.grid-container {
+  width: 100%;
+}
+
+/* .grid-container:after {
   content: "";
   display: block;
   padding-bottom: 100%;
-}
+} */
 
 .cell {
   width: 35px;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  cursor: pointer;
+  cursor: default;
   border: .5px solid gray;
   height: 35px;
 }
@@ -265,4 +271,92 @@ ________________________________________________ */
 .black.active {
   background-color: var(--active-black-color);
   color: var(--active-black-color);
+}
+
+.input-container {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 70%;
+  max-width: 525px;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0 1rem;
+}
+
+.clue-input-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.clue-input-container {
+  width: 525px;
+  border: 1px solid #ccc;
+  background-color: aliceblue;
+  border-radius: 4px;
+  padding: 8px 16px;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+/* .clue-input-container input[type=text] {
+  border: none;
+  background-color: aliceblue;
+  font-size: 1.1rem;
+  width: 100%;
+} */
+
+.clue-input-container textarea {
+  font-family: "Source Sans Pro", sans-serif;
+  border: none;
+  background-color: aliceblue;
+  font-size: 1.1rem;
+  width: 100%;
+  height: 45px;
+}
+
+.clue-list-container {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 50%;
+}
+
+.clue-list-container ul {
+  list-style-type: none;
+}
+
+.clue-list {
+  margin-right: .1rem;
+  width: 50%;
+}
+
+.clue-list ul {
+  height: 590px;
+  overflow-y: scroll;
+  /* width: 100%; */
+}
+
+.clue-list-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.clue-number {
+  font-weight: 600;
+  margin-right: 2px;
+}
+
+.clue {
+ padding: 2.5px 4px;
+ border-radius: 3px;
+ cursor: default;
+ height: auto;
+ white-space: breakspaces;
+}
+
+.clue.highlighted {
+  background-color: #b3ddff;
+}
+
+.secondary {
+  background-color: rgb(224, 240, 255)
 }

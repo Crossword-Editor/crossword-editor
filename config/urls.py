@@ -21,7 +21,7 @@ from editor import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('registration.backends.default.urls')),
+    path('accounts/', include('registration.backends.simple.urls')),
     path('', views.home, name="home"),
     path('edit/<int:pk>', views.edit, name='edit'),
 ]

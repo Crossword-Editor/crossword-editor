@@ -155,3 +155,5 @@ LOGIN_REDIRECT_URL= '/'
 django_heroku.settings(locals())
 
 del DATABASES['default']['OPTIONS']['sslmode']
+
+DEBUG_PROPAGATE_EXCEPTIONS = True
