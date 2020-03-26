@@ -213,6 +213,12 @@ ________________________________________________ */
 
 /* -------- Crossword pages ----------- */
 
+#editor-app {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+}
+
 .grid-container {
   width: 100%;
 }
@@ -273,7 +279,7 @@ ________________________________________________ */
   max-width: 525px;
   align-items: flex-start;
   justify-content: center;
-  margin: 0 1rem ;
+  margin: 0 1rem;
 }
 
 .clue-input-label {
@@ -286,7 +292,7 @@ ________________________________________________ */
   border: 1px solid #ccc;
   background-color: aliceblue;
   border-radius: 4px;
-  padding: 10px 20px;
+  padding: 8px 16px;
   display: inline-block;
   box-sizing: border-box;
 }
@@ -304,5 +310,23 @@ ________________________________________________ */
   background-color: aliceblue;
   font-size: 1.1rem;
   width: 100%;
-  height: 70px;
+  height: 45px;
+}
+
+.clue-list-container {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 40%;
+}
+
+.clue-list-container ul {
+  list-style-type: none;
+}
+
+.clue {
+ padding: 2.5px 4px;
+}
+
+.clue.highlighted {
+  background-color: #cee9ff;
 }
