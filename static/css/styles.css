@@ -218,6 +218,7 @@ ________________________________________________ */
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
+  margin: 0 .5rem;
 }
 
 .grid-container {
@@ -280,7 +281,7 @@ ________________________________________________ */
   max-width: 525px;
   align-items: flex-start;
   justify-content: center;
-  margin: 0 1rem;
+
 }
 
 .clue-input-label {
@@ -346,11 +347,11 @@ ________________________________________________ */
 }
 
 .clue {
- padding: 2.5px 4px;
- border-radius: 3px;
- cursor: default;
- height: auto;
- white-space: breakspaces;
+  padding: 2.5px 4px;
+  border-radius: 3px;
+  cursor: default;
+  height: auto;
+  white-space: breakspaces;
 }
 
 .clue.highlighted {
@@ -359,4 +360,17 @@ ________________________________________________ */
 
 .secondary {
   background-color: rgb(224, 240, 255)
+}
+
+#save-button {
+  background-color: rgb(43, 104, 45); /* Green */
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 8px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
