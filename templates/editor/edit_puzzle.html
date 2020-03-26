@@ -47,13 +47,42 @@
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
   const BLACK = '.'
 
+  /* ================ CLUE Component =================================*/
+  Vue.component("x-clue", {
+    template: `
+      <li class="clue" :class="clueClasses" @click="clicked">
+        <slot></slot>
+      </li>`,
+    props: ['direction', 'numbers', 'grid', 'highlighted', 'clueType', 'number'],
+    data: function () {
+      return {
+        test: 1
+      };
+    },
+    computed: {
+      isHighlighted() {
+        return this.direction === this.clueType && this.numbers[this.highlighted[0]] == this.number
+      },
+      clueClasses() {
+        return { highlighted: this.isHighlighted }
+      }
+    },
+    methods: {
+      clicked() {
+        this.$emit("cell-clicked", this.idx);
+      }
+    }
+  });
 
+
+
+  /* ================ CELL Component =================================*/
   Vue.component("x-cell", {
     template: `
-  <div class="cell" :class="cellClasses" @click="clicked">
-    <slot name="number"></slot>
-    <slot name="entry"></slot>
-  </div>`,
+      <div class="cell" :class="cellClasses" @click="clicked">
+        <slot name="number"></slot>
+        <slot name="entry"></slot>
+      </div>`,
     props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted'],
     data: function () {
       return {
@@ -86,19 +115,23 @@
 
 
 
+
+
+/* ================ Editor APP =================================*/
   const editor = new Vue({
     el: "#editor-app",
     delimiters: ["${", "}"],
     data: {
       grid: puzzleData.grid, // flat array representation of the grid (left->right, top->bottom)
-      //numbers: puzzleData.gridnums,
       clues: puzzleData.clues,
       // across: puzzleData.clues.across,
       // down: puzzleData.clues.down,
       rowN: puzzleData.size.rows,
       colN: puzzleData.size.cols,
-      activeCell: 0,
       isVertical: false,
+      across: 'across', // string needed for x-clue component prop
+      down: 'down', // string needed for x-clue component prop
+      activeCell: 0,
       inputArea: 0
     },
 
