@@ -22,7 +22,7 @@
         v-model.trim="currentClue"></textarea>
     </div>
 
-    <div class="grid-container">
+    <div class="grid-container" tabindex="0" >
       <div class='grid' :style="gridStyle">
         <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
           :highlighted="highlighted" @cell-clicked="handleCellClick">
@@ -34,19 +34,23 @@
   </div>
 
   <div class="clue-list-container">
-    <div class="across-list">
+    <div class="clue-list">
+      <p class="clue-list-title">Across:</p>
       <ul>
         <x-clue v-for="(clue, number) in clues.across" :key="number" :direction="direction" :numbers="numbers"
-          :highlighted="highlighted" :clue-type="across" :number="number" @clue-clicked="handleClueClick">
-          ${ number }: ${ clue }
+          :highlighted="highlighted" :clue-type="across" :number="number" :cross-numbers="getNumberInterval(across)"
+          @clue-clicked="handleClueClick">
+          <span class="clue-number">${ number }:</span> ${ clue }
         </x-clue>
       </ul>
     </div>
-    <div class="down-list">
+    <div class="clue-list">
+      <p class="clue-list-title">Down:</p>
       <ul>
         <x-clue v-for="(clue, number) in clues.down" :key="number" :direction="direction" :numbers="numbers"
-          :highlighted="highlighted" :clue-type="down" :number="number" @clue-clicked="handleClueClick">
-          ${ number }: ${ clue }
+          :highlighted="highlighted" :clue-type="down" :number="number" :cross-numbers="getNumberInterval(down)"
+          @clue-clicked="handleClueClick">
+          <span class="clue-number">${ number }:</span> ${ clue }
         </x-clue>
       </ul>
     </div>
@@ -59,15 +63,15 @@
   // get json string store it in a variable
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
 
-  function blankPuzzle(rows,cols) {
-    let obj = {size: {rows, cols}}
+  function blankPuzzle(rows, cols) {
+    let obj = { size: { rows, cols } }
     obj.grid = []
-    for (let i = 1; i<= rows*cols; i++){
+    for (let i = 1; i <= rows * cols; i++) {
       obj.grid.push('')
     }
     obj.clues = {
-      across: {'1': ''},
-      down: {'1': ''}
+      across: { '1': '' },
+      down: { '1': '' }
     }
     return obj
   }
@@ -84,7 +88,7 @@
       <li class="clue" :class="clueClasses" @click="clicked">
         <slot></slot>
       </li>`,
-    props: ['direction', 'numbers', 'highlighted', 'clueType', 'number'],
+    props: ['direction', 'numbers', 'highlighted', 'clueType', 'number', 'crossNumbers'],
     data: function () {
       return {
         test: 1
@@ -94,13 +98,16 @@
       isHighlighted() {
         return this.direction === this.clueType && this.numbers[this.highlighted[0]] == this.number
       },
+      isSecondary() {
+        return this.direction !== this.clueType && this.crossNumbers[0] == this.number
+      },
       clueClasses() {
-        return { highlighted: this.isHighlighted }
+        return { highlighted: this.isHighlighted, secondary: this.isSecondary }
       }
     },
     methods: {
       clicked() {
-        this.$emit("clue-clicked", this.number, this.clueType );
+        this.$emit("clue-clicked", this.number, this.clueType);
       }
     }
   });
@@ -148,7 +155,7 @@
 
 
 
-/* ================ Editor APP =================================*/
+  /* ================ Editor APP =================================*/
   const editor = new Vue({
     el: "#editor-app",
     delimiters: ["${", "}"],
@@ -259,7 +266,7 @@
       },
 
       handleClueClick(number, clueType) {
-        if ( clueType !== this.direction ) {
+        if (clueType !== this.direction) {
           this.toggleVertical()
         }
         const idx = this.numbers.indexOf(Number(number))
@@ -340,7 +347,7 @@
           this.updateGrid(this.activeCell, '')
         }
         else if (key === 'BACKSPACE') {
-          if (this.grid[this.activeCell] === ''){
+          if (this.grid[this.activeCell] === '') {
             this.prevCell()
             this.updateGrid(this.activeCell, '')
           }

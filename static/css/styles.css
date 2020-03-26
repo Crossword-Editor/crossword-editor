@@ -134,6 +134,7 @@ ________________________________________________ */
   margin-left: 10px;
   margin: 15px;
   padding: 10px;
+  /* Why is the cursor set?  It looks like a link when hovering */
   cursor: pointer;
   transition: box-shadow 0.2s ease;
   text-align: left;
@@ -223,18 +224,18 @@ ________________________________________________ */
   width: 100%;
 }
 
-.grid-container:after {
+/* .grid-container:after {
   content: "";
   display: block;
   padding-bottom: 100%;
-}
+} */
 
 .cell {
   width: 35px;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  cursor: pointer;
+  cursor: default;
   border: .5px solid gray;
   height: 35px;
 }
@@ -316,15 +317,40 @@ ________________________________________________ */
 .clue-list-container {
   display: flex;
   flex-flow: row nowrap;
-  width: 40%;
+  width: 50%;
 }
 
 .clue-list-container ul {
   list-style-type: none;
 }
 
+.clue-list {
+  margin-right: .1rem;
+  width: 50%;
+}
+
+.clue-list ul {
+  height: 590px;
+  overflow-y: scroll;
+  /* width: 100%; */
+}
+
+.clue-list-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.clue-number {
+  font-weight: 600;
+  margin-right: 2px;
+}
+
 .clue {
  padding: 2.5px 4px;
+ border-radius: 3px;
+ cursor: default;
+ height: auto;
+ white-space: breakspaces;
 }
 
 .clue.highlighted {
@@ -332,6 +358,5 @@ ________________________________________________ */
 }
 
 .secondary {
-  background-color: #dbebf8;
-
+  background-color: rgb(224, 240, 255)
 }
