@@ -18,15 +18,16 @@
       ${ numbers[highlighted[0]] } ${direction}:
     </span>
     <div class="clue-input-container">
-      <span v-if="grid[activeCell]==='.'" style="visibility: hidden">Hide</span>
-      <textarea v-else wrap="soft" maxlength="200" style="overflow:auto; resize:none;" v-model.trim="currentClue" @key></textarea>
+      <!-- <span v-if="grid[activeCell]==='.'" style="visibility: hidden">Hide</span> -->
+      <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;" v-model.trim="currentClue"
+        @key></textarea>
       <!-- <input type="text" v-else :contenteditable="grid[activeCell]!=='.'" v-model="currentClue"> -->
     </div>
 
     <div class="grid-container">
-      <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
+      <div class='grid' :style="gridStyle">
         <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
-          :highlighted="highlighted" @x-clicked="handleClick">
+          :highlighted="highlighted" @cell-clicked="handleClick">
           <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">${ numbers[n-1] }</span></div>
           <div slot="entry" class="entry">${ grid[n-1] }</div>
         </x-cell>
@@ -78,7 +79,7 @@
     },
     methods: {
       clicked() {
-        this.$emit("x-clicked", this.idx);
+        this.$emit("cell-clicked", this.idx);
       }
     }
   });
@@ -119,12 +120,12 @@
       },
 
       currentClue: {
-        get () {
+        get() {
           const direction = this.direction
           const number = this.numbers[this.highlighted[0]]
           return this.clues[direction][number]
         },
-        set (newValue) {
+        set(newValue) {
           const direction = this.direction
           const number = this.numbers[this.highlighted[0]]
           this.clues[direction][number] = newValue.replace(/\n/g, ' ')
@@ -180,6 +181,9 @@
     methods: {
 
       handleClick(idx) {
+        if (this.activeCell === idx){
+          this.toggleVertical()
+        }
         this.activeCell = idx;
       },
 
@@ -297,8 +301,13 @@
       }
 
     },
+
     created: function () {
-      document.addEventListener('keydown', this.keyhandle)
+      document.addEventListener('keydown', (event) => {
+        if (event.target.id !== 'clue-input') {
+          this.keyhandle(event)
+        }
+      })
     }
   });
 
