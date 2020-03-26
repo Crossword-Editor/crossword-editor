@@ -100,7 +100,7 @@
     },
     methods: {
       clicked() {
-        this.$emit("clue-clicked", this.number );
+        this.$emit("clue-clicked", this.number, this.clueType );
       }
     }
   });
@@ -258,11 +258,13 @@
         this.activeCell = idx;
       },
 
-      handleClueClick(idx) {
-        if (this.activeCell === idx) {
+      handleClueClick(number, clueType) {
+        if ( clueType !== this.direction ) {
           this.toggleVertical()
         }
+        const idx = this.numbers.indexOf(Number(number))
         this.activeCell = idx;
+        document.querySelector('#clue-input').focus()
       },
 
       updateGrid(idx, value) {
