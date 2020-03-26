@@ -61,7 +61,7 @@
 
 <script>
   // get json string store it in a variable
-  //var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
+  var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
 
   function blankPuzzle(rows, cols) {
     let obj = { size: { rows, cols } }
@@ -76,7 +76,7 @@
     return obj
   }
 
-   var puzzleData = blankPuzzle(10,15)
+  // var puzzleData = blankPuzzle(10,15)
 
 
 
