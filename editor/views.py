@@ -1,6 +1,10 @@
+import json
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from .models import Puzzle
 
@@ -23,6 +27,17 @@ def edit(request, pk):
     else:
         redirect('home')
 
+
+@csrf_exempt
+@require_POST
+def save(request):
+    json_string = request.body
+    json_decoded = json.loads(json_string)
+    pk = json_decoded['pk']
+    puzzle = Puzzle.objects.get(pk=pk)
+    puzzle.data = json_decoded
+    puzzle.save()
+    return JsonResponse({"message": "Puzzle saved to database"})
 
 
 # @login_required(login_url='/accounts/login')
@@ -47,5 +62,3 @@ def edit(request, pk):
 #     puzzles = Puzzle.objects.all()
 #     context = {'puzzles': puzzles}
 #     return render(request, 'editor/add_puzzle.html', context=context)
-
-
