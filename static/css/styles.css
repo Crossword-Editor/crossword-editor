@@ -214,8 +214,7 @@ ________________________________________________ */
 /* -------- Crossword pages ----------- */
 
 .grid-container {
-  width: 40%;
-  margin: 1rem;
+  width: 100%;
 }
 
 .grid-container:after {
@@ -267,9 +266,42 @@ ________________________________________________ */
   color: var(--active-black-color);
 }
 
-.clue-input-container {
-  width: 100%;
-  background-color: aliceblue;
-  border-radius: 5px;
+.input-container {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 70%;
+  max-width: 525px;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0 1rem ;
 }
 
+.clue-input-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.clue-input-container {
+  width: 525px;
+  border: 1px solid #ccc;
+  background-color: aliceblue;
+  border-radius: 4px;
+  padding: 10px 20px;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+/* .clue-input-container input[type=text] {
+  border: none;
+  background-color: aliceblue;
+  font-size: 1.1rem;
+  width: 100%;
+} */
+
+.clue-input-container textarea {
+  font-family: "Source Sans Pro", sans-serif;
+  border: none;
+  background-color: aliceblue;
+  font-size: 1.1rem;
+  width: 100%;
+}

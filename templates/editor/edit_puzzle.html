@@ -13,13 +13,14 @@
 <div id="editor-app">
 
   <div class="input-container">
-    <span v-if="grid[activeCell]==='.'" style="visibility: hidden">Hide</span>
+    <span v-if="grid[activeCell]==='.'" style="visibility: hidden"><b>Hide</b></span>
     <span class="clue-input-label" v-if="grid[activeCell]!=='.'">
       ${ numbers[highlighted[0]] } ${direction}:
     </span>
     <div class="clue-input-container">
       <span v-if="grid[activeCell]==='.'" style="visibility: hidden">Hide</span>
-      <input v-else :contenteditable="grid[activeCell]!=='.'" v-model="currentClue">
+      <textarea v-else wrap="soft" maxlength="200" style="overflow:auto; resize:none;" v-model.trim="currentClue" @key></textarea>
+      <!-- <input type="text" v-else :contenteditable="grid[activeCell]!=='.'" v-model="currentClue"> -->
     </div>
 
     <div class="grid-container">
@@ -126,7 +127,7 @@
         set (newValue) {
           const direction = this.direction
           const number = this.numbers[this.highlighted[0]]
-          this.clues[direction][number] = newValue
+          this.clues[direction][number] = newValue.replace(/\n/g, ' ')
         }
       },
 
