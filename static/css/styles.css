@@ -328,5 +328,10 @@ ________________________________________________ */
 }
 
 .clue.highlighted {
-  background-color: #cee9ff;
+  background-color: #b3ddff;
+}
+
+.secondary {
+  background-color: #dbebf8;
+
 }

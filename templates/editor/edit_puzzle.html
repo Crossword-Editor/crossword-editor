@@ -18,16 +18,14 @@
       ${ numbers[highlighted[0]] } ${direction}:
     </span>
     <div class="clue-input-container">
-      <!-- <span v-if="grid[activeCell]==='.'" style="visibility: hidden">Hide</span> -->
-      <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;" v-model.trim="currentClue"
-        @key></textarea>
-      <!-- <input type="text" v-else :contenteditable="grid[activeCell]!=='.'" v-model="currentClue"> -->
+      <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;"
+        v-model.lazy.trim="currentClue"></textarea>
     </div>
 
     <div class="grid-container">
       <div class='grid' :style="gridStyle">
         <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
-          :highlighted="highlighted" @cell-clicked="handleClick">
+          :highlighted="highlighted" @cell-clicked="handleCellClick">
           <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">${ numbers[n-1] }</span></div>
           <div slot="entry" class="entry">${ grid[n-1] }</div>
         </x-cell>
@@ -36,15 +34,48 @@
   </div>
 
   <div class="clue-list-container">
-    <div class="across-list"></div>
-    <div class="down-list"></div>
+    <div class="across-list">
+      <ul>
+        <x-clue v-for="(clue, number) in clues.across" :key="number" :direction="direction" :numbers="numbers"
+          :highlighted="highlighted" :clue-type="across" :number="number" @clue-clicked="handleClueClick">
+          ${ number }: ${ clue }
+        </x-clue>
+      </ul>
+    </div>
+    <div class="down-list">
+      <ul>
+        <x-clue v-for="(clue, number) in clues.down" :key="number" :direction="direction" :numbers="numbers"
+          :highlighted="highlighted" :clue-type="down" :number="number" @clue-clicked="handleClueClick">
+          ${ number }: ${ clue }
+        </x-clue>
+      </ul>
+    </div>
   </div>
 </div>
+
 
 
 <script>
   // get json string store it in a variable
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
+
+  function blankPuzzle(rows,cols) {
+    let obj = {size: {rows, cols}}
+    obj.grid = []
+    for (let i = 1; i<= rows*cols; i++){
+      obj.grid.push('')
+    }
+    obj.clues = {
+      across: {'1': ''},
+      down: {'1': ''}
+    }
+    return obj
+  }
+
+  // var puzzleData = blankPuzzle(10,15)
+
+
+
   const BLACK = '.'
 
   /* ================ CLUE Component =================================*/
@@ -53,7 +84,7 @@
       <li class="clue" :class="clueClasses" @click="clicked">
         <slot></slot>
       </li>`,
-    props: ['direction', 'numbers', 'grid', 'highlighted', 'clueType', 'number'],
+    props: ['direction', 'numbers', 'highlighted', 'clueType', 'number'],
     data: function () {
       return {
         test: 1
@@ -69,7 +100,7 @@
     },
     methods: {
       clicked() {
-        this.$emit("cell-clicked", this.idx);
+        this.$emit("clue-clicked", this.number );
       }
     }
   });
@@ -181,14 +212,20 @@
       },
 
       highlighted() {
+        return this.getInterval(this.direction)
+      }
+    },
+
+    methods: {
+      getInterval(dir) {
         let returnArr = []
         if (this.grid[this.activeCell] === BLACK) {
           return returnArr
         }
         let start = this.activeCell
         let stop = this.activeCell
-        let inc = this.isVertical ? this.colN : 1
-        if (this.isVertical) {
+        let inc = (dir === 'down') ? this.colN : 1
+        if (dir === 'down') {
           while (!this.lookUp(start)) {
             start -= inc
           }
@@ -208,11 +245,20 @@
           returnArr.push(i)
         }
         return returnArr
-      }
-    },
+      },
 
-    methods: {
-      handleClick(idx) {
+      getNumberInterval(dir) {
+        return this.getInterval(dir).map(i => this.numbers[i])
+      },
+
+      handleCellClick(idx) {
+        if (this.activeCell === idx) {
+          this.toggleVertical()
+        }
+        this.activeCell = idx;
+      },
+
+      handleClueClick(idx) {
         if (this.activeCell === idx) {
           this.toggleVertical()
         }
