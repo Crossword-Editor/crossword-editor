@@ -621,8 +621,8 @@
       0
     ],
     "size": {
-      "cols": 15,
-      "rows": 15
+      "colN": 15,
+      "rowN": 15
     },
     "title": "NY TIMES, MON, NOV 12, 2018"
   },
@@ -856,8 +856,8 @@
       "N"
     ],
     "size": {
-      "cols": 15,
-      "rows": 15
+      "colN": 15,
+      "rowN": 15
     },
     "clues": {
       "down": {
