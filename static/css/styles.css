@@ -14,7 +14,6 @@ body {
 
 a {
   text-decoration: none;
-  color: #4b6beb;
 }
 
 /* Top Navigation
@@ -41,35 +40,59 @@ _______________________________________________________ */
   align-items: center;
   list-style: none;
   margin-right: 20px;
-  color: whitesmoke;
+  color: #e6401d;
+  /* color: whitesmoke; */
 }
 
 .navbar-top .nav-top-links a {
-  color: whitesmoke;
-  padding: 15px;
-  transition: all 0.2s ease;
   font-size: 24px;
   font-weight: 600;
+  color: #e6401d;
+  padding: 15px;
+  transition: all 0.2s ease;
 }
 
 .navbar-top .nav-top-links a:hover {
-  color: #d5d8dc;
+  color: whitesmoke;
 }
 
 /* Welcome Index
 ________________________________________________ */
 
-.welcome h1 {
-  font-size: 40px;
-  font-family: Montserrat, sans-serif;
-  text-align: center;
-  margin: 50px 0 30px;
-  color: #e6401d;
-  /* color: grey; */
+.welcome {
+
+  /* background-image: url("/images/crossword-pencil.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% auto;
+  opacity: 0.6;
+  width: 400px;
+  height: 400px;
+  border: 2px dashed #333; */
 }
 
-.welcome h3 {
-  font-size: 30px;
+get help loading crossword image
+.welcome-image {
+  background-image: url("/images/crossword-pencil.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% auto;
+  opacity: 0.6;
+  width: 400px;
+  height: 400px;
+  border: 2px dashed #333; */
+}
+
+.welcome-text {
+  font-size: 20px;
+  font-family: Montserrat, sans-serif;
+  text-align: center;
+  margin: 20px 0 30px;
+  color: #e6401d;
+}
+
+.welcome-text h2 {
+  font-size: 24px;
   font-family: Montserrat, sans-serif;
   color: #17202a;
   text-align: center;
@@ -81,95 +104,99 @@ ________________________________________________ */
   display: flex;
   flex-flow: wrap;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 30px;
   width: 95%;
 }
 
-.you-box h2 {
-  font-size: 30px;
-  margin-left: 100px;
-  font-family: Montserrat, sans-serif;
-  color: #17202a;
-  text-align: center;
-  width: 95%;
-}
-
-.you-box {
-  border-radius: 10px;
+.you-box, .feature-box {
   display: flex;
-  flex-flow: column;
-  align-items: center;
-  box-shadow: 0 0 5px grey;
-  margin: right;
-  padding: 10px;
-  cursor: pointer;
-  transition: box-shadow 0.2s ease;
+  display: inline-block;
+  flex-flow: wrap;
+  justify-content: space-between;
+  padding: 0.25rem;
+  margin: 0 auto;
+  margin-left: 100 0 75px;
   text-align: left;
-  height: 200px;
+  height: 100px;
   width: 600px;
 }
 
-.you-box:hover {
-  box-shadow: 0 0 5px #17202a;
-}
-
-/* .you-box h2 {
-  font-size: 50px;
-  font-weight: 600;
-  font-weight: 600;
-} */
-
-.you-box p {
-  font-size: 20px;
-  font-weight: 400;
-  color: black;
-}
-
-.feature-box {
-  border-radius: 10px;
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  box-shadow: 0 0 5px grey;
-  margin-left: 10px;
-  margin: 15px;
-  padding: 10px;
-  cursor: pointer;
-  transition: box-shadow 0.2s ease;
-  text-align: left;
-  height: 200px;
-  width: 700px;
-}
-
-.feature-box:hover {
-  box-shadow: 0 0 5px #17202a;
-}
-
-.feature-box h2 {
-  font-size: 50px;
+.you-box h3,
+.feature-box h3 {
+  font-size: 30px;
   font-weight: 600;
 }
 
+.you-box p,
 .feature-box p {
   font-size: 20px;
   font-weight: 400;
   color: black;
 }
 
-/* User Display
-________________________________________________ */
-
-.display h1 {
-  font-size: 40px;
-  font-family: Montserrat, sans-serif;
-  text-align: center;
-  margin: 50px 0 30px;
-  color: #e6401d;
-  /* color: grey; */
+@media screen and (max-width: 700px) {
+  .you-box, .feature-box {
+    max-width: 100%;
+  }
 }
 
-.display h3 {
+/* User Homepage
+________________________________________________ */
+
+.user-homepage .user-text {
+  font-size: 20px;
+  font-family: Montserrat, sans-serif;
+  text-align: center;
+  margin: 20px 0 30px;
+  color: #17202a;
+}
+
+
+.flex-box {
+  display: flex;
+  flex-flow: wrap;
+  justify-content: center;
+  margin-top: 30px;
+  width: 95%;
+}
+
+.draft-box, .completed-box {
+  display: flex;
+  display: inline-block;
+  flex-flow: wrap;
+  justify-content: space-between;
+  padding: 0.25rem;
+  margin: 0 auto;
+  margin-left: 100 0 75px;
+  text-align: left;
+  height: 100px;
+  width: 600px;
+}
+
+.draft-box h3,
+.completed-box h3 {
   font-size: 30px;
+  font-weight: 600;
+}
+
+.draft-box a,
+.completed-box a {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.draft-box display-title,
+.completed-box display-title {
+  font-size: 20px;
+  font-weight: 400;
+  color: black;
+}
+
+.draft-box puzzle-title-display,
+.completed-box puzzle-title-display {
+  font-size: 10px;
+  font-weight: 400;
+  color: black;
   font-family: Montserrat, sans-serif;
   color: #17202a;
   text-align: center;
@@ -177,16 +204,15 @@ ________________________________________________ */
   width: 95%;
 }
 
+@media screen and (max-width: 700px) {
+  .draft-box, .completed-box {
+    max-width: 100%;
+  }
+}
+
+
 /* Bottom nav-bar
 ________________________________________________ */
-
-.motto-bottom h2 {
-  font-size: 30px;
-  font-family: Montserrat, sans-serif;
-  text-align: center;
-  margin: 50px 0 30px;
-  color: #e6401d;
-}
 
 .navbar-bottom {
   display: flex;
@@ -201,14 +227,19 @@ ________________________________________________ */
 }
 
 .navbar-bottom .nav-bottom-links {
+  font-size: 30px;
+  font-family: Montserrat, sans-serif;
+  font-weight: 600;
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-evenly;
   position: fixed;
   overflow: hidden;
   align-items: center;
   list-style: none;
   margin-right: 20px;
   color: whitesmoke;
+  /* color: #e6401d; */
   background-color: #17202a;
   bottom: 0;
   height: 100px;
@@ -216,41 +247,36 @@ ________________________________________________ */
 }
 
 .navbar-bottom .nav-bottom-links a {
-  font-size: 40px;
-  display: block;
-  margin-left: 50px;
-  list-style: none;
-  justify-content: center;
-  align-items: center;
-  color: whitesmoke;
-  margin-left: 50px;
-  font-weight: 600;
   color: #e6401d;
 }
-
 .navbar-bottom .nav-bottom-links a:hover {
-  color: #d5d8dc;
+  color: whitesmoke;
 }
 
 /* -------- Crossword pages ----------- */
 
-.grid-container {
-  width: 40%;
-  margin: 1rem;
+#editor-app {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
 }
 
-.grid-container:after {
+.grid-container {
+  width: 100%;
+}
+
+/* .grid-container:after {
   content: "";
   display: block;
   padding-bottom: 100%;
-}
+} */
 
 .cell {
   width: 35px;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  cursor: pointer;
+  cursor: default;
   border: 0.5px solid gray;
   height: 35px;
 }
@@ -286,4 +312,92 @@ ________________________________________________ */
 .black.active {
   background-color: var(--active-black-color);
   color: var(--active-black-color);
+}
+
+.input-container {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 70%;
+  max-width: 525px;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0 1rem;
+}
+
+.clue-input-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.clue-input-container {
+  width: 525px;
+  border: 1px solid #ccc;
+  background-color: aliceblue;
+  border-radius: 4px;
+  padding: 8px 16px;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+/* .clue-input-container input[type=text] {
+  border: none;
+  background-color: aliceblue;
+  font-size: 1.1rem;
+  width: 100%;
+} */
+
+.clue-input-container textarea {
+  font-family: "Source Sans Pro", sans-serif;
+  border: none;
+  background-color: aliceblue;
+  font-size: 1.1rem;
+  width: 100%;
+  height: 45px;
+}
+
+.clue-list-container {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 50%;
+}
+
+.clue-list-container ul {
+  list-style-type: none;
+}
+
+.clue-list {
+  margin-right: 0.1rem;
+  width: 50%;
+}
+
+.clue-list ul {
+  height: 590px;
+  overflow-y: scroll;
+  /* width: 100%; */
+}
+
+.clue-list-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.clue-number {
+  font-weight: 600;
+  margin-right: 2px;
+}
+
+.clue {
+  padding: 2.5px 4px;
+  border-radius: 3px;
+  cursor: default;
+  height: auto;
+  white-space: breakspaces;
+}
+
+.clue.highlighted {
+  background-color: #b3ddff;
+}
+
+.secondary {
+  background-color: rgb(224, 240, 255);
 }

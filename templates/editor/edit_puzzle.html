@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block meta %}
-<link rel="styleshet" href="{% static 'css/experiment.css' %}">
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endblock meta %}
 
@@ -11,34 +10,118 @@
 {{ puzzle|json_script:"puzzle-data" }}
 
 
-
-
 <div id="editor-app">
-  <div class="grid-container">
-    <div class='grid' :style="gridStyle" @keyup="keyhandle($event)">
-      <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
-        :highlights="highlights" @x-clicked="handleClick">
-        <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">[[ numbers[n-1] ]]</span></div>
-        <div slot="entry" class="entry">[[ grid[n-1] ]]</div>
-      </x-cell>
+
+  <div class="input-container">
+    <span v-if="grid[activeCell]==='.'" style="visibility: hidden"><b>Hide</b></span>
+    <span class="clue-input-label" v-if="grid[activeCell]!=='.'">
+      ${ numbers[highlighted[0]] } ${direction}:
+    </span>
+    <div class="clue-input-container">
+      <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;"
+        v-model.trim="currentClue"></textarea>
+    </div>
+
+    <div class="grid-container" tabindex="0">
+      <div class='grid' :style="gridStyle">
+        <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
+          :highlighted="highlighted" @cell-clicked="handleCellClick">
+          <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">${ numbers[n-1] }</span></div>
+          <div slot="entry" class="entry">${ grid[n-1] }</div>
+        </x-cell>
+      </div>
+    </div>
+  </div>
+
+  <div class="clue-list-container">
+    <div class="clue-list">
+      <p class="clue-list-title">Across:</p>
+      <ul>
+        <x-clue v-for="number in clueNumbers.across" :key="number" :direction="direction" :numbers="numbers"
+          :highlighted="highlighted" :clue-type="across" :number="number" :cross-numbers="getNumberInterval(across)"
+          @clue-clicked="handleClueClick">
+          <span class="clue-number">${ number }:</span> ${ clues.across[String(number)] }
+        </x-clue>
+      </ul>
+    </div>
+    <div class="clue-list">
+      <p class="clue-list-title">Down:</p>
+      <ul>
+        <x-clue v-for="number in clueNumbers.down" :key="number" :direction="direction" :numbers="numbers"
+          :highlighted="highlighted" :clue-type="down" :number="number" :cross-numbers="getNumberInterval(down)"
+          @clue-clicked="handleClueClick">
+          <span class="clue-number">${ number }:</span> ${ clues.down[String(number)] }
+        </x-clue>
+      </ul>
     </div>
   </div>
 </div>
 
 
+
 <script>
   // get json string store it in a variable
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
+
+  function blankPuzzle(rows, cols) {
+    let obj = { size: { rows, cols } }
+    obj.grid = []
+    for (let i = 1; i <= rows * cols; i++) {
+      obj.grid.push('')
+    }
+    obj.clues = {
+      across: { '1': '' },
+      down: { '1': '' }
+    }
+    return obj
+  }
+
+  // var puzzleData = blankPuzzle(10,15)
+
+
+
   const BLACK = '.'
 
+  /* ================ CLUE Component =================================*/
+  Vue.component("x-clue", {
+    template: `
+      <li class="clue" :class="clueClasses" @click="clicked">
+        <slot></slot>
+      </li>`,
+    props: ['direction', 'numbers', 'highlighted', 'clueType', 'number', 'crossNumbers'],
+    data: function () {
+      return {
+        test: 1
+      };
+    },
+    computed: {
+      isHighlighted() {
+        return this.direction === this.clueType && this.numbers[this.highlighted[0]] == this.number
+      },
+      isSecondary() {
+        return this.direction !== this.clueType && this.crossNumbers[0] == this.number
+      },
+      clueClasses() {
+        return { highlighted: this.isHighlighted, secondary: this.isSecondary }
+      }
+    },
+    methods: {
+      clicked() {
+        this.$emit("clue-clicked", this.number, this.clueType);
+      }
+    }
+  });
 
+
+
+  /* ================ CELL Component =================================*/
   Vue.component("x-cell", {
     template: `
-  <div class="cell" :class="cellClasses" @click="clicked">
-    <slot name="number"></slot>
-    <slot name="entry"></slot>
-  </div>`,
-    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlights'],
+      <div class="cell" :class="cellClasses" @click="clicked">
+        <slot name="number"></slot>
+        <slot name="entry"></slot>
+      </div>`,
+    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted'],
     data: function () {
       return {
         test: 1
@@ -55,7 +138,7 @@
         return this.grid[this.idx] === BLACK
       },
       isHighlighted() {
-        return this.highlights.includes(this.idx)
+        return this.highlighted.includes(this.idx)
       },
       cellClasses() {
         return { active: this.isActive, black: this.isBlack, highlighted: this.isHighlighted }
@@ -63,25 +146,30 @@
     },
     methods: {
       clicked() {
-        this.$emit("x-clicked", this.idx);
+        this.$emit("cell-clicked", this.idx);
       }
     }
   });
 
 
 
+
+
+  /* ================ Editor APP =================================*/
   const editor = new Vue({
     el: "#editor-app",
-    delimiters: ["[[", "]]"],
+    delimiters: ["${", "}"],
     data: {
       grid: puzzleData.grid, // flat array representation of the grid (left->right, top->bottom)
-      //numbers: puzzleData.gridnums,
-      across: puzzleData.clues.across,
-      down: puzzleData.clues.down,
+      clues: puzzleData.clues,
+      // across: puzzleData.clues.across,
+      // down: puzzleData.clues.down,
       rowN: puzzleData.size.rows,
       colN: puzzleData.size.cols,
-      activeCell: 0,
       isVertical: false,
+      across: 'across', // string needed for x-clue component prop
+      down: 'down', // string needed for x-clue component prop
+      activeCell: 0,
       inputArea: 0
     },
 
@@ -90,11 +178,43 @@
         return this.grid.length
       },
 
+      direction() {
+        return this.isVertical ? 'down' : 'across'
+      },
+
       gridStyle() {
         return {
           display: 'grid',
           'grid-template-columns': `repeat(${this.colN}, 1fr [col-start])`,
           'grid-auto-rows': '1fr'
+        }
+      },
+
+      clueNumbers() {
+        let numbs = { across: [], down: [] }
+        this.numbers.map((number, idx) => {
+          if (this.isNumberedCell(idx)) {
+            if (this.lookLeft(idx)) {
+              numbs.across.push(String(number))
+            }
+            if (this.lookUp(idx)) {
+              numbs.down.push(String(number))
+            }
+          }
+        })
+        return numbs
+      },
+
+      currentClue: {
+        get() {
+          const direction = this.direction
+          const number = this.numbers[this.highlighted[0]]
+          return this.clues[direction][number]
+        },
+        set(newValue) {
+          const direction = this.direction
+          const number = this.numbers[this.highlighted[0]]
+          this.clues[direction][number] = newValue.replace(/\n/g, ' ')
         }
       },
 
@@ -113,15 +233,21 @@
         return returnArr
       },
 
-      highlights() {
+      highlighted() {
+        return this.getInterval(this.direction)
+      }
+    },
+
+    methods: {
+      getInterval(dir) {
         let returnArr = []
         if (this.grid[this.activeCell] === BLACK) {
           return returnArr
         }
         let start = this.activeCell
         let stop = this.activeCell
-        let inc = this.isVertical ? this.rowN : 1
-        if (this.isVertical) {
+        let inc = (dir === 'down') ? this.colN : 1
+        if (dir === 'down') {
           while (!this.lookUp(start)) {
             start -= inc
           }
@@ -141,13 +267,26 @@
           returnArr.push(i)
         }
         return returnArr
-      }
-    },
+      },
 
-    methods: {
+      getNumberInterval(dir) {
+        return this.getInterval(dir).map(i => this.numbers[i])
+      },
 
-      handleClick(idx) {
+      handleCellClick(idx) {
+        if (this.activeCell === idx) {
+          this.toggleVertical()
+        }
         this.activeCell = idx;
+      },
+
+      handleClueClick(number, clueType) {
+        if (clueType !== this.direction) {
+          this.toggleVertical()
+        }
+        const idx = this.numbers.indexOf(Number(number))
+        this.activeCell = idx;
+        document.querySelector('#clue-input').focus()
       },
 
       updateGrid(idx, value) {
@@ -167,11 +306,11 @@
 
       lookUp(idx) {
         // return true if idx is in row 1 or is below black square
-        return (idx < this.colN) || (this.grid[idx - this.rowN] === BLACK)
+        return (idx < this.colN) || (this.grid[idx - this.colN] === BLACK)
       },
       lookDown(idx) {
         // return true if idx is in row 1 or is below black square
-        return (idx >= this.length - this.colN) || (this.grid[idx + this.rowN] === BLACK)
+        return (idx >= this.length - this.colN) || (this.grid[idx + this.colN] === BLACK)
       },
       lookLeft(idx) {
         // return true if idx is in column 1 or to the right of a black square
@@ -223,8 +362,13 @@
           this.updateGrid(this.activeCell, '')
         }
         else if (key === 'BACKSPACE') {
-          this.prevCell()
-          this.updateGrid(this.activeCell, '')
+          if (this.grid[this.activeCell] === '') {
+            this.prevCell()
+            this.updateGrid(this.activeCell, '')
+          }
+          else {
+            this.updateGrid(this.activeCell, '')
+          }
         }
         else if (key === 'ENTER') {
           this.toggleVertical()
@@ -264,8 +408,13 @@
       }
 
     },
+
     created: function () {
-      document.addEventListener('keydown', this.keyhandle)
+      document.addEventListener('keydown', (event) => {
+        if (event.target.id !== 'clue-input') {
+          this.keyhandle(event)
+        }
+      })
     }
   });
 
