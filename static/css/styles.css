@@ -71,7 +71,7 @@ ________________________________________________ */
   border: 2px dashed #333; */
 }
 
-get help loading crossword image
+/* get help loading crossword image */
 .welcome-image {
   background-image: url("/images/crossword-pencil.jpg");
   background-repeat: no-repeat;
