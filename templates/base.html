@@ -12,7 +12,7 @@
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 
-  {% block title %}<title>Crossword Maker</title>{% endblock %}
+  {% block title %}<title>WordNerd</title>{% endblock %}
 </head>
 
 <body class='container'>
@@ -20,13 +20,16 @@
   {% block topbar %}
   <header>
     <nav class="navbar-top">
-      <a class="logo" href="{% url 'home' %}"><h1>The Crossinator</h1></a>
+      <a class="logo" href="{% url 'home' %}"><h1>CrossNerd</h1></a>
       <ul class="nav-top-links">
         {% if not user.is_authenticated %}
         <a href="{% url 'auth_login' %}">Login </a>
         |
         <a href="{% url 'registration_register' %}">Register</a>
         {% else %}
+        {% comment %} need to add these links to user navbar
+        <a href="{% url '#' %}">New Puzzle </a>
+        <a href="{% url '#' %}">Save Puzzle </a> {% endcomment %}
         <a href="{% url 'auth_logout' %}">Logout </a>
         {% endif %}
       </ul>

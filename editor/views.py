@@ -43,7 +43,7 @@ def save(request):
 
 @csrf_exempt
 @require_POST
-complete-puzzles
+@login_required
 def mark_complete(request):
     json_string = request.body
     json_decoded = json.loads(json_string)
@@ -62,7 +62,7 @@ def mark_complete(request):
 #     context = {'puzzles': puzzles}
 #     return render(request, 'editor/puzzles_complete.html', context=context)
 
-
+@csrf_exempt
 @login_required
 def new(request):
     json_string = request.body
@@ -83,16 +83,16 @@ def createEmptyGrid(rowN, colN):
         ('1' if i == 0 else f'{i+colN}'): '' for i in range(rowN)}
     return puzzle
 
-    # @login_required(login_url='/accounts/login')
-    # def puzzles_complete(request):
-    #     user = User.objects.get(username=request.user.username)
-    #     puzzles = Puzzle.objects.all()
-    #     context = {'puzzles': puzzles}
-    #     return render(request, 'editor/puzzles_complete.html', context=context)
-    # @login_required(login_url='/accounts/login')
-    # def puzzle_details(request, pk):
-    #     user = User.objects.get(username=request.user.username)
-    #     puzzles = Puzzle.objects.all()
-    #     puzzle = Puzzle.objects.get(pk=pk)
-    #     context = {'puzzle': puzzle, 'pk': pk}
-    #     return render(request, 'editor/puzzle_details.html', context=context)
+# @login_required(login_url='/accounts/login')
+# def puzzles_complete(request):
+#     user = User.objects.get(username=request.user.username)
+#     puzzles = Puzzle.objects.all()
+#     context = {'puzzles': puzzles}
+#     return render(request, 'editor/puzzles_complete.html', context=context)
+# @login_required(login_url='/accounts/login')
+# def puzzle_details(request, pk):
+#     user = User.objects.get(username=request.user.username)
+#     puzzles = Puzzle.objects.all()
+#     puzzle = Puzzle.objects.get(pk=pk)
+#     context = {'puzzle': puzzle, 'pk': pk}
+#     return render(request, 'editor/puzzle_details.html', context=context)
