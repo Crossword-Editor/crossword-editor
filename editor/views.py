@@ -43,6 +43,26 @@ def save(request):
 
 @csrf_exempt
 @require_POST
+complete-puzzles
+def mark_complete(request):
+    json_string = request.body
+    json_decoded = json.loads(json_string)
+    pk = json_decoded['pk']
+    puzzle = Puzzle.objects.get(pk=pk)
+    puzzle.data = json_decoded
+    puzzle.completed = True
+    puzzle.save()
+    return JsonResponse({"redirect": True})
+
+
+# @login_required(login_url='/accounts/login')
+# def puzzles_complete(request):
+#     user = User.objects.get(username=request.user.username)
+#     puzzles = Puzzle.objects.all()
+#     context = {'puzzles': puzzles}
+#     return render(request, 'editor/puzzles_complete.html', context=context)
+
+
 @login_required
 def new(request):
     json_string = request.body
@@ -51,6 +71,7 @@ def new(request):
     empty_grid = createEmptyGrid(rowN, colN)
     new_puzzle = Puzzle.objects.create(owner=request.user, data=empty_grid)
     return JsonResponse({"pk": new_puzzle.pk})
+
 
 
 def createEmptyGrid(rowN, colN):

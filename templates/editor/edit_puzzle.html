@@ -57,9 +57,12 @@
   </div>
 
   <div class="save-container">
-    <button id="save-button" @click="savePuzzle">Save</button>
+    <button id="save-btn" class="btn" @click="savePuzzle">Save</button>
     <p v-show="lastSaved">Last saved at ${ lastSaved.time }</p>
     <p v-show="lastSaved">on ${ lastSaved.date }</p>
+  </div>
+  <div class="complete-container">
+    <button id="complete-btn" class="btn" @click="completePuzzle">Mark as complete</button>
   </div>
 </div>
 
@@ -320,6 +323,23 @@
             let dt = new Date()
             this.lastSaved = { date: dt.toLocaleDateString(), time: dt.toLocaleTimeString() }
           })
+      },
+
+      completePuzzle() {
+        saveData = this.prepareSaveData(puzzleData)
+        return fetch(`/mark-complete/`, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify(saveData)
+        })
+        .then(resp => resp.json())
+        .then(jsonData => {
+          if (jsonData.redirect === true){
+            window.location.replace("/")
+          }
+        })
       },
 
       updateGrid(idx, value) {
