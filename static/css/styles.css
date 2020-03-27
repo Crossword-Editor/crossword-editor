@@ -221,6 +221,10 @@ ________________________________________________ */
   margin: 0 .5rem;
 }
 
+.grid {
+width: max-content;
+}
+
 .grid-container {
   width: 100%;
 }

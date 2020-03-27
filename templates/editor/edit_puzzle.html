@@ -73,10 +73,10 @@
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
   puzzleData.pk = {{ pk }}
 
-  function blankPuzzle(rows, cols) {
-    let obj = { size: { rows, cols } }
+  function blankPuzzle(rowN, colN) {
+    let obj = { size: { rowN, colN } }
     obj.grid = []
-    for (let i = 1; i <= rows * cols; i++) {
+    for (let i = 1; i <= rowN * colN; i++) {
       obj.grid.push('')
     }
     obj.clues = {
@@ -174,8 +174,8 @@
       clues: puzzleData.clues,
       // across: puzzleData.clues.across,
       // down: puzzleData.clues.down,
-      rowN: puzzleData.size.rows,
-      colN: puzzleData.size.cols,
+      rowN: puzzleData.size.rowN,
+      colN: puzzleData.size.colN,
       isVertical: false,
       across: 'across', // string needed for x-clue component prop
       down: 'down', // string needed for x-clue component prop
@@ -303,7 +303,7 @@
       prepareSaveData() {
         let grid = this.grid
         let clues = this.clues
-        let size = { rows: this.rowN, cols: this.colN }
+        let size = { rowN: this.rowN, colN: this.colN }
         let pk = puzzleData.pk
         return { grid, clues, size, pk }
       },
@@ -321,7 +321,7 @@
           .then(jsonResp => {
             console.log(jsonResp.message)
             let dt = new Date()
-            this.lastSaved ={date: dt.toLocaleDateString(), time: dt.toLocaleTimeString()}
+            this.lastSaved = { date: dt.toLocaleDateString(), time: dt.toLocaleTimeString() }
           })
       },
 
