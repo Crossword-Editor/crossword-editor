@@ -4,38 +4,68 @@
 
 {% block content %}
 
-
 <div class="user-homepage">
-    <div class="user-text">
+  <div class="user-text">
     <h1>My <strong>CrossNerd</strong> Crosswords</h1>
+  </div>
+
+  <form id="new-puzzle-form" method="POST">
+    Start a new puzzle with <input type="number" id="rowN" name="rowN" min="1" max="30" style="display: inline;"
+      class="inp" value="15">
+    <label for="rowN">rows</label>
+    and <input type="number" id="colN" name="colN" min="1" max="30" style="display: inline;" class="inp" value="15">
+    <label for="colN">columns.</label>
+    <button type="submit" class='btn'>Create</button>
+  </form>
+
+  <div class="flex-box">
+    <div class="draft-box">
+      <h3>Draft Puzzles</h3>
+      {% for puzzle in drafts %}
+      <div>
+        <a href="{% url 'edit' puzzle.pk %}">
+          <div class="display-title">
+            <p class="puzzle-title-display">My puzzle started at: {{puzzle.created_at}}</p>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
     </div>
 
-    <div class="flex-box">
-      <div class="draft-box">
-        <h3>Draft Puzzles</h3>
-        {% for puzzle in drafts %}
-      <div>
-      <a href="{% url 'edit' puzzle.pk %}">
-        <div class="display-title">
-        <p class="puzzle-title-display">My puzzle started at: {{puzzle.created_at}}</p>
-        </div>
-      </a>
-    </div>
-    {% endfor %}
-    
     <div class="completed-box">
-        <h3>Completed Puzzles</h3>
-          {% for puzzle in completes %}
-        <div>
-          <a href="">
-            <div class="display-title">
-              <p class="puzzle-title-display">My puzzle started at: {{puzzle.created_at}}</p>
-            </div>
-          </a>
-        </div>
-        {% endfor %}
+      <h3>Completed Puzzles</h3>
+      {% for puzzle in completes %}
+      <div>
+        <a href="">
+          <div class="display-title">
+            <p class="puzzle-title-display">My puzzle started at: {{puzzle.created_at}}</p>
+          </div>
+        </a>
       </div>
+      {% endfor %}
+    </div>
+  </div>
 
 </div>
+
+<script>
+  document.querySelector('#new-puzzle-form').addEventListener('submit', (event) => {
+    event.preventDefault()
+    const rowN = document.querySelector('#rowN').value
+    const colN = document.querySelector('#colN').value
+    return fetch(`/new/`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({ rowN, colN })
+    })
+      .then(resp => resp.json())
+      .then(data => {
+        console.log(data.pk)
+        window.location.href = `/edit/${data.pk}`
+      })
+  })
+</script>
 
 {% endblock content %}

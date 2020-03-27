@@ -259,6 +259,11 @@ ________________________________________________ */
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
+  margin: 0 .5rem;
+}
+
+.grid {
+width: max-content;
 }
 
 .grid-container {
@@ -321,7 +326,7 @@ ________________________________________________ */
   max-width: 525px;
   align-items: flex-start;
   justify-content: center;
-  margin: 0 1rem;
+
 }
 
 .clue-input-label {
@@ -400,4 +405,23 @@ ________________________________________________ */
 
 .secondary {
   background-color: rgb(224, 240, 255);
+}
+
+.btn {
+  border: none;
+  border-radius: 5px;
+  color: whitesmoke;
+  padding: 8px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+#save-btn {
+  background-color: rgb(46, 116, 49);
+}
+#complete-btn {
+  background-color: rgb(80, 48, 117);;
 }

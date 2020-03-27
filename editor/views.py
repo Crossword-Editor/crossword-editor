@@ -1,6 +1,10 @@
+import json
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from .models import Puzzle
 
@@ -24,6 +28,32 @@ def edit(request, pk):
         redirect('home')
 
 
+@csrf_exempt
+@require_POST
+@login_required
+def save(request):
+    json_string = request.body
+    json_decoded = json.loads(json_string)
+    pk = json_decoded['pk']
+    puzzle = Puzzle.objects.get(pk=pk)
+    puzzle.data = json_decoded
+    puzzle.save()
+    return JsonResponse({"message": "Puzzle saved to database"})
+
+
+@csrf_exempt
+@require_POST
+@login_required
+def mark_complete(request):
+    json_string = request.body
+    json_decoded = json.loads(json_string)
+    pk = json_decoded['pk']
+    puzzle = Puzzle.objects.get(pk=pk)
+    puzzle.data = json_decoded
+    puzzle.completed = True
+    puzzle.save()
+    return JsonResponse({"redirect": True})
+
 
 # @login_required(login_url='/accounts/login')
 # def puzzles_complete(request):
@@ -32,7 +62,33 @@ def edit(request, pk):
 #     context = {'puzzles': puzzles}
 #     return render(request, 'editor/puzzles_complete.html', context=context)
 
+@csrf_exempt
+@login_required
+def new(request):
+    json_string = request.body
+    json_decoded = json.loads(json_string)
+    rowN, colN = int(json_decoded['rowN']), int(json_decoded['colN'])
+    empty_grid = createEmptyGrid(rowN, colN)
+    new_puzzle = Puzzle.objects.create(owner=request.user, data=empty_grid)
+    return JsonResponse({"pk": new_puzzle.pk})
 
+
+
+def createEmptyGrid(rowN, colN):
+    puzzle = {"size": {"rowN": rowN, "colN": colN}}
+    puzzle["grid"] = ['' for i in range(rowN*colN)]
+    puzzle["clues"] = {"across": {}, "down": {}}
+    puzzle["clues"]["down"] = {f'{i+1}': '' for i in range(colN)}
+    puzzle["clues"]["across"] = {
+        ('1' if i == 0 else f'{i+colN}'): '' for i in range(rowN)}
+    return puzzle
+
+# @login_required(login_url='/accounts/login')
+# def puzzles_complete(request):
+#     user = User.objects.get(username=request.user.username)
+#     puzzles = Puzzle.objects.all()
+#     context = {'puzzles': puzzles}
+#     return render(request, 'editor/puzzles_complete.html', context=context)
 # @login_required(login_url='/accounts/login')
 # def puzzle_details(request, pk):
 #     user = User.objects.get(username=request.user.username)
@@ -40,12 +96,3 @@ def edit(request, pk):
 #     puzzle = Puzzle.objects.get(pk=pk)
 #     context = {'puzzle': puzzle, 'pk': pk}
 #     return render(request, 'editor/puzzle_details.html', context=context)
-
-
-# @login_required(login_url='/accounts/login')
-# def add_puzzle(request, pk):
-#     puzzles = Puzzle.objects.all()
-#     context = {'puzzles': puzzles}
-#     return render(request, 'editor/add_puzzle.html', context=context)
-
-
