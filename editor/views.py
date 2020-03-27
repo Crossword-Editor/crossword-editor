@@ -40,6 +40,19 @@ def save(request):
     return JsonResponse({"message": "Puzzle saved to database"})
 
 
+@csrf_exempt
+@require_POST
+def mark_complete(request):
+    json_string = request.body
+    json_decoded = json.loads(json_string)
+    pk = json_decoded['pk']
+    puzzle = Puzzle.objects.get(pk=pk)
+    puzzle.data = json_decoded
+    puzzle.completed = True
+    puzzle.save()
+    return JsonResponse({"redirect": True})
+
+
 # @login_required(login_url='/accounts/login')
 # def puzzles_complete(request):
 #     user = User.objects.get(username=request.user.username)

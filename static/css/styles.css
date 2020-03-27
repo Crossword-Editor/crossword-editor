@@ -362,15 +362,21 @@ ________________________________________________ */
   background-color: rgb(224, 240, 255)
 }
 
-#save-button {
-  background-color: rgb(43, 104, 45); /* Green */
+.btn {
   border: none;
   border-radius: 5px;
-  color: white;
+  color: whitesmoke;
   padding: 8px 20px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 1.1rem;
   font-weight: 500;
+}
+
+#save-btn {
+  background-color: rgb(46, 116, 49);
+}
+#complete-btn {
+  background-color: rgb(80, 48, 117);;
 }
