@@ -159,6 +159,7 @@
       // down: puzzleData.clues.down,
       rowN: puzzleData.size.rowN,
       colN: puzzleData.size.colN,
+      symmetry: 'rotational', // other values: none, vertical, horizontal
       isVertical: false,
       across: 'across', // string needed for x-clue component prop
       down: 'down', // string needed for x-clue component prop
@@ -317,15 +318,48 @@
           },
           body: JSON.stringify(saveData)
         })
-        .then(resp => resp.json())
-        .then(jsonData => {
-          if (jsonData.redirect === true){
-            window.location.replace("/")
-          }
-        })
+          .then(resp => resp.json())
+          .then(jsonData => {
+            if (jsonData.redirect === true) {
+              window.location.replace("/")
+            }
+          })
+      },
+
+      arrayToCoor(idx) {
+        return { row: Math.floor(idx / this.colN), col: idx % this.colN }
+      },
+      coorToArray(row, col) {
+        return row * this.colN + col
+      },
+
+      computeSymmetry(idx) {
+        let row = this.arrayToCoor(idx).row
+        let col = this.arrayToCoor(idx).col
+        let pm // 1 or -1
+        if (this.symmetry === "rotational") {
+          return this.coorToArray(this.rowN-row-1,this.colN-col-1)
+        }
+        else if (this.symmetry === "vertical") {
+          let newCol = this.colN - col - 1
+          return this.coorToArray(row, newCol)
+        }
+        else if (this.symmetry === "horizontal") {
+          let newRow = this.rowN - row -1
+          return this.coorToArray(newRow,col)
+          //pm = (row > this.rowN / 2) ? -1 : 1
+          //return pm * this.colN * (this.rowN - 1 - row) + col
+        }
+      },
+
+      applySymmetry(idx) {
+        if (this.grid[idx] === BLACK) {
+          this.updateGrid(this.computeSymmetry(idx), BLACK)
+        }
       },
 
       updateGrid(idx, value) {
+        // note: splice works when idx < 0, like in Python
         this.grid.splice(idx, 1, value);
       },
 
@@ -363,6 +397,7 @@
         const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER']
         if (validEntries.includes(key)) {
           this.updateGrid(this.activeCell, key)
+          this.applySymmetry(this.activeCell)
           this.nextCell()
         }
         else if (validDirectives.includes(key)) {
@@ -444,6 +479,7 @@
       }
 
     },
+
 
     created: function () {
       document.addEventListener('keydown', (event) => {
