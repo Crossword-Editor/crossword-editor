@@ -73,23 +73,6 @@
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
   puzzleData.pk = {{ pk }}
 
-  function blankPuzzle(rowN, colN) {
-    let obj = { size: { rowN, colN } }
-    obj.grid = []
-    for (let i = 1; i <= rowN * colN; i++) {
-      obj.grid.push('')
-    }
-    obj.clues = {
-      across: { '1': '' },
-      down: { '1': '' }
-    }
-    return obj
-  }
-
-  // var puzzleData = blankPuzzle(10,15)
-
-
-
   const BLACK = '.'
 
   /* ================ CLUE Component =================================*/
