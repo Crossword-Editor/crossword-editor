@@ -20,7 +20,7 @@
   {% block topbar %}
   <header>
     <nav class="navbar-top">
-      <a class="logo" href="{% url 'home' %}"><h1>CrossNerd</h1></a>
+      <a class="logo" href="{% url 'home' %}"><h1>WordNerd</h1></a>
       <ul class="nav-top-links">
         {% if not user.is_authenticated %}
         <a href="{% url 'auth_login' %}">Login </a>
