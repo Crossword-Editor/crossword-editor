@@ -3,6 +3,8 @@
 
 {% block meta %}
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/vue-nav-tabs/themes/vue-tabs.css">
+<script src="https://unpkg.com/vue-nav-tabs/dist/vue-tabs.js"></script>
 {% endblock meta %}
 
 {% block content %}
@@ -12,58 +14,95 @@
 
 <div id="editor-app">
 
-  <div class="input-container">
-    <span v-if="grid[activeCell]==='.'" style="visibility: hidden"><b>Hide</b></span>
-    <span class="clue-input-label" v-if="grid[activeCell]!=='.'">
-      ${ numbers[highlighted[0]] } ${direction}:
-    </span>
-    <div class="clue-input-container">
-      <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;"
-        v-model.trim="currentClue"></textarea>
-    </div>
+  <vue-tabs>
+    <v-tab title="Grid">
+      <div class="input-container">
+        <span v-if="grid[activeCell]==='.'" style="visibility: hidden"><b>Hide</b></span>
+        <span class="clue-input-label" v-if="grid[activeCell]!=='.'">
+          ${ numbers[highlighted[0]] } ${direction}:
+        </span>
+        <div class="clue-input-container">
+          <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;"
+            v-model.trim="currentClue"></textarea>
+        </div>
 
-    <div class="grid-container" tabindex="0">
-      <div class='grid' :style="gridStyle">
-        <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
-          :highlighted="highlighted" @cell-clicked="handleCellClick">
-          <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">${ numbers[n-1] }</span></div>
-          <div slot="entry" class="entry">${ grid[n-1] }</div>
-        </x-cell>
+        <div class="grid-container" tabindex="0">
+          <div class='grid' :style="gridStyle">
+            <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea"
+              :grid="grid" :highlighted="highlighted" @cell-clicked="handleCellClick">
+              <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">${ numbers[n-1] }</span></div>
+              <div slot="entry" class="entry">${ grid[n-1] }</div>
+            </x-cell>
+          </div>
+          <div class="save-container">
+            <button id="save-btn" class="btn" @click="savePuzzle">Save</button>
+            <p v-show="lastSaved">Last saved at ${ lastSaved.time }</p>
+            <p v-show="lastSaved">on ${ lastSaved.date }</p>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <div class="clue-list-container">
-    <div class="clue-list">
-      <p class="clue-list-title">Across:</p>
-      <ul>
-        <x-clue v-for="number in clueNumbers.across" :key="number" :direction="direction" :numbers="numbers"
-          :highlighted="highlighted" :clue-type="across" :number="number" :cross-numbers="getNumberInterval(across)"
-          @clue-clicked="handleClueClick">
-          <span class="clue-number">${ number }:</span> ${ clues.across[String(number)] }
-        </x-clue>
-      </ul>
-    </div>
-    <div class="clue-list">
-      <p class="clue-list-title">Down:</p>
-      <ul>
-        <x-clue v-for="number in clueNumbers.down" :key="number" :direction="direction" :numbers="numbers"
-          :highlighted="highlighted" :clue-type="down" :number="number" :cross-numbers="getNumberInterval(down)"
-          @clue-clicked="handleClueClick">
-          <span class="clue-number">${ number }:</span> ${ clues.down[String(number)] }
-        </x-clue>
-      </ul>
-    </div>
-  </div>
 
-  <div class="save-container">
-    <button id="save-btn" class="btn" @click="savePuzzle">Save</button>
-    <p v-show="lastSaved">Last saved at ${ lastSaved.time }</p>
-    <p v-show="lastSaved">on ${ lastSaved.date }</p>
-  </div>
-  <div class="complete-container">
-    <button id="complete-btn" class="btn" @click="completePuzzle">Mark as complete</button>
-  </div>
+      <div class="clue-list-container">
+        <div class="clue-list">
+          <p class="clue-list-title">Across:</p>
+          <ul>
+            <x-clue v-for="number in clueNumbers.across" :key="number" :direction="direction" :numbers="numbers"
+              :highlighted="highlighted" :clue-type="across" :number="number" :cross-numbers="getNumberInterval(across)"
+              @clue-clicked="handleClueClick">
+              <span class="clue-number">${ number }:</span> ${ clues.across[String(number)] }
+            </x-clue>
+          </ul>
+        </div>
+        <div class="clue-list">
+          <p class="clue-list-title">Down:</p>
+          <ul>
+            <x-clue v-for="number in clueNumbers.down" :key="number" :direction="direction" :numbers="numbers"
+              :highlighted="highlighted" :clue-type="down" :number="number" :cross-numbers="getNumberInterval(down)"
+              @clue-clicked="handleClueClick">
+              <span class="clue-number">${ number }:</span> ${ clues.down[String(number)] }
+            </x-clue>
+          </ul>
+        </div>
+      </div>
+    </v-tab>
+
+    <v-tab title="Puzzle Properties">
+      <div class="symmetry-container">
+        <div>
+          <input type="radio" id="rotational" name="symmetry" value="rotational" v-model="symmetry">
+          <label for="rotational">Rotational (default)</label>
+        </div>
+
+        <div>
+          <input type="radio" id="vertical" name="symmetry" value="vertical" v-model="symmetry">
+          <label for="vertical">Vertical</label>
+        </div>
+
+        <div>
+          <input type="radio" id="horizontal" name="symmetry" value="horizontal" v-model="symmetry">
+          <label for="horizontal">Horizontal</label>
+        </div>
+        <div>
+          <input type="radio" id="none" name="symmetry" value="none" v-model="symmetry">
+          <label for="none">None</label>
+        </div>
+      </div>
+
+      {% comment %}
+      <div class="size-container">
+        <input type="number" id="rowN" name="rowN" min="1" max="30" style="display: inline;" class="inp" value="15">
+        <label for="rowN">rows</label>
+        and <input type="number" id="colN" name="colN" min="1" max="30" style="display: inline;" class="inp" value="15">
+        <label for="colN">columns.</label>
+      </div>
+      {% endcomment %}
+      <div class="complete-container">
+        <button id="complete-btn" class="btn" @click="completePuzzle">Mark as complete</button>
+      </div>
+    </v-tab>
+
+  </vue-tabs>
 </div>
 
 
@@ -338,15 +377,15 @@
         let col = this.arrayToCoor(idx).col
         let pm // 1 or -1
         if (this.symmetry === "rotational") {
-          return this.coorToArray(this.rowN-row-1,this.colN-col-1)
+          return this.coorToArray(this.rowN - row - 1, this.colN - col - 1)
         }
         else if (this.symmetry === "vertical") {
           let newCol = this.colN - col - 1
           return this.coorToArray(row, newCol)
         }
         else if (this.symmetry === "horizontal") {
-          let newRow = this.rowN - row -1
-          return this.coorToArray(newRow,col)
+          let newRow = this.rowN - row - 1
+          return this.coorToArray(newRow, col)
           //pm = (row > this.rowN / 2) ? -1 : 1
           //return pm * this.colN * (this.rowN - 1 - row) + col
         }
@@ -430,7 +469,7 @@
 
       enterArrowsDeleteBackspace(key) {
         if (key === 'DELETE') {
-          if (this.grid[this.activeCell] === BLACK){
+          if (this.grid[this.activeCell] === BLACK) {
             this.applySymmetry(this.activeCell, '')
           }
           this.updateGrid(this.activeCell, '')
@@ -438,13 +477,13 @@
         else if (key === 'BACKSPACE') {
           if (this.grid[this.activeCell] === '') {
             this.prevCell()
-            if (this.grid[this.activeCell] === BLACK){
+            if (this.grid[this.activeCell] === BLACK) {
               this.applySymmetry(this.activeCell, '')
             }
             this.updateGrid(this.activeCell, '')
           }
           else {
-            if (this.grid[this.activeCell] === BLACK){
+            if (this.grid[this.activeCell] === BLACK) {
               this.applySymmetry(this.activeCell, '')
             }
             this.updateGrid(this.activeCell, '')
