@@ -20,16 +20,24 @@
   {% block topbar %}
   <header>
     <nav class="navbar-top">
-      <a class="logo" href="{% url 'home' %}"><h1>CrossNerd</h1></a>
+      <a class="logo" href="{% url 'home' %}"><h1>WordNerd</h1></a>
       <ul class="nav-top-links">
         {% if not user.is_authenticated %}
         <a href="{% url 'auth_login' %}">Login </a>
         |
         <a href="{% url 'registration_register' %}">Register</a>
         {% else %}
-        {% comment %} need to add these links to user navbar
-        <a href="{% url '#' %}">New Puzzle </a>
-        <a href="{% url '#' %}">Save Puzzle </a> {% endcomment %}
+
+        <form id="new-puzzle-form" method="POST">
+          Start a new puzzle with <input type="number" id="rowN" name="rowN" min="1" max="30" style="display: inline;"
+            class="inp" value="15">
+          <label for="rowN">rows</label>
+          and <input type="number" id="colN" name="colN" min="1" max="30" style="display: inline;" class="inp" value="15">
+          <label for="colN">columns.</label>
+          <button type="submit" class='btn'>Create</button>
+        </form>
+
+
         <a href="{% url 'auth_logout' %}">Logout </a>
         {% endif %}
       </ul>
@@ -43,5 +51,25 @@
   </main>
 
 </body>
+
+<script>
+  document.querySelector('#new-puzzle-form').addEventListener('submit', (event) => {
+    event.preventDefault()
+    const rowN = document.querySelector('#rowN').value
+    const colN = document.querySelector('#colN').value
+    return fetch(`/new/`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({ rowN, colN })
+    })
+      .then(resp => resp.json())
+      .then(data => {
+        console.log(data.pk)
+        window.location.href = `/edit/${data.pk}`
+      })
+  })
+</script>
 
 </html>

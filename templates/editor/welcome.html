@@ -1,56 +1,55 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% comment %}
-<script src="{% static 'js/welcome.js' %}" defer></script> {% endcomment %}
+
 
 {% block content %}
 
-  {% comment %} <div class="welcome-image"> {% endcomment %}
+
   <div class="welcome">
-    <div class="welcome-text">
-    <h1>Welcome to <strong>CrossNerd</strong></h1>
-    <h2>the tool designed for authoring New York Times-styled crossword puzzles</h2>
-    </div>
-
-    <div class="flex-grid">
-      <div class="you-box">
-        <h3>CrossNerd Is Just For You!</h3>
-          <ul>
-            <p><strong>✚ Novice.</strong> Begin your very first crossword</p><br>
-            <p><strong>✚ Expert.</strong> Design your dream-themed puzzle</p><br>
-            <p><strong>✚ Master-Class.</strong> Construct and submit to the New York Times!</p>
-          </ul>
+      <div class="welcome-text">
+      <h1>Welcome to <strong>WordNerd</strong></h1>
+      <h2>the tool designed for authoring New York Times-styled crossword puzzles</h2>
       </div>
+
+      <!-- <div class="flex-grid"> -->
+      <div class="welcome-info">
+        <div class="you-box">
+          <h3>WordNerd Is Just For You!</h3>
+            <ul>
+              <p><strong>✚ Novice.</strong> Begin your very first crossword</p>
+              <p><strong>✚ Expert.</strong> Design your dream-themed puzzle</p>
+              <p><strong>✚ Master-Class.</strong> Construct and submit to the New York Times!</p>
+            </ul>
+        </div>
+      
+        <div class="feature-box">
+          <h3>Features include:</h3>
+            <ul>
+              <p>✚ Fill in a puzzle grid, clues, title and description of a crossword</p>
+              <p>✚ Grid numbering and black square symmetry automatically completed</p>
+              <p>✚ Save drafts and make them public/private</p>
+              <p>✚ Mimic the style of the web and mobile crossword apps from the NY Times</p>
+            </ul>
+        </div>
+
+
     
-      <div class="feature-box">
-        <h3>Features include:</h3>
-          <ul>
-            <p>✚ Fill in a puzzle grid, clues, title and description of a crossword</p><br>
-            <p>✚ Grid numbering and black square symmetry automatically completed</p><br>
-            <p>✚ Save drafts and make them public/private</p><br>
-            <p>✚ Mimic the style of the web and mobile crossword apps from the NY Times</p>
-          </ul>
-      </div>
 
+    </div>
+</div>
 
-  {% block bottombar %}
+{% block bottombar %}
     <div class="navbar-bottom">
+      <p>Already have an account? Login. Or, Register Today!</p>
       <ul class="nav-bottom-links">
         {% if not user.is_authenticated %}
-        <li>Already have an account? Login. Or, Register Today!</li>
         <li><a href="{% url 'auth_login' %}">Login </a></li>
         <li><a href="{% url 'registration_register' %}">Register</a></li>
         {% endif %}
       </ul>
     </div>
   {% endblock bottombar %}
-
-  </div>
-</div>
-
-<footer
-
 
 {% endblock content %}
 
