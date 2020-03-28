@@ -352,9 +352,9 @@
         }
       },
 
-      applySymmetry(idx) {
+      applySymmetry(idx, value) {
         if (this.grid[idx] === BLACK) {
-          this.updateGrid(this.computeSymmetry(idx), BLACK)
+          this.updateGrid(this.computeSymmetry(idx), value)
         }
       },
 
@@ -397,7 +397,7 @@
         const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER']
         if (validEntries.includes(key)) {
           this.updateGrid(this.activeCell, key)
-          this.applySymmetry(this.activeCell)
+          this.applySymmetry(this.activeCell, BLACK)
           this.nextCell()
         }
         else if (validDirectives.includes(key)) {
@@ -430,14 +430,23 @@
 
       enterArrowsDeleteBackspace(key) {
         if (key === 'DELETE') {
+          if (this.grid[this.activeCell] === BLACK){
+            this.applySymmetry(this.activeCell, '')
+          }
           this.updateGrid(this.activeCell, '')
         }
         else if (key === 'BACKSPACE') {
           if (this.grid[this.activeCell] === '') {
             this.prevCell()
+            if (this.grid[this.activeCell] === BLACK){
+              this.applySymmetry(this.activeCell, '')
+            }
             this.updateGrid(this.activeCell, '')
           }
           else {
+            if (this.grid[this.activeCell] === BLACK){
+              this.applySymmetry(this.activeCell, '')
+            }
             this.updateGrid(this.activeCell, '')
           }
         }
