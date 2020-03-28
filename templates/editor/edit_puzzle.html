@@ -15,7 +15,7 @@
   <div class="input-container">
     <span v-if="grid[activeCell]==='.'" style="visibility: hidden"><b>Hide</b></span>
     <span class="clue-input-label" v-if="grid[activeCell]!=='.'">
-      ${ numbers[highlighted[0]] } ${direction}:
+      ${ gridnums[highlighted[0]] } ${direction}:
     </span>
     <div class="clue-input-container">
       <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;"
@@ -26,7 +26,7 @@
       <div class='grid' :style="gridStyle">
         <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea" :grid="grid"
           :highlighted="highlighted" @cell-clicked="handleCellClick">
-          <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">${ numbers[n-1] }</span></div>
+          <div slot="number" class="number"><span v-if="gridnums[n-1] !== 0">${ gridnums[n-1] }</span></div>
           <div slot="entry" class="entry">${ grid[n-1] }</div>
         </x-cell>
       </div>
@@ -37,7 +37,7 @@
     <div class="clue-list">
       <p class="clue-list-title">Across:</p>
       <ul>
-        <x-clue v-for="number in clueNumbers.across" :key="number" :direction="direction" :numbers="numbers"
+        <x-clue v-for="number in clueNumbers.across" :key="number" :direction="direction" :gridnums="gridnums"
           :highlighted="highlighted" :clue-type="across" :number="number" :cross-numbers="getNumberInterval(across)"
           @clue-clicked="handleClueClick">
           <span class="clue-number">${ number }:</span> ${ clues.across[String(number)] }
@@ -47,7 +47,7 @@
     <div class="clue-list">
       <p class="clue-list-title">Down:</p>
       <ul>
-        <x-clue v-for="number in clueNumbers.down" :key="number" :direction="direction" :numbers="numbers"
+        <x-clue v-for="number in clueNumbers.down" :key="number" :direction="direction" :gridnums="gridnums"
           :highlighted="highlighted" :clue-type="down" :number="number" :cross-numbers="getNumberInterval(down)"
           @clue-clicked="handleClueClick">
           <span class="clue-number">${ number }:</span> ${ clues.down[String(number)] }
@@ -98,7 +98,7 @@
       <li class="clue" :class="clueClasses" @click="clicked">
         <slot></slot>
       </li>`,
-    props: ['direction', 'numbers', 'highlighted', 'clueType', 'number', 'crossNumbers'],
+    props: ['direction', 'gridnums', 'highlighted', 'clueType', 'number', 'crossNumbers'],
     data: function () {
       return {
         test: 1
@@ -106,7 +106,7 @@
     },
     computed: {
       isHighlighted() {
-        return this.direction === this.clueType && this.numbers[this.highlighted[0]] == this.number
+        return this.direction === this.clueType && this.gridnums[this.highlighted[0]] == this.number
       },
       isSecondary() {
         return this.direction !== this.clueType && this.crossNumbers[0] == this.number
@@ -203,7 +203,7 @@
 
       clueNumbers() {
         let numbs = { across: [], down: [] }
-        this.numbers.map((number, idx) => {
+        this.gridnums.map((number, idx) => {
           if (this.isNumberedCell(idx)) {
             if (this.lookLeft(idx)) {
               numbs.across.push(String(number))
@@ -219,17 +219,17 @@
       currentClue: {
         get() {
           const direction = this.direction
-          const number = this.numbers[this.highlighted[0]]
+          const number = this.gridnums[this.highlighted[0]]
           return this.clues[direction][number]
         },
         set(newValue) {
           const direction = this.direction
-          const number = this.numbers[this.highlighted[0]]
+          const number = this.gridnums[this.highlighted[0]]
           this.clues[direction][number] = newValue.replace(/\n/g, ' ')
         }
       },
 
-      numbers() {
+      gridnums() {
         let returnArr = []
         let count = 0
         for (let i = 0; i < this.length; i++) {
@@ -281,7 +281,7 @@
       },
 
       getNumberInterval(dir) {
-        return this.getInterval(dir).map(i => this.numbers[i])
+        return this.getInterval(dir).map(i => this.gridnums[i])
       },
 
       handleCellClick(idx) {
@@ -295,7 +295,7 @@
         if (clueType !== this.direction) {
           this.toggleVertical()
         }
-        const idx = this.numbers.indexOf(Number(number))
+        const idx = this.gridnums.indexOf(Number(number))
         this.activeCell = idx;
         document.querySelector('#clue-input').focus()
       },

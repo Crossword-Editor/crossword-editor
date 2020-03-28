@@ -242,6 +242,21 @@ ________________________________________________ */
   }
 }
 
+/* New Puzzle Form
+________________________________________________ */
+
+#new-puzzle-form {
+  font-size: 20px;
+}
+
+#new-puzzle-form input {
+  font-size: 16px;
+}
+
+#new-puzzle-form label:last-of-type {
+  margin-right: 10px;
+}
+
 /* Bottom nav-bar
 ________________________________________________ */
 
@@ -453,16 +468,4 @@ ________________________________________________ */
 }
 #complete-btn {
   background-color: rgb(80, 48, 117);
-}
-
-#new-puzzle-form {
-  font-size: 20px;
-}
-
-#new-puzzle-form input {
-  font-size: 16px;
-}
-
-#new-puzzle-form label:last-of-type {
-  margin-right: 10px;
 }
