@@ -31,7 +31,7 @@
             </x-cell>
           </div>
           <div class="save-container">
-            <button id="save-btn" class="btn" @click="savePuzzle">Save</button>
+            <button id="save-btn" class="btn save-btn" @click="savePuzzle">Save</button>
             <p v-show="lastSaved">Last saved at ${ lastSaved.time }</p>
             <p v-show="lastSaved">on ${ lastSaved.date }</p>
           </div>
@@ -107,12 +107,18 @@
         <li>Do this and that</li>
       </h2>
     </v-tab>
+
+    <v-tab title="Export">
+      <div class="export-file">
+        <a id="export-puzzle-json" download="my_exported_puzzle.json" href="">
+         <button class="btn save-btn">Download as JSON</button>
+        </a>
+        (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/ format</a>)
+      </div>
+    </v-tab>
   </vue-tabs>
 </div>
 
-<div class="export-file">
-  <a id="export-puzzle" download="my_exported_puzzle.json" href=””>Download as Text File</a>
-</div>
 
 
 <script>
@@ -479,7 +485,7 @@
       keyhandle(event) {
         const key = event.key.toUpperCase()
         const validEntries = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#'
-        const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER']
+        const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', ' ']
         if (validEntries.includes(key)) {
           this.updateGrid(this.activeCell, key)
           this.applySymmetry(this.activeCell, BLACK)
@@ -535,7 +541,7 @@
             this.updateGrid(this.activeCell, '')
           }
         }
-        else if (key === 'ENTER') {
+        else if (key === 'ENTER' || key === ' ') {
           this.toggleVertical()
         }
         else if (key === "ARROWRIGHT") {
@@ -588,7 +594,7 @@
   const jsn = editor.exportJSON()
   const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
   let url = window.URL.createObjectURL(data)
-  document.querySelector('#export-puzzle').href = url
+  document.querySelector('#export-puzzle-json').href = url
 
 
 </script>
