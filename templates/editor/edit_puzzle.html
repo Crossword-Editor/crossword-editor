@@ -91,11 +91,11 @@
 
       {% comment %}
       <div class="size-container">
-        <input v-model.number="nowN" type="number" id="rowN" name="rowN" min="1" max="30" style="display: inline;"
-          class="inp" value="15">
+        <input v-model.number="rowN" type="number" id="rowN-resize" name="rowN" min="1" max="30"
+          style="display: inline;" class="inp">
         <label for="rowN">rows</label>
-        and <input v-model.number="nowN" type="number" id="colN" name="colN" min="1" max="30" style="display: inline;"
-          class="inp" value="15">
+        and <input v-model.number="colN" type="number" id="colN-resize" name="colN" min="1" max="30"
+          style="display: inline;" class="inp">
         <label for="colN">columns.</label>
       </div>
       {% endcomment %}
@@ -534,7 +534,8 @@
 
     created: function () {
       document.addEventListener('keydown', (event) => {
-        if (event.target.id !== 'clue-input') {
+        const ignoreIds = ['clue-input', 'rowN-resize', 'colN-resize']
+        if (!ignoreIds.includes(event.target.id)) {
           this.keyhandle(event)
         }
       })
