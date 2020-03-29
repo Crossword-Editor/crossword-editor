@@ -91,12 +91,15 @@
 
       {% comment %}
       <div class="size-container">
-        <input type="number" id="rowN" name="rowN" min="1" max="30" style="display: inline;" class="inp" value="15">
+        <input v-model.number="nowN" type="number" id="rowN" name="rowN" min="1" max="30" style="display: inline;"
+          class="inp" value="15">
         <label for="rowN">rows</label>
-        and <input type="number" id="colN" name="colN" min="1" max="30" style="display: inline;" class="inp" value="15">
+        and <input v-model.number="nowN" type="number" id="colN" name="colN" min="1" max="30" style="display: inline;"
+          class="inp" value="15">
         <label for="colN">columns.</label>
       </div>
       {% endcomment %}
+
       <div class="complete-container">
         <button id="complete-btn" class="btn" @click="completePuzzle">Mark as complete</button>
       </div>
@@ -120,7 +123,7 @@
       <li class="clue" :class="clueClasses" @click="clicked">
         <slot></slot>
       </li>`,
-    props: ['direction', 'numbers', 'highlighted', 'clueType', 'number', 'crossNumbers'],
+    props: ['direction', 'gridnums', 'highlighted', 'clueType', 'number', 'crossNumbers'],
     data: function () {
       return {
         test: 1
@@ -128,7 +131,7 @@
     },
     computed: {
       isHighlighted() {
-        return this.direction === this.clueType && this.numbers[this.highlighted[0]] == this.number
+        return this.direction === this.clueType && this.gridnums[this.highlighted[0]] == this.number
       },
       isSecondary() {
         return this.direction !== this.clueType && this.crossNumbers[0] == this.number
@@ -226,7 +229,7 @@
 
       clueNumbers() {
         let numbs = { across: [], down: [] }
-        this.numbers.map((number, idx) => {
+        this.gridnums.map((number, idx) => {
           if (this.isNumberedCell(idx)) {
             if (this.lookLeft(idx)) {
               numbs.across.push(String(number))
@@ -242,17 +245,17 @@
       currentClue: {
         get() {
           const direction = this.direction
-          const number = this.numbers[this.highlighted[0]]
+          const number = this.gridnums[this.highlighted[0]]
           return this.clues[direction][number]
         },
         set(newValue) {
           const direction = this.direction
-          const number = this.numbers[this.highlighted[0]]
+          const number = this.gridnums[this.highlighted[0]]
           this.clues[direction][number] = newValue.replace(/\n/g, ' ')
         }
       },
 
-      numbers() {
+      gridnums() {
         let returnArr = []
         let count = 0
         for (let i = 0; i < this.length; i++) {
@@ -304,7 +307,7 @@
       },
 
       getNumberInterval(dir) {
-        return this.getInterval(dir).map(i => this.numbers[i])
+        return this.getInterval(dir).map(i => this.gridnums[i])
       },
 
       handleCellClick(idx) {
@@ -318,7 +321,7 @@
         if (clueType !== this.direction) {
           this.toggleVertical()
         }
-        const idx = this.numbers.indexOf(Number(number))
+        const idx = this.gridnums.indexOf(Number(number))
         this.activeCell = idx;
         document.querySelector('#clue-input').focus()
       },

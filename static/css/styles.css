@@ -41,7 +41,6 @@ _______________________________________________________ */
   list-style: none;
   margin-right: 20px;
   color: #e6401d;
-  /* color: whitesmoke; */
 }
 
 .navbar-top .nav-top-links a {
@@ -60,35 +59,36 @@ _______________________________________________________ */
 ________________________________________________ */
 
 .welcome {
-
-  /* background-image: url("/images/crossword-pencil.jpg");
-  background-repeat: no-repeat;
+  background: url("../images/crossword-pencil.jpg") no-repeat;
   background-position: center;
-  background-size: 100% auto;
-  opacity: 0.6;
-  width: 400px;
-  height: 400px;
-  border: 2px dashed #333; */
+  background-size: cover;
+  border-style: groove;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
 }
 
-get help loading crossword image
-.welcome-image {
-  background-image: url("/images/crossword-pencil.jpg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% auto;
-  opacity: 0.6;
-  width: 400px;
-  height: 400px;
-  border: 2px dashed #333; */
+.welcome::before {
+  content: "";
+  position: absolute;
+  background-color: #ffffffdd;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
 }
-
 .welcome-text {
   font-size: 20px;
   font-family: Montserrat, sans-serif;
   text-align: center;
   margin: 20px 0 30px;
   color: #e6401d;
+  z-index: 1;
 }
 
 .welcome-text h2 {
@@ -100,24 +100,20 @@ get help loading crossword image
   width: 95%;
 }
 
-.flex-grid {
+.welcome-info {
   display: flex;
-  flex-flow: wrap;
+  flex-flow: row wrap;
   justify-content: center;
-  margin-top: 30px;
-  width: 95%;
+  width: 100%;
+  z-index: 1;
 }
 
-.you-box, .feature-box {
-  display: flex;
+.you-box,
+.feature-box {
   display: inline-block;
-  flex-flow: wrap;
-  justify-content: space-between;
   padding: 0.25rem;
-  margin: 0 auto;
-  margin-left: 100 0 75px;
+  margin: 20px 10px;
   text-align: left;
-  height: 100px;
   width: 600px;
 }
 
@@ -125,6 +121,7 @@ get help loading crossword image
 .feature-box h3 {
   font-size: 30px;
   font-weight: 600;
+  margin-bottom: 10px;
 }
 
 .you-box p,
@@ -132,45 +129,73 @@ get help loading crossword image
   font-size: 20px;
   font-weight: 400;
   color: black;
+  margin-bottom: 10px;
 }
 
 @media screen and (max-width: 700px) {
-  .you-box, .feature-box {
-    max-width: 100%;
+  .you-box,
+  .feature-box {
+    width: 100%;
   }
 }
 
 /* User Homepage
 ________________________________________________ */
 
+.user-homepage {
+  background: url("../images/crossword-pencil.jpg") no-repeat;
+  background-position: center;
+  background-size: cover;
+  border-style: groove;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.user-homepage::before {
+  content: "";
+  position: absolute;
+  background-color: #ffffffdd;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
 .user-homepage .user-text {
   font-size: 20px;
   font-family: Montserrat, sans-serif;
   text-align: center;
-  margin: 20px 0 30px;
+  margin: 50px 0 30px;
   color: #17202a;
+  z-index: 1;
 }
-
 
 .flex-box {
   display: flex;
   flex-flow: wrap;
   justify-content: center;
-  margin-top: 30px;
+  margin-top: 0px;
   width: 95%;
+  z-index: 1;
 }
 
-.draft-box, .completed-box {
+.draft-box,
+.completed-box {
   display: flex;
   display: inline-block;
   flex-flow: wrap;
   justify-content: space-between;
   padding: 0.25rem;
-  margin: 0 auto;
+  margin: 0;
   margin-left: 100 0 75px;
   text-align: left;
   height: 100px;
-  width: 600px;
+  width: 400px;
 }
 
 .draft-box h3,
@@ -183,6 +208,12 @@ ________________________________________________ */
 .completed-box a {
   font-size: 15px;
   font-weight: 600;
+  color: #0537df;
+}
+
+.draft-box a:hover,
+.completed-box a:hover {
+  color: #879ff1;
 }
 
 .draft-box display-title,
@@ -205,25 +236,46 @@ ________________________________________________ */
 }
 
 @media screen and (max-width: 700px) {
-  .draft-box, .completed-box {
+  .draft-box,
+  .completed-box {
     max-width: 100%;
   }
 }
 
+/* New Puzzle Form
+________________________________________________ */
+
+#new-puzzle-form {
+  font-size: 20px;
+}
+
+#new-puzzle-form input {
+  font-size: 16px;
+}
+
+#new-puzzle-form label:last-of-type {
+  margin-right: 10px;
+}
 
 /* Bottom nav-bar
 ________________________________________________ */
 
 .navbar-bottom {
   display: flex;
-  position: fixed;
-  overflow: hidden;
   justify-content: space-between;
   align-items: center;
   height: 100px;
   width: 100%;
-  bottom: 0;
   background-color: #17202a;
+}
+
+.navbar-bottom p {
+  font-size: 30px;
+  font-family: Montserrat, sans-serif;
+  font-weight: 600;
+  color: whitesmoke;
+  white-space: nowrap;
+  margin-left: 50px;
 }
 
 .navbar-bottom .nav-bottom-links {
@@ -232,22 +284,16 @@ ________________________________________________ */
   font-weight: 600;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  position: fixed;
-  overflow: hidden;
   align-items: center;
   list-style: none;
-  margin-right: 20px;
-  color: whitesmoke;
+  margin-right: 40px;
   /* color: #e6401d; */
   background-color: #17202a;
-  bottom: 0;
-  height: 100px;
-  width: 100%;
 }
 
 .navbar-bottom .nav-bottom-links a {
   color: #e6401d;
+  padding: 15px;
 }
 .navbar-bottom .nav-bottom-links a:hover {
   color: whitesmoke;
@@ -259,11 +305,11 @@ ________________________________________________ */
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
-  margin: 0 .5rem;
+  margin: 0 0.5rem;
 }
 
 .grid {
-width: max-content;
+  width: max-content;
 }
 
 .grid-container {
@@ -326,7 +372,6 @@ width: max-content;
   max-width: 525px;
   align-items: flex-start;
   justify-content: center;
-
 }
 
 .clue-input-label {
@@ -410,7 +455,6 @@ width: max-content;
 .btn {
   border: none;
   border-radius: 5px;
-  color: whitesmoke;
   padding: 8px 20px;
   text-align: center;
   text-decoration: none;
@@ -423,5 +467,5 @@ width: max-content;
   background-color: rgb(46, 116, 49);
 }
 #complete-btn {
-  background-color: rgb(80, 48, 117);;
+  background-color: rgb(80, 48, 117);
 }
