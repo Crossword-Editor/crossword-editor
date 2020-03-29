@@ -19,7 +19,7 @@
       <div class="input-container">
         <span v-if="grid[activeCell]==='.'" style="visibility: hidden"><b>Hide</b></span>
         <span class="clue-input-label" v-if="grid[activeCell]!=='.'">
-          ${ numbers[highlighted[0]] } ${direction}:
+          ${ gridnums[highlighted[0]] } ${direction}:
         </span>
         <div class="clue-input-container">
           <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;"
@@ -30,7 +30,7 @@
           <div class='grid' :style="gridStyle">
             <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea"
               :grid="grid" :highlighted="highlighted" @cell-clicked="handleCellClick">
-              <div slot="number" class="number"><span v-if="numbers[n-1] !== 0">${ numbers[n-1] }</span></div>
+              <div slot="number" class="number"><span v-if="gridnums[n-1] !== 0">${ gridnums[n-1] }</span></div>
               <div slot="entry" class="entry">${ grid[n-1] }</div>
             </x-cell>
           </div>
@@ -47,7 +47,7 @@
         <div class="clue-list">
           <p class="clue-list-title">Across:</p>
           <ul>
-            <x-clue v-for="number in clueNumbers.across" :key="number" :direction="direction" :numbers="numbers"
+            <x-clue v-for="number in clueNumbers.across" :key="number" :direction="direction" :gridnums="gridnums"
               :highlighted="highlighted" :clue-type="across" :number="number" :cross-numbers="getNumberInterval(across)"
               @clue-clicked="handleClueClick">
               <span class="clue-number">${ number }:</span> ${ clues.across[String(number)] }
@@ -57,7 +57,7 @@
         <div class="clue-list">
           <p class="clue-list-title">Down:</p>
           <ul>
-            <x-clue v-for="number in clueNumbers.down" :key="number" :direction="direction" :numbers="numbers"
+            <x-clue v-for="number in clueNumbers.down" :key="number" :direction="direction" :gridnums="gridnums"
               :highlighted="highlighted" :clue-type="down" :number="number" :cross-numbers="getNumberInterval(down)"
               @clue-clicked="handleClueClick">
               <span class="clue-number">${ number }:</span> ${ clues.down[String(number)] }
