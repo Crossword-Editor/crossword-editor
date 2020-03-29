@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block meta %}
+{% extends 'base.html' %} {% load static %} {% block meta %}
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/vue-nav-tabs/themes/vue-tabs.css">
 <script src="https://unpkg.com/vue-nav-tabs/dist/vue-tabs.js"></script>
@@ -10,7 +7,6 @@
 {% block content %}
 <!-- Pass in puzzle json from Django template context -->
 {{ puzzle|json_script:"puzzle-data" }}
-
 
 <div id="editor-app">
 
@@ -105,9 +101,18 @@
       </div>
     </v-tab>
 
+    <v-tab title="Rules">
+      <h2>
+        <ul>How to navigate the grid</ul>
+        <li>Do this and that</li>
+      </h2>
+    </v-tab>
   </vue-tabs>
 </div>
 
+<div class="export-file">
+  <a id="export-puzzle" download="my_exported_puzzle.json" href=””>Download as Text File</a>
+</div>
 
 
 <script>
@@ -271,18 +276,56 @@
       },
 
       highlighted() {
-        return this.getInterval(this.direction)
+        return this.getInterval(this.activeCell, this.direction)
       }
     },
 
     methods: {
-      getInterval(dir) {
+      exportJSON() {
+        let grid = this.grid
+        let gridnums = this.gridnums
+        let size = {
+          cols: this.colN,
+          rows: this.rowN
+        }
+        let clues = {
+          across: [],
+          down: []
+        }
+        this.clueNumbers.across.map((number) => {
+          let clue = this.clues.across[String(number)]
+          let exportClue = `${number}. ${clue}`
+          clues.across.push(exportClue)
+        })
+
+        this.clueNumbers.down.map((number) => {
+          let clue = this.clues.down[String(number)]
+          let exportClue = `${number}. ${clue}`
+          clues.down.push(exportClue)
+        })
+        let answers = {
+          across: [],
+          down: []
+        }
+        answers.across = grid.join("").split('.').filter((word) => { return word !== "" })
+
+        answers.down = this.clueNumbers.down.map((idx) => {
+          return this.getInterval(Number(idx), "down").map((index) => {
+            return this.grid[index]
+          }).join("")
+        }).filter((word) => { return word !== "" })
+
+        return JSON.stringify({ grid, gridnums, size, clues, answers })
+      },
+
+
+      getInterval(idx, dir) {
         let returnArr = []
-        if (this.grid[this.activeCell] === BLACK) {
+        if (this.grid[idx] === BLACK) {
           return returnArr
         }
-        let start = this.activeCell
-        let stop = this.activeCell
+        let start = idx
+        let stop = idx
         let inc = (dir === 'down') ? this.colN : 1
         if (dir === 'down') {
           while (!this.lookUp(start)) {
@@ -307,7 +350,7 @@
       },
 
       getNumberInterval(dir) {
-        return this.getInterval(dir).map(i => this.gridnums[i])
+        return this.getInterval(this.activeCell, dir).map(i => this.gridnums[i])
       },
 
       handleCellClick(idx) {
@@ -541,6 +584,12 @@
       })
     }
   });
+
+  const jsn = editor.exportJSON()
+  const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
+  let url = window.URL.createObjectURL(data)
+  document.querySelector('#export-puzzle').href = url
+
 
 </script>
 
