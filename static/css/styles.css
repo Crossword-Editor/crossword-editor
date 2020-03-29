@@ -453,6 +453,7 @@ ________________________________________________ */
 }
 
 .btn {
+  color: whitesmoke;
   border: none;
   border-radius: 5px;
   padding: 8px 20px;
@@ -461,6 +462,10 @@ ________________________________________________ */
   display: inline-block;
   font-size: 1.1rem;
   font-weight: 500;
+}
+
+#create-btn {
+  color: black;
 }
 
 #save-btn {
