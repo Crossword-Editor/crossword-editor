@@ -82,6 +82,7 @@ ________________________________________________ */
   height: 100%;
   width: 100%;
 }
+
 .welcome-text {
   font-size: 20px;
   font-family: Montserrat, sans-serif;
@@ -108,8 +109,7 @@ ________________________________________________ */
   z-index: 1;
 }
 
-.you-box,
-.feature-box {
+.you-box, .feature-box {
   display: inline-block;
   padding: 0.25rem;
   margin: 20px 10px;
@@ -117,15 +117,13 @@ ________________________________________________ */
   width: 600px;
 }
 
-.you-box h3,
-.feature-box h3 {
+.you-box h3, .feature-box h3 {
   font-size: 30px;
   font-weight: 600;
   margin-bottom: 10px;
 }
 
-.you-box p,
-.feature-box p {
+.you-box p, .feature-box p {
   font-size: 20px;
   font-weight: 400;
   color: black;
@@ -133,8 +131,7 @@ ________________________________________________ */
 }
 
 @media screen and (max-width: 700px) {
-  .you-box,
-  .feature-box {
+  .you-box, .feature-box {
     width: 100%;
   }
 }
@@ -184,8 +181,7 @@ ________________________________________________ */
   z-index: 1;
 }
 
-.draft-box,
-.completed-box {
+.draft-box, .completed-box {
   display: flex;
   display: inline-block;
   flex-flow: wrap;
@@ -198,33 +194,28 @@ ________________________________________________ */
   width: 400px;
 }
 
-.draft-box h3,
-.completed-box h3 {
+.draft-box h3, .completed-box h3 {
   font-size: 30px;
   font-weight: 600;
 }
 
-.draft-box a,
-.completed-box a {
+.draft-box a, .completed-box a {
   font-size: 15px;
   font-weight: 600;
   color: #0537df;
 }
 
-.draft-box a:hover,
-.completed-box a:hover {
+.draft-box a:hover, .completed-box a:hover {
   color: #879ff1;
 }
 
-.draft-box display-title,
-.completed-box display-title {
+.draft-box display-title, .completed-box display-title {
   font-size: 20px;
   font-weight: 400;
   color: black;
 }
 
-.draft-box puzzle-title-display,
-.completed-box puzzle-title-display {
+.draft-box puzzle-title-display, .completed-box puzzle-title-display {
   font-size: 10px;
   font-weight: 400;
   color: black;
@@ -236,8 +227,7 @@ ________________________________________________ */
 }
 
 @media screen and (max-width: 700px) {
-  .draft-box,
-  .completed-box {
+  .draft-box, .completed-box {
     max-width: 100%;
   }
 }
@@ -295,6 +285,7 @@ ________________________________________________ */
   color: #e6401d;
   padding: 15px;
 }
+
 .navbar-bottom .nav-bottom-links a:hover {
   color: whitesmoke;
 }
@@ -323,13 +314,13 @@ ________________________________________________ */
 } */
 
 .cell {
-  width: 35px;
+  width: 30px;
+  height: 30px;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
   cursor: default;
   border: 0.5px solid gray;
-  height: 35px;
 }
 
 .highlighted {
@@ -341,18 +332,20 @@ ________________________________________________ */
 }
 
 .entry {
-  font-size: 25px;
+  font-size: 23px;
   text-align: center;
   width: 100%;
   /* padding: 2px; */
 }
 
 .number {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: bold;
   width: 100%;
-  height: 8%;
-  padding-left: 1px;
+  height: 0;
+  padding: 1px;
+  position: relative;
+  bottom: 1px;
 }
 
 .black {
@@ -368,7 +361,6 @@ ________________________________________________ */
 .input-container {
   display: flex;
   flex-flow: column nowrap;
-  width: 70%;
   max-width: 525px;
   align-items: flex-start;
   justify-content: center;
@@ -380,39 +372,29 @@ ________________________________________________ */
 }
 
 .clue-input-container {
-  width: 525px;
+  width: 100%;
+  max-width: 450px;
   border: 1px solid #ccc;
   background-color: aliceblue;
   border-radius: 4px;
-  padding: 8px 16px;
+  padding: 6px 12px;
   display: inline-block;
   box-sizing: border-box;
 }
-
-/* .clue-input-container input[type=text] {
-  border: none;
-  background-color: aliceblue;
-  font-size: 1.1rem;
-  width: 100%;
-} */
 
 .clue-input-container textarea {
   font-family: "Source Sans Pro", sans-serif;
   border: none;
   background-color: aliceblue;
   font-size: 1.1rem;
-  width: 100%;
   height: 45px;
 }
 
 .clue-list-container {
   display: flex;
   flex-flow: row nowrap;
-  width: 50%;
-}
-
-.clue-list-container ul {
-  list-style-type: none;
+  /* width: 50%; */
+  margin-left: .3rem;
 }
 
 .clue-list {
@@ -421,7 +403,8 @@ ________________________________________________ */
 }
 
 .clue-list ul {
-  height: 590px;
+  list-style-type: none;
+  height: 75vh;
   overflow-y: scroll;
   /* width: 100%; */
 }
@@ -453,9 +436,10 @@ ________________________________________________ */
 }
 
 .btn {
+  color: whitesmoke;
   border: none;
   border-radius: 5px;
-  padding: 8px 20px;
+  padding: 6px 18px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -463,9 +447,23 @@ ________________________________________________ */
   font-weight: 500;
 }
 
+#create-btn {
+  color: black;
+}
+
 #save-btn {
   background-color: rgb(46, 116, 49);
 }
+
 #complete-btn {
   background-color: rgb(80, 48, 117);
+}
+
+/* ----------- Tabs ------------------ */
+
+.tab-container {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  width: 100%;
 }
