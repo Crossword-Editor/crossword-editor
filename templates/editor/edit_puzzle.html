@@ -36,6 +36,11 @@
             <p v-show="lastSaved">on ${ lastSaved.date }</p>
           </div>
         </div>
+
+        <div class="export-file">
+          <a id="export-puzzle" download="my_exported_puzzle.json" href=””>Download as Text File</a>
+        </div>
+
       </div>
 
 
@@ -101,18 +106,35 @@
       </div>
     </v-tab>
 
-    <v-tab title="Rules">
-      <h2>
-        <ul>How to navigate the grid</ul>
-        <li>Do this and that</li>
-      </h2>
+    <v-tab title="Navigation">
+      <div class="tips">
+        <h3>Click Tips:</h3>
+        <ul>
+          <p>✚ Click <strong>"WordNerd"</strong> in top left corner to return to your home page.</p>
+          <p>✚ Click <strong>CREATE</strong> button to create a new puzzle.</p>
+          <p>✚ Click <strong>SAVE</strong> button to save your current puzzle.</p>
+          <p>✚ Click <strong>MARK AS COMPLETE</strong> button to finish your puzzle.</p>
+        </ul>
+
+        <h3>Cell Tips:</h3>
+        <ul>
+          <p>✚ Enter a period in a cell to create a black square.</p>
+          <p>✚ Use keyboard <strong>ARROWS</strong> to move from cell to cell.</p>
+          <p>✚ Press <strong>ENTER</strong> or <strong>SPACEBAR</strong> to change cell direction.</p>
+        </ul>
+
+        <h3>Grid Tips:</h3>
+        <ul>
+          <p>✚ Use mouse to click on clue to activate word.</p>
+          <p>✚ When editing current clue, <strong>TAB</strong> to return to grid.</p>
+          <p>✚ <strong>SHIFT + TAB</strong> to edit clue for current word.</p>
+          <p>✚ Select <strong>Puzzle Properties</strong> tab to change Symmetry Options.</p>
+        </ul>
+      </div>
     </v-tab>
   </vue-tabs>
 </div>
 
-<div class="export-file">
-  <a id="export-puzzle" download="my_exported_puzzle.json" href=””>Download as Text File</a>
-</div>
 
 
 <script>

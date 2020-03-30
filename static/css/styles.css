@@ -23,12 +23,12 @@ _______________________________________________________ */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100px;
+  height: 50px;
   background-color: #17202a;
 }
 
 .navbar-top .logo {
-  font-size: 40px;
+  font-size: 25px;
   margin-left: 50px;
   font-weight: 600;
   color: whitesmoke;
@@ -62,13 +62,12 @@ ________________________________________________ */
   background: url("../images/crossword-pencil.jpg") no-repeat;
   background-position: center;
   background-size: cover;
-  border-style: groove;
   position: relative;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
+  min-height: 96vh;
 }
 
 .welcome::before {
@@ -143,12 +142,12 @@ ________________________________________________ */
   background: url("../images/crossword-pencil.jpg") no-repeat;
   background-position: center;
   background-size: cover;
-  border-style: groove;
   position: relative;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  min-height: 80vh;
+  max-height: 100%;
+  min-height: 96vh;
 }
 
 .user-homepage::before {
@@ -171,6 +170,21 @@ ________________________________________________ */
   color: #17202a;
   z-index: 1;
 }
+
+
+#new-puzzle-form {
+  font-size: 20px;
+  /* justify-content: space-between; */
+}
+
+#new-puzzle-form input {
+  font-size: 16px;
+  justify-content: space-between;
+}
+
+/* #new-puzzle-form label:last-of-type {
+  margin-right: .25px;
+} */
 
 .flex-box {
   display: flex;
@@ -218,7 +232,6 @@ ________________________________________________ */
 .draft-box puzzle-title-display, .completed-box puzzle-title-display {
   font-size: 10px;
   font-weight: 400;
-  color: black;
   font-family: Montserrat, sans-serif;
   color: #17202a;
   text-align: center;
@@ -232,35 +245,22 @@ ________________________________________________ */
   }
 }
 
-/* New Puzzle Form
-________________________________________________ */
-
-#new-puzzle-form {
-  font-size: 20px;
-}
-
-#new-puzzle-form input {
-  font-size: 16px;
-}
-
-#new-puzzle-form label:last-of-type {
-  margin-right: 10px;
-}
 
 /* Bottom nav-bar
 ________________________________________________ */
-
+/* 
 .navbar-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100px;
+  height: 50px;
   width: 100%;
+
   background-color: #17202a;
 }
 
 .navbar-bottom p {
-  font-size: 30px;
+  font-size: 25px;
   font-family: Montserrat, sans-serif;
   font-weight: 600;
   color: whitesmoke;
@@ -269,7 +269,7 @@ ________________________________________________ */
 }
 
 .navbar-bottom .nav-bottom-links {
-  font-size: 30px;
+  font-size: 24px;
   font-family: Montserrat, sans-serif;
   font-weight: 600;
   display: flex;
@@ -277,7 +277,6 @@ ________________________________________________ */
   align-items: center;
   list-style: none;
   margin-right: 40px;
-  /* color: #e6401d; */
   background-color: #17202a;
 }
 
@@ -288,7 +287,7 @@ ________________________________________________ */
 
 .navbar-bottom .nav-bottom-links a:hover {
   color: whitesmoke;
-}
+} */
 
 /* -------- Crossword pages ----------- */
 
@@ -456,8 +455,14 @@ ________________________________________________ */
 }
 
 #complete-btn {
-  background-color: rgb(80, 48, 117);
+  background-color: rgb(46, 116, 49);
 }
+
+#export-puzzle {
+  font-size: 20px;
+  line-height: 5rem;
+}
+
 
 /* ----------- Tabs ------------------ */
 
@@ -466,4 +471,18 @@ ________________________________________________ */
   flex-flow: row nowrap;
   align-items: flex-start;
   width: 100%;
+}
+.tips h3 {
+  font-size: 24px;
+  color:rgb(46, 116, 49);
+  margin: 1rem;
+  margin-top: 40px;
+}
+.tips p {
+  font-size: 20px;
+  color: #17202a;
+  margin: 1.25rem;
+  margin-top: 0;
+  text-align: left;
+
 }
