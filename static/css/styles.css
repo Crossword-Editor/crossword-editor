@@ -63,6 +63,16 @@ _______________________________________________________ */
   color: whitesmoke;
 }
 
+.save-container {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.last-saved-container{
+  font-size: .8rem;
+  color: darkgrey
+}
+
 /* Welcome Index
 ________________________________________________ */
 

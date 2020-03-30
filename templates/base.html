@@ -17,7 +17,8 @@
 
 <body class='container'>
 
-  {% block topbar %}
+  {% block content %}
+{% block topbar %}
   <header>
     <nav class="navbar-top">
       <a class="logo" href="{% url 'home' %}"><h1>WordNerd</h1></a>
@@ -27,18 +28,20 @@
         |
         <a href="{% url 'registration_register' %}">Register</a>
         {% else %}
-        <a href="{% url 'auth_logout' %}">Logout </a>
+        <a href="{% url 'auth_logout' %}?next=/">Logout </a>
         {% endif %}
       </ul>
     </nav>
   </header>
   {% endblock topbar %}
 
+
   <main>
-    {% block content %}
-    {% endblock content%}
+    {% block main %}
+    {% endblock main %}
   </main>
 
+  {% endblock content%}
 </body>
 
 

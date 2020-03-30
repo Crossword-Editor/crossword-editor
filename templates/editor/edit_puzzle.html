@@ -5,11 +5,37 @@
 {% endblock meta %}
 
 {% block content %}
+
 <!-- Pass in puzzle json from Django template context -->
 {{ puzzle|json_script:"puzzle-data" }}
 
 <div id="editor-app">
+  {% block topbar %}
+  <header>
+    <nav class="navbar-top">
+      <a class="logo" href="{% url 'home' %}"><h1>WordNerd</h1></a>
+      <div class="save-container">
+        <button class="btn save-btn" @click="savePuzzle">Save</button>
+        <div class="last-saved-container">
+          <p v-show="lastSaved">Last saved at ${ lastSaved.time }</p>
+          <p v-show="lastSaved">on ${ lastSaved.date }</p>
+        </div>
+      </div>
+      <ul class="nav-top-links">
+        {% if not user.is_authenticated %}
+        <a href="{% url 'auth_login' %}">Login </a>
+        |
+        <a href="{% url 'registration_register' %}">Register</a>
+        {% else %}
+        <a href="{% url 'auth_logout' %}">Logout </a>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+  {% endblock topbar %}
 
+
+  {% block main %}
   <vue-tabs>
     <v-tab title="Grid">
       <div class="input-container">
@@ -30,11 +56,7 @@
               <div slot="entry" class="entry">${ grid[n-1] }</div>
             </x-cell>
           </div>
-          <div class="save-container">
-            <button class="btn save-btn" @click="savePuzzle">Save</button>
-            <span v-show="lastSaved">Last saved at ${ lastSaved.time }</span>
-            <span v-show="lastSaved">on ${ lastSaved.date }</span>
-          </div>
+
         </div>
       </div>
 
@@ -127,6 +149,9 @@
       </div>
     </v-tab>
   </vue-tabs>
+
+{% endblock main %}
+
 </div>
 
 
