@@ -13,7 +13,7 @@
   <vue-tabs>
     <v-tab title="Grid">
       <div class="input-container">
-        <span v-if="grid[activeCell]==='.'" style="visibility: hidden"><b>Hide</b></span>
+        <span v-if="grid[activeCell]==='.'" style="visibility:hidden; height:1.4rem"><b>72 Hide</b></span>
         <span class="clue-input-label" v-if="grid[activeCell]!=='.'">
           ${ gridnums[highlighted[0]] } ${direction}:
         </span>
@@ -111,7 +111,7 @@
     <v-tab title="Export">
       <div class="export-file">
         <a id="export-puzzle-json" download="my_exported_puzzle.json" href="">
-         <button class="btn save-btn">Download as JSON</button>
+          <button class="btn save-btn">Download as JSON</button>
         </a>
         (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/ format</a>)
       </div>
@@ -427,19 +427,18 @@
       computeSymmetry(idx) {
         let row = this.arrayToCoor(idx).row
         let col = this.arrayToCoor(idx).col
-        let pm // 1 or -1
-        if (this.symmetry === "rotational") {
-          return this.coorToArray(this.rowN - row - 1, this.colN - col - 1)
-        }
-        else if (this.symmetry === "vertical") {
-          let newCol = this.colN - col - 1
-          return this.coorToArray(row, newCol)
-        }
-        else if (this.symmetry === "horizontal") {
-          let newRow = this.rowN - row - 1
-          return this.coorToArray(newRow, col)
-          //pm = (row > this.rowN / 2) ? -1 : 1
-          //return pm * this.colN * (this.rowN - 1 - row) + col
+        let newRow = this.rowN - row - 1
+        let newCol = this.colN - col - 1
+        switch (this.symmetry) {
+          case "rotational":
+            return this.coorToArray(newRow, newCol)
+            break
+          case "vertical":
+            return this.coorToArray(row, newCol)
+            break
+          case "horizontal":
+            return this.coorToArray(newRow, col)
+            break
         }
       },
 
