@@ -143,12 +143,13 @@ ________________________________________________ */
   background: url("../images/crossword-pencil.jpg") no-repeat;
   background-position: center;
   background-size: cover;
-  border-style: groove;
+  /* border-style: groove; */
   position: relative;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  min-height: 80vh;
+  height: 86vh;
+  /* min-height: 100vh; */
 }
 
 .user-homepage::before {
