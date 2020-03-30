@@ -32,8 +32,8 @@
           </div>
           <div class="save-container">
             <button id="save-btn" class="btn save-btn" @click="savePuzzle">Save</button>
-            <p v-show="lastSaved">Last saved at ${ lastSaved.time }</p>
-            <p v-show="lastSaved">on ${ lastSaved.date }</p>
+            <span v-show="lastSaved">Last saved at ${ lastSaved.time }</span>
+            <span v-show="lastSaved">on ${ lastSaved.date }</span>
           </div>
         </div>
       </div>
@@ -299,13 +299,13 @@
           down: []
         }
         this.clueNumbers.across.map((number) => {
-          let clue = this.clues.across[String(number)]
+          let clue = this.clues.across[number]
           let exportClue = `${number}. ${clue}`
           clues.across.push(exportClue)
         })
 
         this.clueNumbers.down.map((number) => {
-          let clue = this.clues.down[String(number)]
+          let clue = this.clues.down[number]
           let exportClue = `${number}. ${clue}`
           clues.down.push(exportClue)
         })
