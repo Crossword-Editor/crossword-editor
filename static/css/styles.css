@@ -459,6 +459,11 @@ ________________________________________________ */
   color: whitesmoke;
 }
 
+#delete-btn {
+  background-color: rgb(165, 0, 0);
+  color: whitesmoke;
+}
+
 .save-btn:hover {
   background-color: rgb(54, 138, 58);
 }
@@ -475,4 +480,9 @@ ________________________________________________ */
   flex-flow: row nowrap;
   align-items: flex-start;
   width: 100%;
+}
+
+label {
+  font-size: 1.1rem;
+  font-weight: 600;
 }

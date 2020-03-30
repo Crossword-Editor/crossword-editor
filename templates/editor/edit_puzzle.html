@@ -13,8 +13,8 @@
   <vue-tabs>
     <v-tab title="Grid">
       <div class="input-container">
-        <span v-if="grid[activeCell]==='.'" style="visibility:hidden; height:1.4rem"><b>72 Hide</b></span>
-        <span class="clue-input-label" v-if="grid[activeCell]!=='.'">
+        <span v-if="grid[activeCell]===BLACK" style="visibility:hidden; height:1.4rem"><b>Hide</b></span>
+        <span class="clue-input-label" v-if="grid[activeCell]!==BLACK">
           ${ gridnums[highlighted[0]] } ${direction}:
         </span>
         <div class="clue-input-container">
@@ -66,11 +66,11 @@
     <v-tab title="Puzzle Properties">
       <div class="title-container">
         <label for="title-inp">Title:</label>
-        <input type="text" name="title-inp" maxlength="64">
+        <input v-model="title" type="text" id="title-inp" maxlength="64">
       </div>
       <div class="description-container">
         <label for="description-inp">Description/Notes:</label>
-        <textarea name="description-inp" maxlength="1023"></textarea>
+        <textarea v-model="description" id="description-inp" maxlength="1023"></textarea>
       </div>
       <div class="delete-container">
         <label for="delete-btn">Delete this puzzle (this cannon be undone; export this puzzle's data if you need
@@ -209,12 +209,13 @@
     data: {
       grid: puzzleData.grid, // flat array representation of the grid (left->right, top->bottom)
       clues: puzzleData.clues,
-      // across: puzzleData.clues.across,
-      // down: puzzleData.clues.down,
       rowN: puzzleData.size.rowN,
       colN: puzzleData.size.colN,
+      title: puzzleData.title,
+      description: puzzleData.description,
       symmetry: 'rotational', // other values: none, vertical, horizontal
       isVertical: false,
+      BLACK: '.',
       across: 'across', // string needed for x-clue component prop
       down: 'down', // string needed for x-clue component prop
       activeCell: 0,
@@ -299,28 +300,25 @@
           across: [],
           down: []
         }
-        this.clueNumbers.across.map((number) => {
-          let clue = this.clues.across[number]
-          let exportClue = `${number}. ${clue}`
-          clues.across.push(exportClue)
-        })
 
-        this.clueNumbers.down.map((number) => {
-          let clue = this.clues.down[number]
-          let exportClue = `${number}. ${clue}`
-          clues.down.push(exportClue)
-        })
-        let answers = {
-          across: [],
-          down: []
+        for (let dir of ['across', 'down']) {
+          this.clueNumbers[dir].map((number) => {
+            let clue = this.clues[dir][number]
+            let exportClue = `${number}. ${clue}`
+            clues[dir].push(exportClue)
+          })
         }
-        answers.across = grid.join("").split('.').filter((word) => { return word !== "" })
 
+        let answers = {}
+        answers.across = grid.join("").split('.').filter((word) => { return word !== "" })
         answers.down = this.clueNumbers.down.map((idx) => {
-          return this.getInterval(Number(idx), "down").map((index) => {
-            return this.grid[index]
-          }).join("")
-        }).filter((word) => { return word !== "" })
+          return this.getInterval(Number(idx), "down")
+            .map((index) => {
+              return this.grid[index]
+            })
+            .join("")
+        })
+          .filter((word) => { return word !== "" })
 
         return JSON.stringify({ grid, gridnums, size, clues, answers })
       },
@@ -380,8 +378,10 @@
         let grid = this.grid
         let clues = this.clues
         let size = { rowN: this.rowN, colN: this.colN }
+        let title = this.title
+        let description = this.description
         let pk = puzzleData.pk
-        return { grid, clues, size, pk }
+        return { grid, clues, size, title, description, pk }
       },
 
       savePuzzle() {
@@ -583,7 +583,7 @@
 
     created: function () {
       document.addEventListener('keydown', (event) => {
-        const ignoreIds = ['clue-input', 'rowN-resize', 'colN-resize']
+        const ignoreIds = ['clue-input', 'title-inp', 'description-inp']
         if (!ignoreIds.includes(event.target.id)) {
           this.keyhandle(event)
         }
