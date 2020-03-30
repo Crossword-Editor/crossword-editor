@@ -31,7 +31,7 @@
             </x-cell>
           </div>
           <div class="save-container">
-            <button id="save-btn" class="btn save-btn" @click="savePuzzle">Save</button>
+            <button class="btn save-btn" @click="savePuzzle">Save</button>
             <span v-show="lastSaved">Last saved at ${ lastSaved.time }</span>
             <span v-show="lastSaved">on ${ lastSaved.date }</span>
           </div>
@@ -64,41 +64,50 @@
     </v-tab>
 
     <v-tab title="Puzzle Properties">
-      <div class="title-container">
-        <label for="title-inp">Title:</label>
-        <input v-model="title" type="text" id="title-inp" maxlength="64">
-      </div>
-      <div class="description-container">
-        <label for="description-inp">Description/Notes:</label>
-        <textarea v-model="description" id="description-inp" maxlength="1023"></textarea>
-      </div>
-      <div class="delete-container">
-        <label for="delete-btn">Delete this puzzle (this cannon be undone; export this puzzle's data if you need
-          to keep a copy)</label>
-        <button id="delete-btn" class="btn danger" title="Delete puzzle">Delete</button>
-      </div>
+      <div class="properties-container">
+        <div class="title-container prop-container">
+          <label for="title-inp">Title:</label>
+          <input v-model="title" type="text" id="title-inp" maxlength="64">
+        </div>
+        <div class="description-container prop-container">
+          <label for="description-inp">Description/Notes:</label>
+          <textarea v-model="description" id="description-inp" maxlength="1023"></textarea>
+        </div>
+        <div class="save-container prop-container">
+          <button class="btn save-btn" @click="savePuzzle">Save</button>
+          <span v-show="lastSaved">Last saved at ${ lastSaved.time }</span>
+          <span v-show="lastSaved">on ${ lastSaved.date }</span>
+        </div>
 
-      <div class="symmetry-container">
-        <div>
-          <input type="radio" id="rotational" name="symmetry" value="rotational" v-model="symmetry">
-          <label for="rotational">Rotational (default)</label>
+        <div class="symmetry-container prop-container">
+          <div>
+            <input type="radio" id="rotational" name="symmetry" value="rotational" v-model="symmetry">
+            <label for="rotational">Rotational (default)</label>
+          </div>
+          <div>
+            <input type="radio" id="vertical" name="symmetry" value="vertical" v-model="symmetry">
+            <label for="vertical">Vertical</label>
+          </div>
+          <div>
+            <input type="radio" id="horizontal" name="symmetry" value="horizontal" v-model="symmetry">
+            <label for="horizontal">Horizontal</label>
+          </div>
+          <div>
+            <input type="radio" id="none" name="symmetry" value="none" v-model="symmetry">
+            <label for="none">None</label>
+          </div>
         </div>
-        <div>
-          <input type="radio" id="vertical" name="symmetry" value="vertical" v-model="symmetry">
-          <label for="vertical">Vertical</label>
-        </div>
-        <div>
-          <input type="radio" id="horizontal" name="symmetry" value="horizontal" v-model="symmetry">
-          <label for="horizontal">Horizontal</label>
-        </div>
-        <div>
-          <input type="radio" id="none" name="symmetry" value="none" v-model="symmetry">
-          <label for="none">None</label>
-        </div>
-      </div>
 
-      <div class="complete-container">
-        <button id="complete-btn" class="btn" @click="completePuzzle">Mark as complete</button>
+        <div class="complete-container prop-container">
+          <button id="complete-btn" class="btn" @click="completePuzzle">Mark as complete</button>
+        </div>
+
+        <div class="delete-container prop-container">
+          <label for="delete-btn">Delete this puzzle (this cannon be undone; export this puzzle's data if you need
+            to keep a copy)</label>
+          <button id="delete-btn" class="btn danger" title="Delete puzzle">Delete</button>
+        </div>
+
       </div>
     </v-tab>
 

@@ -482,7 +482,30 @@ ________________________________________________ */
   width: 100%;
 }
 
-label {
+.properties-container label {
   font-size: 1.1rem;
   font-weight: 600;
+  display: block;
+}
+
+.properties-container {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  width: 100%;
+}
+
+.prop-container {
+  margin: 1rem;
+  padding: 1rem 2rem;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.description-container textarea {
+  font-family: "Source Sans Pro", sans-serif;
+  border: none;
+  background-color: aliceblue;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
 }
