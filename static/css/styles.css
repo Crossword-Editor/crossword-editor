@@ -1,5 +1,8 @@
 :root {
   --active-black-color: #645500;
+  --home-page-link-color: #0518c2;
+  --home-page-link-color-hover: #879ff1;
+
 }
 
 * {
@@ -33,6 +36,11 @@ _______________________________________________________ */
   font-weight: 600;
   color: whitesmoke;
 }
+
+.navbar-top .logo:hover {
+  text-decoration: underline;
+}
+
 
 .navbar-top .nav-top-links {
   display: flex;
@@ -201,30 +209,17 @@ ________________________________________________ */
 }
 
 .draft-box a, .completed-box a {
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 600;
-  color: #0537df;
+  color: var(--home-page-link-color)
 }
 
 .draft-box a:hover, .completed-box a:hover {
-  color: #879ff1;
+  color: var(--home-page-link-color-hover);
 }
 
-.draft-box display-title, .completed-box display-title {
-  font-size: 20px;
-  font-weight: 400;
-  color: black;
-}
-
-.draft-box puzzle-title-display, .completed-box puzzle-title-display {
-  font-size: 10px;
-  font-weight: 400;
-  color: black;
-  font-family: Montserrat, sans-serif;
-  color: #17202a;
-  text-align: center;
-  margin-left: 75px;
-  width: 95%;
+.puzzle-title-display {
+  padding: 3px;
 }
 
 @media screen and (max-width: 700px) {
@@ -237,11 +232,16 @@ ________________________________________________ */
 ________________________________________________ */
 
 #new-puzzle-form {
-  font-size: 20px;
+  font-size: 1.2rem;
+  margin: 0.5rem;
 }
 
 #new-puzzle-form input {
-  font-size: 16px;
+  font-size: 1.1rem;
+  padding: 2px;
+  border: 0.5px solid gray;
+  border-radius: 5px;
+  width: 4rem;
 }
 
 #new-puzzle-form label:last-of-type {
@@ -394,7 +394,7 @@ ________________________________________________ */
 .clue-list-container {
   display: flex;
   flex-flow: row nowrap;
-  /* width: 50%; */
+  width: 100%;
   margin-left: .3rem;
 }
 
@@ -440,9 +440,12 @@ ________________________________________________ */
   background-color: rgb(224, 240, 255);
 }
 
+/* ----------- Buttons ------------------ */
+
 .btn {
   border: none;
   border-radius: 5px;
+  color: white;
   padding: 6px 18px;
   text-align: center;
   text-decoration: none;
@@ -452,17 +455,19 @@ ________________________________________________ */
 }
 
 #create-btn {
-  color: black;
+  background-color: var(--home-page-link-color);
+}
+
+#create-btn:hover {
+  background-color: var(--home-page-link-color-hover)
 }
 
 .save-btn {
   background-color: rgb(46, 116, 49);
-  color: whitesmoke;
 }
 
 #delete-btn {
   background-color: rgb(165, 0, 0);
-  color: whitesmoke;
 }
 
 .save-btn:hover {
@@ -471,7 +476,6 @@ ________________________________________________ */
 
 #complete-btn {
   background-color: rgb(80, 48, 117);
-  color: whitesmoke;
 }
 
 /* ----------- Tabs ------------------ */
@@ -480,7 +484,7 @@ ________________________________________________ */
   display: flex;
   flex-flow: row nowrap;
   align-items: flex-start;
-  width: 100%;
+  width: 100vw;
 }
 
 .properties-container label {
@@ -490,9 +494,9 @@ ________________________________________________ */
 }
 
 .properties-container {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
+  /* display: flex;
+  flex-flow:  wrap;
+  align-items: center; */
   width: 100%;
 }
 

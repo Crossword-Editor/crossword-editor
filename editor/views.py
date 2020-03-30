@@ -68,6 +68,7 @@ def new(request):
 
 def createEmptyGrid(rowN, colN):
     puzzle = {"size": {"rowN": rowN, "colN": colN}}
+    puzzle["title"] = "untitled"
     puzzle["grid"] = ['' for i in range(rowN*colN)]
     puzzle["clues"] = {"across": {}, "down": {}}
     puzzle["clues"]["down"] = {f'{i+1}': '' for i in range(colN)}
