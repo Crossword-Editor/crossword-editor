@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 
 from .models import Puzzle
 
@@ -55,13 +55,6 @@ def mark_complete(request):
     return JsonResponse({"redirect": True})
 
 
-# @login_required(login_url='/accounts/login')
-# def puzzles_complete(request):
-#     user = User.objects.get(username=request.user.username)
-#     puzzles = Puzzle.objects.all()
-#     context = {'puzzles': puzzles}
-#     return render(request, 'editor/puzzles_complete.html', context=context)
-
 @csrf_exempt
 @login_required
 def new(request):
@@ -73,7 +66,6 @@ def new(request):
     return JsonResponse({"pk": new_puzzle.pk})
 
 
-
 def createEmptyGrid(rowN, colN):
     puzzle = {"size": {"rowN": rowN, "colN": colN}}
     puzzle["grid"] = ['' for i in range(rowN*colN)]
@@ -83,12 +75,25 @@ def createEmptyGrid(rowN, colN):
         ('1' if i == 0 else f'{i+colN}'): '' for i in range(rowN)}
     return puzzle
 
-# @login_required(login_url='/accounts/login')
-# def puzzles_complete(request):
-#     user = User.objects.get(username=request.user.username)
-#     puzzles = Puzzle.objects.all()
-#     context = {'puzzles': puzzles}
-#     return render(request, 'editor/puzzles_complete.html', context=context)
+
+@login_required
+@csrf_exempt
+@require_http_methods(['DELETE'])
+def delete(request, pk):
+    puzzle = Puzzle.objects.get(pk=pk)
+    if puzzle.owner == request.user:
+        puzzle.delete()
+        return JsonResponse({
+            "status": "ok",
+            "message": "Successfully deleted"
+        })
+    else:
+        return JsonResponse({
+            "status": "not-ok",
+            "message": "An error occured"
+        })
+
+
 # @login_required(login_url='/accounts/login')
 # def puzzle_details(request, pk):
 #     user = User.objects.get(username=request.user.username)

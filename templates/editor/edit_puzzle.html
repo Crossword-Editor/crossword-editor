@@ -64,17 +64,29 @@
     </v-tab>
 
     <v-tab title="Puzzle Properties">
+      <div class="title-container">
+        <label for="title-inp">Title:</label>
+        <input type="text" name="title-inp" maxlength="64">
+      </div>
+      <div class="description-container">
+        <label for="description-inp">Description/Notes:</label>
+        <textarea name="description-inp" maxlength="1023"></textarea>
+      </div>
+      <div class="delete-container">
+        <label for="delete-btn">Delete this puzzle (this cannon be undone; export this puzzle's data if you need
+          to keep a copy)</label>
+        <button id="delete-btn" class="btn danger" title="Delete puzzle">Delete</button>
+      </div>
+
       <div class="symmetry-container">
         <div>
           <input type="radio" id="rotational" name="symmetry" value="rotational" v-model="symmetry">
           <label for="rotational">Rotational (default)</label>
         </div>
-
         <div>
           <input type="radio" id="vertical" name="symmetry" value="vertical" v-model="symmetry">
           <label for="vertical">Vertical</label>
         </div>
-
         <div>
           <input type="radio" id="horizontal" name="symmetry" value="horizontal" v-model="symmetry">
           <label for="horizontal">Horizontal</label>
@@ -84,17 +96,6 @@
           <label for="none">None</label>
         </div>
       </div>
-
-      {% comment %}
-      <div class="size-container">
-        <input v-model.number="rowN" type="number" id="rowN-resize" name="rowN" min="1" max="30"
-          style="display: inline;" class="inp">
-        <label for="rowN">rows</label>
-        and <input v-model.number="colN" type="number" id="colN-resize" name="colN" min="1" max="30"
-          style="display: inline;" class="inp">
-        <label for="colN">columns.</label>
-      </div>
-      {% endcomment %}
 
       <div class="complete-container">
         <button id="complete-btn" class="btn" @click="completePuzzle">Mark as complete</button>
@@ -594,6 +595,27 @@
   const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
   let url = window.URL.createObjectURL(data)
   document.querySelector('#export-puzzle-json').href = url
+
+  const deleteButton = document.querySelector('#delete-btn')
+  deleteButton.addEventListener('click', deleteEvent)
+  function deleteEvent(event) {
+    const result = confirm('Do you want to permanently delete this puzzle?')
+    if (result) {
+      return fetch(`/delete/${puzzleData.pk}/`, { method: 'DELETE' })
+        .then((resp) => {
+          return resp.json()
+        })
+        .then(jsonResp => {
+          if (jsonResp.status === 'ok') {
+            window.location.href = '/'
+          }
+          else {
+            deleteButton.insertAdjacentHTML('afterend', `<div class="error">${jsonResp.message}</div>`)
+          }
+        })
+    }
+  }
+
 
 
 </script>
