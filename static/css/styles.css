@@ -1,5 +1,7 @@
 :root {
   --active-black-color: #645500;
+  --home-page-link-color: #0518c2;
+  --home-page-link-color-hover: #879ff1;
 }
 
 * {
@@ -23,15 +25,19 @@ _______________________________________________________ */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100px;
+  height: 50px;
   background-color: #17202a;
 }
 
 .navbar-top .logo {
-  font-size: 40px;
-  margin-left: 50px;
+  font-size: 25px;
+  margin-left: 2rem;
   font-weight: 600;
   color: whitesmoke;
+}
+
+.navbar-top .logo:hover {
+  text-decoration: underline;
 }
 
 .navbar-top .nav-top-links {
@@ -40,19 +46,36 @@ _______________________________________________________ */
   align-items: center;
   list-style: none;
   margin-right: 20px;
-  color: #e6401d;
 }
 
 .navbar-top .nav-top-links a {
   font-size: 24px;
   font-weight: 600;
-  color: #e6401d;
+  color: #85abd2;
   padding: 15px;
   transition: all 0.2s ease;
 }
 
 .navbar-top .nav-top-links a:hover {
   color: whitesmoke;
+}
+
+.left-nav {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.save-container {
+  display: flex;
+  flex-flow: row nowrap;
+  margin-left: 1rem;
+}
+
+.last-saved-container {
+  margin: 0 0.5rem;
+  font-size: .8rem;
+  color: darkgrey
 }
 
 /* Welcome Index
@@ -62,13 +85,12 @@ ________________________________________________ */
   background: url("../images/crossword-pencil.jpg") no-repeat;
   background-position: center;
   background-size: cover;
-  border-style: groove;
   position: relative;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
+  min-height: 96vh;
 }
 
 .welcome::before {
@@ -88,7 +110,7 @@ ________________________________________________ */
   font-family: Montserrat, sans-serif;
   text-align: center;
   margin: 20px 0 30px;
-  color: #e6401d;
+  color: #183f8a;
   z-index: 1;
 }
 
@@ -143,12 +165,12 @@ ________________________________________________ */
   background: url("../images/crossword-pencil.jpg") no-repeat;
   background-position: center;
   background-size: cover;
-  border-style: groove;
   position: relative;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  min-height: 80vh;
+  max-height: 100%;
+  min-height: 96vh;
 }
 
 .user-homepage::before {
@@ -171,6 +193,20 @@ ________________________________________________ */
   color: #17202a;
   z-index: 1;
 }
+
+#new-puzzle-form {
+  font-size: 20px;
+  /* justify-content: space-between; */
+}
+
+#new-puzzle-form input {
+  font-size: 16px;
+  justify-content: space-between;
+}
+
+/* #new-puzzle-form label:last-of-type {
+  margin-right: .25px;
+} */
 
 .flex-box {
   display: flex;
@@ -200,30 +236,17 @@ ________________________________________________ */
 }
 
 .draft-box a, .completed-box a {
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 600;
-  color: #0537df;
+  color: var(--home-page-link-color)
 }
 
 .draft-box a:hover, .completed-box a:hover {
-  color: #879ff1;
+  color: var(--home-page-link-color-hover);
 }
 
-.draft-box display-title, .completed-box display-title {
-  font-size: 20px;
-  font-weight: 400;
-  color: black;
-}
-
-.draft-box puzzle-title-display, .completed-box puzzle-title-display {
-  font-size: 10px;
-  font-weight: 400;
-  color: black;
-  font-family: Montserrat, sans-serif;
-  color: #17202a;
-  text-align: center;
-  margin-left: 75px;
-  width: 95%;
+.puzzle-title-display {
+  padding: 3px;
 }
 
 @media screen and (max-width: 700px) {
@@ -236,11 +259,16 @@ ________________________________________________ */
 ________________________________________________ */
 
 #new-puzzle-form {
-  font-size: 20px;
+  font-size: 1.2rem;
+  margin: 0.5rem;
 }
 
 #new-puzzle-form input {
-  font-size: 16px;
+  font-size: 1.1rem;
+  padding: 2px;
+  border: 0.5px solid gray;
+  border-radius: 5px;
+  width: 4rem;
 }
 
 #new-puzzle-form label:last-of-type {
@@ -250,17 +278,19 @@ ________________________________________________ */
 /* Bottom nav-bar
 ________________________________________________ */
 
+/*
 .navbar-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100px;
+  height: 50px;
   width: 100%;
+
   background-color: #17202a;
 }
 
 .navbar-bottom p {
-  font-size: 30px;
+  font-size: 25px;
   font-family: Montserrat, sans-serif;
   font-weight: 600;
   color: whitesmoke;
@@ -269,7 +299,7 @@ ________________________________________________ */
 }
 
 .navbar-bottom .nav-bottom-links {
-  font-size: 30px;
+  font-size: 24px;
   font-family: Montserrat, sans-serif;
   font-weight: 600;
   display: flex;
@@ -277,7 +307,6 @@ ________________________________________________ */
   align-items: center;
   list-style: none;
   margin-right: 40px;
-  /* color: #e6401d; */
   background-color: #17202a;
 }
 
@@ -288,16 +317,9 @@ ________________________________________________ */
 
 .navbar-bottom .nav-bottom-links a:hover {
   color: whitesmoke;
-}
+} */
 
 /* -------- Crossword pages ----------- */
-
-#editor-app {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: flex-start;
-  margin: 0 0.5rem;
-}
 
 .grid {
   width: max-content;
@@ -393,7 +415,7 @@ ________________________________________________ */
 .clue-list-container {
   display: flex;
   flex-flow: row nowrap;
-  /* width: 50%; */
+  width: 100%;
   margin-left: .3rem;
 }
 
@@ -410,6 +432,10 @@ ________________________________________________ */
 }
 
 .clue-list-title {
+  border-radius: 5px;
+  width: 97%;
+  padding: 0 0.3rem;
+  background-color: aliceblue;
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -435,35 +461,125 @@ ________________________________________________ */
   background-color: rgb(224, 240, 255);
 }
 
+/* ----------- Buttons ------------------ */
+
 .btn {
-  color: whitesmoke;
   border: none;
   border-radius: 5px;
+  color: white;
   padding: 6px 18px;
-  text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 1.1rem;
   font-weight: 500;
+  height: 35px;
 }
 
 #create-btn {
-  color: black;
+  background-color: var(--home-page-link-color);
 }
 
-#save-btn {
-  background-color: rgb(46, 116, 49);
+#create-btn:hover {
+  background-color: var(--home-page-link-color-hover)
+}
+
+.save-btn {
+  font-size: 1.2rem;
+  background-color: rgb(49, 93, 150);
+}
+
+.save-btn:hover {
+  background-color: rgb(60, 114, 185);
+}
+
+#delete-btn {
+  background-color: rgb(165, 0, 0);
+}
+
+#delete-btn:hover {
+  background-color: rgb(114, 5, 5);
 }
 
 #complete-btn {
-  background-color: rgb(80, 48, 117);
+  background-color: rgb(46, 116, 49);
+}
+
+#complete-btn:hover {
+  background-color: rgb(31, 77, 33);
 }
 
 /* ----------- Tabs ------------------ */
+
+.vue-tabs .nav-tabs>li>a {
+  line-height: 1;
+}
 
 .tab-container {
   display: flex;
   flex-flow: row nowrap;
   align-items: flex-start;
+  padding: 0 .5rem;
+  width: 100vw;
+}
+
+.properties-container label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: block;
+}
+
+.properties-container {
+  /* display: flex;
+  flex-flow:  wrap;
+  align-items: center; */
   width: 100%;
+}
+
+.prop-container {
+  margin: 1rem;
+  padding: 1rem 2rem;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+#title-inp {
+  font-family: "Source Sans Pro", sans-serif;
+  border: none;
+  background-color: aliceblue;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  height: 2rem;
+  border-radius: 5px;
+}
+
+.description-container textarea {
+  font-family: "Source Sans Pro", sans-serif;
+  border: none;
+  background-color: aliceblue;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  height: 6rem;
+  border-radius: 5px;
+}
+
+.radio-container label{
+margin: .5rem ;
+  display: inline;
+}
+
+.tips h3 {
+  font-size: 24px;
+  color: rgb(46, 116, 49);
+  margin: 1rem;
+  margin-top: 40px;
+}
+
+.tips p {
+  font-size: 20px;
+  color: #17202a;
+  margin: 1.25rem;
+  margin-top: 0;
+  text-align: left;
 }

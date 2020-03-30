@@ -3,7 +3,7 @@
 
 
 
-{% block content %}
+{% block main %}
 
 
   <div class="welcome">
@@ -22,7 +22,7 @@
               <p><strong>✚ Master-Class.</strong> Construct and submit to the New York Times!</p>
             </ul>
         </div>
-      
+
         <div class="feature-box">
           <h3>Features include:</h3>
             <ul>
@@ -34,12 +34,12 @@
         </div>
 
 
-    
+
 
     </div>
 </div>
 
-{% block bottombar %}
+{% comment %} {% block bottombar %}
     <div class="navbar-bottom">
       <p>Already have an account? Login. Or, Register Today!</p>
       <ul class="nav-bottom-links">
@@ -49,8 +49,8 @@
         {% endif %}
       </ul>
     </div>
-  {% endblock bottombar %}
+  {% endblock bottombar %} {% endcomment %}
 
-{% endblock content %}
+{% endblock main %}
 
 

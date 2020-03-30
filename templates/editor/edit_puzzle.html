@@ -5,16 +5,41 @@
 {% endblock meta %}
 
 {% block content %}
+
 <!-- Pass in puzzle json from Django template context -->
 {{ puzzle|json_script:"puzzle-data" }}
 
 <div id="editor-app">
 
+  {% block topbar %}
+  <header>
+    <nav class="navbar-top">
+      <div class="left-nav">
+        <a class="logo" href="{% url 'home' %}">
+          <h1>WordNerd</h1>
+        </a>
+        <div class="save-container">
+          <button class="btn save-btn" @click="savePuzzle">Save</button>
+          <div class="last-saved-container">
+            <p v-show="lastSaved">Last saved at ${ lastSaved.time }</p>
+            <p v-show="lastSaved">on ${ lastSaved.date }</p>
+          </div>
+        </div>
+      </div>
+      <ul class="nav-top-links">
+        <a href="{% url 'auth_logout' %}">Logout </a>
+      </ul>
+    </nav>
+  </header>
+  {% endblock topbar %}
+
+
+  {% block main %}
   <vue-tabs>
     <v-tab title="Grid">
       <div class="input-container">
-        <span v-if="grid[activeCell]==='.'" style="visibility: hidden"><b>Hide</b></span>
-        <span class="clue-input-label" v-if="grid[activeCell]!=='.'">
+        <span v-if="grid[activeCell]===BLACK" style="visibility:hidden; height:1.4rem"><b>Hide</b></span>
+        <span class="clue-input-label" v-if="grid[activeCell]!==BLACK">
           ${ gridnums[highlighted[0]] } ${direction}:
         </span>
         <div class="clue-input-container">
@@ -29,11 +54,6 @@
               <div slot="number" class="number"><span v-if="gridnums[n-1] !== 0">${ gridnums[n-1] }</span></div>
               <div slot="entry" class="entry">${ grid[n-1] }</div>
             </x-cell>
-          </div>
-          <div class="save-container">
-            <button id="save-btn" class="btn" @click="savePuzzle">Save</button>
-            <p v-show="lastSaved">Last saved at ${ lastSaved.time }</p>
-            <p v-show="lastSaved">on ${ lastSaved.date }</p>
           </div>
         </div>
       </div>
@@ -64,55 +84,89 @@
     </v-tab>
 
     <v-tab title="Puzzle Properties">
-      <div class="symmetry-container">
-        <div>
-          <input type="radio" id="rotational" name="symmetry" value="rotational" v-model="symmetry">
-          <label for="rotational">Rotational (default)</label>
+      <div class="properties-container">
+        <div class="title-container prop-container">
+          <label for="title-inp">Title:</label>
+          <input v-model="title" type="text" id="title-inp" maxlength="64">
+        </div>
+        <div class="description-container prop-container">
+          <label for="description-inp">Description/Notes:</label>
+          <textarea v-model="description" id="description-inp" maxlength="1023"></textarea>
         </div>
 
-        <div>
-          <input type="radio" id="vertical" name="symmetry" value="vertical" v-model="symmetry">
-          <label for="vertical">Vertical</label>
+        <div class="symmetry-container prop-container">
+          <div class="radio-container">
+            <input type="radio" id="rotational" name="symmetry" value="rotational" v-model="symmetry">
+            <label for="rotational">Rotational (default)</label>
+          </div>
+          <div class="radio-container">
+            <input type="radio" id="vertical" name="symmetry" value="vertical" v-model="symmetry">
+            <label for="vertical">Vertical</label>
+          </div>
+          <div class="radio-container">
+            <input type="radio" id="horizontal" name="symmetry" value="horizontal" v-model="symmetry">
+            <label for="horizontal">Horizontal</label>
+          </div>
+          <div class="radio-container">
+            <input type="radio" id="none" name="symmetry" value="none" v-model="symmetry">
+            <label for="none">None</label>
+          </div>
         </div>
 
-        <div>
-          <input type="radio" id="horizontal" name="symmetry" value="horizontal" v-model="symmetry">
-          <label for="horizontal">Horizontal</label>
+        <div class="complete-container prop-container">
+          <button id="complete-btn" class="btn green" @click="completePuzzle">Mark as complete</button>
         </div>
-        <div>
-          <input type="radio" id="none" name="symmetry" value="none" v-model="symmetry">
-          <label for="none">None</label>
+
+        <div class="delete-container prop-container">
+          <label for="delete-btn">Delete this puzzle (this cannon be undone; export this puzzle's data if you need
+            to keep a copy)</label>
+          <button id="delete-btn" class="btn danger" title="Delete puzzle">Delete</button>
         </div>
-      </div>
 
-      {% comment %}
-      <div class="size-container">
-        <input v-model.number="rowN" type="number" id="rowN-resize" name="rowN" min="1" max="30"
-          style="display: inline;" class="inp">
-        <label for="rowN">rows</label>
-        and <input v-model.number="colN" type="number" id="colN-resize" name="colN" min="1" max="30"
-          style="display: inline;" class="inp">
-        <label for="colN">columns.</label>
-      </div>
-      {% endcomment %}
-
-      <div class="complete-container">
-        <button id="complete-btn" class="btn" @click="completePuzzle">Mark as complete</button>
       </div>
     </v-tab>
 
-    <v-tab title="Rules">
-      <h2>
-        <ul>How to navigate the grid</ul>
-        <li>Do this and that</li>
-      </h2>
+    <v-tab title="Navigation">
+      <div class="tips">
+        <h3>Click Tips:</h3>
+        <ul>
+          <p>✚ Click <strong>"WordNerd"</strong> in top left corner to return to your home page.</p>
+          <p>✚ Click <strong>CREATE</strong> button to create a new puzzle.</p>
+          <p>✚ Click <strong>SAVE</strong> button to save your current puzzle.</p>
+          <p>✚ Click <strong>MARK AS COMPLETE</strong> button to finish your puzzle.</p>
+        </ul>
+
+        <h3>Cell Tips:</h3>
+        <ul>
+          <p>✚ Enter a period in a cell to create a black square.</p>
+          <p>✚ Use keyboard <strong>ARROWS</strong> to move from cell to cell.</p>
+          <p>✚ Press <strong>ENTER</strong> or <strong>SPACEBAR</strong> to change cell direction.</p>
+        </ul>
+
+        <h3>Grid Tips:</h3>
+        <ul>
+          <p>✚ Use mouse to click on clue to activate word.</p>
+          <p>✚ When editing current clue, <strong>TAB</strong> to return to grid.</p>
+          <p>✚ <strong>SHIFT + TAB</strong> to edit clue for current word.</p>
+          <p>✚ Select <strong>Puzzle Properties</strong> tab to change Symmetry Options.</p>
+        </ul>
+      </div>
+    </v-tab>
+
+    <v-tab title="Export">
+      <div class="export-file">
+        <a id="export-puzzle-json" download="my_exported_puzzle.json" href="">
+          <button class="btn save-btn">Download as JSON</button>
+        </a>
+        (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/ format</a>)
+      </div>
     </v-tab>
   </vue-tabs>
+
+  {% endblock main %}
+
 </div>
 
-<div class="export-file">
-  <a id="export-puzzle" download="my_exported_puzzle.json" href=””>Download as Text File</a>
-</div>
 
 
 <script>
@@ -202,12 +256,13 @@
     data: {
       grid: puzzleData.grid, // flat array representation of the grid (left->right, top->bottom)
       clues: puzzleData.clues,
-      // across: puzzleData.clues.across,
-      // down: puzzleData.clues.down,
       rowN: puzzleData.size.rowN,
       colN: puzzleData.size.colN,
+      title: puzzleData.title,
+      description: puzzleData.description,
       symmetry: 'rotational', // other values: none, vertical, horizontal
       isVertical: false,
+      BLACK: '.',
       across: 'across', // string needed for x-clue component prop
       down: 'down', // string needed for x-clue component prop
       activeCell: 0,
@@ -292,28 +347,25 @@
           across: [],
           down: []
         }
-        this.clueNumbers.across.map((number) => {
-          let clue = this.clues.across[String(number)]
-          let exportClue = `${number}. ${clue}`
-          clues.across.push(exportClue)
-        })
 
-        this.clueNumbers.down.map((number) => {
-          let clue = this.clues.down[String(number)]
-          let exportClue = `${number}. ${clue}`
-          clues.down.push(exportClue)
-        })
-        let answers = {
-          across: [],
-          down: []
+        for (let dir of ['across', 'down']) {
+          this.clueNumbers[dir].map((number) => {
+            let clue = this.clues[dir][number]
+            let exportClue = `${number}. ${clue}`
+            clues[dir].push(exportClue)
+          })
         }
-        answers.across = grid.join("").split('.').filter((word) => { return word !== "" })
 
+        let answers = {}
+        answers.across = grid.join("").split('.').filter((word) => { return word !== "" })
         answers.down = this.clueNumbers.down.map((idx) => {
-          return this.getInterval(Number(idx), "down").map((index) => {
-            return this.grid[index]
-          }).join("")
-        }).filter((word) => { return word !== "" })
+          return this.getInterval(Number(idx), "down")
+            .map((index) => {
+              return this.grid[index]
+            })
+            .join("")
+        })
+          .filter((word) => { return word !== "" })
 
         return JSON.stringify({ grid, gridnums, size, clues, answers })
       },
@@ -373,8 +425,10 @@
         let grid = this.grid
         let clues = this.clues
         let size = { rowN: this.rowN, colN: this.colN }
+        let title = this.title
+        let description = this.description
         let pk = puzzleData.pk
-        return { grid, clues, size, pk }
+        return { grid, clues, size, title, description, pk }
       },
 
       savePuzzle() {
@@ -421,19 +475,18 @@
       computeSymmetry(idx) {
         let row = this.arrayToCoor(idx).row
         let col = this.arrayToCoor(idx).col
-        let pm // 1 or -1
-        if (this.symmetry === "rotational") {
-          return this.coorToArray(this.rowN - row - 1, this.colN - col - 1)
-        }
-        else if (this.symmetry === "vertical") {
-          let newCol = this.colN - col - 1
-          return this.coorToArray(row, newCol)
-        }
-        else if (this.symmetry === "horizontal") {
-          let newRow = this.rowN - row - 1
-          return this.coorToArray(newRow, col)
-          //pm = (row > this.rowN / 2) ? -1 : 1
-          //return pm * this.colN * (this.rowN - 1 - row) + col
+        let newRow = this.rowN - row - 1
+        let newCol = this.colN - col - 1
+        switch (this.symmetry) {
+          case "rotational":
+            return this.coorToArray(newRow, newCol)
+            break
+          case "vertical":
+            return this.coorToArray(row, newCol)
+            break
+          case "horizontal":
+            return this.coorToArray(newRow, col)
+            break
         }
       },
 
@@ -479,7 +532,7 @@
       keyhandle(event) {
         const key = event.key.toUpperCase()
         const validEntries = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#'
-        const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER']
+        const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', ' ']
         if (validEntries.includes(key)) {
           this.updateGrid(this.activeCell, key)
           this.applySymmetry(this.activeCell, BLACK)
@@ -535,7 +588,7 @@
             this.updateGrid(this.activeCell, '')
           }
         }
-        else if (key === 'ENTER') {
+        else if (key === 'ENTER' || key === ' ') {
           this.toggleVertical()
         }
         else if (key === "ARROWRIGHT") {
@@ -577,7 +630,7 @@
 
     created: function () {
       document.addEventListener('keydown', (event) => {
-        const ignoreIds = ['clue-input', 'rowN-resize', 'colN-resize']
+        const ignoreIds = ['clue-input', 'title-inp', 'description-inp']
         if (!ignoreIds.includes(event.target.id)) {
           this.keyhandle(event)
         }
@@ -588,7 +641,28 @@
   const jsn = editor.exportJSON()
   const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
   let url = window.URL.createObjectURL(data)
-  document.querySelector('#export-puzzle').href = url
+  document.querySelector('#export-puzzle-json').href = url
+
+  const deleteButton = document.querySelector('#delete-btn')
+  deleteButton.addEventListener('click', deleteEvent)
+  function deleteEvent(event) {
+    const result = confirm('Do you want to permanently delete this puzzle?')
+    if (result) {
+      return fetch(`/delete/${puzzleData.pk}/`, { method: 'DELETE' })
+        .then((resp) => {
+          return resp.json()
+        })
+        .then(jsonResp => {
+          if (jsonResp.status === 'ok') {
+            window.location.href = '/'
+          }
+          else {
+            deleteButton.insertAdjacentHTML('afterend', `<div class="error">${jsonResp.message}</div>`)
+          }
+        })
+    }
+  }
+
 
 
 </script>
