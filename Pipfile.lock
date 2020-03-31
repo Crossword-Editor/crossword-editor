@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1637312327ebe974e148532e9381d25ca25d9b161cf1c5cc1c6a41658b915746"
+            "sha256": "527f55b30fae9c115108a22bb7c4d2f460217dd3f85f88171036334f98b53140"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -159,13 +159,6 @@
             ],
             "index": "pypi",
             "version": "==2.7"
-        },
-        "django-weasyprint": {
-            "hashes": [
-                "sha256:ee0dbdcbf666eee2b037e0c2246f60a0088286b71903f81dc29306c5f9f6abae"
-            ],
-            "index": "pypi",
-            "version": "==0.5.5"
         },
         "gunicorn": {
             "hashes": [
@@ -373,11 +366,11 @@
         },
         "werkzeug": {
             "hashes": [
-                "sha256:169ba8a33788476292d04186ab33b01d6add475033dfc07215e6d219cc077096",
-                "sha256:6dc65cf9091cf750012f56f2cad759fa9e879f511b5ff8685e456b4e3bf90d16"
+                "sha256:2de2a5db0baeae7b2d2664949077c2ac63fbd16d98da0ff71837f7d1dea3fd43",
+                "sha256:6c80b1e5ad3665290ea39320b91e1be1e0d5f60652b964a3070216de83d2e47c"
             ],
             "index": "pypi",
-            "version": "==1.0.0"
+            "version": "==1.0.1"
         },
         "whitenoise": {
             "hashes": [

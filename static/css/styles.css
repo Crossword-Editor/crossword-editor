@@ -539,3 +539,14 @@ ________________________________________________ */
   margin-top: 0;
   text-align: left;
 }
+
+.export-list-container {
+  width: 100%;
+}
+
+.export-container {
+  margin: 2rem 1rem;
+  padding: 1rem 2rem;
+  border: 1px solid black;
+  border-radius: 5px;
+}

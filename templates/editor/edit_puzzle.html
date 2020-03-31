@@ -156,11 +156,21 @@
     </v-tab>
 
     <v-tab title="Export">
-      <div class="export-file">
-        <a id="export-puzzle-json" download="my_exported_puzzle.json" href="">
-          <button class="btn save-btn">Download as JSON</button>
-        </a>
-        (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/</a> format)
+      <div class="export-list-container">
+        <div class="export-container">
+          <a id="export-json" download="my_exported_puzzle.json" href="">
+            <button class="btn save-btn">Download as JSON</button>
+          </a>
+          (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/</a> format)
+        </div>
+        <div class="export-container">
+          <a id="export-nytimes-pdf" href="/export/{{ pk }}" download>
+            <button class="btn save-btn">Download pdf in NY Times submission format</button>
+          </a>
+          (<a href="https://www.nytimes.com/puzzles/submissions/crossword">
+            https://www.nytimes.com/puzzles/submissions/crossword
+          </a>)
+        </div>
       </div>
     </v-tab>
   </vue-tabs>
@@ -446,9 +456,10 @@
         let size = { rowN: this.rowN, colN: this.colN }
         let title = this.title
         let description = this.description
-        let gridnums = this.gridnums
+        let gridnums = this.gridnums // remove later
+        let answers = this.answers // remove later
         let pk = puzzleData.pk
-        return { grid, gridnums, clues, size, title, description, pk }
+        return { grid, gridnums, clues, size, title, description, answers, pk }
       },
 
       savePuzzle() {
@@ -661,7 +672,7 @@
   const jsn = editor.exportJSON()
   const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
   let url = window.URL.createObjectURL(data)
-  document.querySelector('#export-puzzle-json').href = url
+  document.querySelector('#export-json').href = url
 
   const deleteButton = document.querySelector('#delete-btn')
   deleteButton.addEventListener('click', deleteEvent)

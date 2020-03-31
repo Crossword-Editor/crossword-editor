@@ -28,6 +28,7 @@ urlpatterns = [
     path('mark-complete/',views.mark_complete, name='mark-complete'),
     path('new/', views.new, name='new'),
     path('delete/<int:pk>/', views.delete, name='delete'),
+    path('export/<int:pk>/', views.ny_times_pdf, name='ny_times_pdf'),
 ]
 
 if settings.DEBUG:
