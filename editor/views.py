@@ -5,8 +5,24 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_http_methods
+from django.template.loader import render_to_string
+
+from weasyprint import HTML, CSS
+from weasyprint.fonts import FontConfiguration
 
 from .models import Puzzle
+from users.models import User
+
+
+def export_pdf():
+    puzzle = Puzzle.objects.get(pk=42).data
+    grid, gridnums = puzzle['grid'], puzzle['gridnums']
+    colN = puzzle['size']['colN']
+    rows = [[(gridnums[i+j*colN],grid[i+j*colN]) for i in range(colN)] for j in range(colN)]
+    context = {'puzzle': puzzle, 'rows': rows}
+    html = render_to_string('editor/pdf_template.html', context=context)
+    css = CSS('static/css/ny_times_pdf.css')
+    HTML(string=html).write_pdf('./test_exp.pdf', stylesheets=[css])
 
 
 def home(request):

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/ny_times_pdf.css' %}">
+  <title>NY Times Submission</title>
+</head>
+
+<body>
+
+  <aside>
+    <address id="from">
+      Brian Bonsignore
+      105 Lantern Way
+      Carrboro, NC 27510
+      bonsignore.brian@gmail.com
+    </address>
+  </aside>
+
+
+  <div class="grid empty">
+    <table>
+      {% for row in rows %}
+      <tr>
+        {% for cell in row %}
+
+        {% if cell.1 == '.' %}
+        <td class="cell black">
+          0
+        </td>
+        {% else %}
+        <td class="cell">
+          <div class="number empty">
+            {% if cell.0 != 0   %}
+            {{ cell.0 }}
+            {% endif %}
+          </div>
+          <div class="entry hidden">
+
+          </div>
+        </td>
+        {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+ <br>
+
+  <div class="grid filled">
+    <table>
+      {% for row in rows %}
+      <tr>
+        {% for cell in row %}
+
+        {% if cell.1 == '.' %}
+        <td class="cell black">
+          0
+        </td>
+        {% else %}
+        <td class="cell">
+          <div class="number">
+            {% if cell.0 != 0   %}
+            {{ cell.0 }}
+            {% endif %}
+          </div>
+          <div class="entry">
+            {{ cell.1 }}
+          </div>
+        </td>
+        {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</body>
+
+</html>
