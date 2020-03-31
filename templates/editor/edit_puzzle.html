@@ -172,7 +172,7 @@
 <script>
   // get json string store it in a variable
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
-  puzzleData.pk = {{ pk }}
+  const puzzlePK = {{ pk }}
 
   const BLACK = '.'
 
@@ -427,7 +427,7 @@
         let size = { rowN: this.rowN, colN: this.colN }
         let title = this.title
         let description = this.description
-        let pk = puzzleData.pk
+        let pk = puzzlePK
         return { grid, clues, size, title, description, pk }
       },
 
@@ -648,7 +648,7 @@
   function deleteEvent(event) {
     const result = confirm('Do you want to permanently delete this puzzle?')
     if (result) {
-      return fetch(`/delete/${puzzleData.pk}/`, { method: 'DELETE' })
+      return fetch(`/delete/${puzzlePK}/`, { method: 'DELETE' })
         .then((resp) => {
           return resp.json()
         })
