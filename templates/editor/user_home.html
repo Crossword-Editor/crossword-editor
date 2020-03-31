@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
 
-
-
-
 {% block main %}
 <div class="user-homepage">
   <div class="user-text">
@@ -131,6 +128,12 @@
         window.location.href = `/edit/${data.pk}`
       })
   })
+
+  var options = {
+  valueDates: [ 'puzzle.created_at' ]
+  };
+
+  var puzzleList = new List('puzzle.created_at', options);
 </script>
 
 {% endblock main %}
