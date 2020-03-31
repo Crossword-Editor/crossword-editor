@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 
+
+
+
 {% block main %}
 <div class="user-homepage">
   <div class="user-text">
@@ -15,59 +18,23 @@
     </form>
   </div>
 
+
+  
+    <div class='drop-down-container'>
+        <div class="dropdown">
+            <button type="button" class="dropdown-trigger">Sort by:</button>
+            <div class="dropdown-menu">
+                <a href="{{puzzle.created_at}}?sort=date">Date Added (oldest first)</a>
+                <a href="{{puzzle.created_at}}?sort=date-reverse">Date Added reverse</a>
+                <a href="{{puzzle.data.title}}?sort=title">Title</a>
+            </div>
+        </div>
+    </div>
+
+
+
   <div class="flex-box">
-      <div id="draft-box">
-        <!-- class="draft-search" automagically makes an input a search field. -->
-        <input class="draft-search" placeholder="Search Draft Puzzles" />
-        <!-- class="sort" automagically makes an element a sort buttons. The date-sort value decides what to sort by. -->
-        <button class="sort" data-sort="puzzle.created_at">
-          Sort
-        </button>
-
-      <!-- Child elements of container with class="list" becomes list items -->
-      <h3>Draft Puzzles</h3>
-      {% for puzzle in drafts %}
-      <div>
-        <a href="{% url 'edit' puzzle.pk %}">
-        <!-- The innerHTML of children with class="puzzle-created-at" becomes this items "{{puzzle.created_at}}" value -->
-          <div class="display-title">
-          <!-- Child elements of container with class="list" becomes list items -->
-          <ul class="list">
-            <li>  <p class="puzzle.created_at">
-              {% if puzzle.data.title %}
-              {{ puzzle.data.title }}
-              {% else %}
-              My Puzzle
-              {% endif %}
-              started at: {{puzzle.created_at}}</p> </li>
-          </ul>
-          </div>
-        </a>
-      </div>
-      {% endfor %}
-    </div>
-
-    <div class="completed-box">
-      <h3>Completed Puzzles</h3>
-      {% for puzzle in completes %}
-      <div>
-        <a href="">
-
-            <p class="puzzle-title-display">
-              {% if puzzle.data.title %}
-              {{ puzzle.data.title }}
-              {% else %}
-              My Puzzle
-              {% endif %}
-              started at: {{puzzle.created_at}}
-            </p>
-
-        </a>
-      </div>
-      {% endfor %}
-    </div>
-
-    {% comment %} <div class="draft-box">
+    <div class="draft-box">
       <h3>Draft Puzzles</h3>
       {% for puzzle in drafts %}
       <div>
@@ -91,7 +58,6 @@
       {% for puzzle in completes %}
       <div>
         <a href="">
-
             <p class="puzzle-title-display">
               {% if puzzle.data.title %}
               {{ puzzle.data.title }}
@@ -104,7 +70,7 @@
         </a>
       </div>
       {% endfor %}
-    </div> {% endcomment %}
+    </div>
   </div>
 
 
@@ -128,12 +94,6 @@
         window.location.href = `/edit/${data.pk}`
       })
   })
-
-  var options = {
-  valueDates: [ 'puzzle.created_at' ]
-  };
-
-  var puzzleList = new List('puzzle.created_at', options);
 </script>
 
 {% endblock main %}

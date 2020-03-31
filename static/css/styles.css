@@ -194,16 +194,6 @@ ________________________________________________ */
   z-index: 1;
 }
 
-/* #new-puzzle-form {
-  font-size: 20px;
-  justify-content: space-between;
-}
-
-#new-puzzle-form input {
-  font-size: 16px;
-  justify-content: space-between;
-} */
-
 .flex-box {
   display: flex;
   flex-flow: wrap;
@@ -441,6 +431,15 @@ ________________________________________________ */
 }
 
 .save-btn:hover {
+  background-color: rgb(60, 114, 185);
+}
+
+.export-btn {
+  font-size: 1.2rem;
+  background-color: rgb(49, 93, 150);
+}
+
+.export-btn:hover {
   background-color: rgb(60, 114, 185);
 }
 
