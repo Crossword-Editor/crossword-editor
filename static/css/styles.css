@@ -194,18 +194,14 @@ ________________________________________________ */
   z-index: 1;
 }
 
-#new-puzzle-form {
+/* #new-puzzle-form {
   font-size: 20px;
-  /* justify-content: space-between; */
+  justify-content: space-between;
 }
 
 #new-puzzle-form input {
   font-size: 16px;
   justify-content: space-between;
-}
-
-/* #new-puzzle-form label:last-of-type {
-  margin-right: .25px;
 } */
 
 .flex-box {
@@ -274,50 +270,6 @@ ________________________________________________ */
 #new-puzzle-form label:last-of-type {
   margin-right: 10px;
 }
-
-/* Bottom nav-bar
-________________________________________________ */
-
-/*
-.navbar-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 50px;
-  width: 100%;
-
-  background-color: #17202a;
-}
-
-.navbar-bottom p {
-  font-size: 25px;
-  font-family: Montserrat, sans-serif;
-  font-weight: 600;
-  color: whitesmoke;
-  white-space: nowrap;
-  margin-left: 50px;
-}
-
-.navbar-bottom .nav-bottom-links {
-  font-size: 24px;
-  font-family: Montserrat, sans-serif;
-  font-weight: 600;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  list-style: none;
-  margin-right: 40px;
-  background-color: #17202a;
-}
-
-.navbar-bottom .nav-bottom-links a {
-  color: #e6401d;
-  padding: 15px;
-}
-
-.navbar-bottom .nav-bottom-links a:hover {
-  color: whitesmoke;
-} */
 
 /* -------- Crossword pages ----------- */
 
@@ -571,7 +523,7 @@ margin: .5rem ;
 
 .tips h3 {
   font-size: 24px;
-  color: rgb(46, 116, 49);
+  color: rgb(60, 114, 185);
   margin: 1rem;
   margin-top: 40px;
 }
@@ -582,4 +534,9 @@ margin: .5rem ;
   margin: 1.25rem;
   margin-top: 0;
   text-align: left;
+}
+
+.export-file {
+  margin: 1rem;
+  margin-top: 40px;
 }

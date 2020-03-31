@@ -19,7 +19,58 @@
   </div>
 
   <div class="flex-box">
-    <div class="draft-box">
+      <div id="draft-box">
+        <!-- class="draft-search" automagically makes an input a search field. -->
+        <input class="draft-search" placeholder="Search Draft Puzzles" />
+        <!-- class="sort" automagically makes an element a sort buttons. The date-sort value decides what to sort by. -->
+        <button class="sort" data-sort="puzzle.created_at">
+          Sort
+        </button>
+
+      <!-- Child elements of container with class="list" becomes list items -->
+      <h3>Draft Puzzles</h3>
+      {% for puzzle in drafts %}
+      <div>
+        <a href="{% url 'edit' puzzle.pk %}">
+        <!-- The innerHTML of children with class="puzzle-created-at" becomes this items "{{puzzle.created_at}}" value -->
+          <div class="display-title">
+          <!-- Child elements of container with class="list" becomes list items -->
+          <ul class="list">
+            <li>  <p class="puzzle.created_at">
+              {% if puzzle.data.title %}
+              {{ puzzle.data.title }}
+              {% else %}
+              My Puzzle
+              {% endif %}
+              started at: {{puzzle.created_at}}</p> </li>
+          </ul>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="completed-box">
+      <h3>Completed Puzzles</h3>
+      {% for puzzle in completes %}
+      <div>
+        <a href="">
+
+            <p class="puzzle-title-display">
+              {% if puzzle.data.title %}
+              {{ puzzle.data.title }}
+              {% else %}
+              My Puzzle
+              {% endif %}
+              started at: {{puzzle.created_at}}
+            </p>
+
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% comment %} <div class="draft-box">
       <h3>Draft Puzzles</h3>
       {% for puzzle in drafts %}
       <div>
@@ -56,7 +107,7 @@
         </a>
       </div>
       {% endfor %}
-    </div>
+    </div> {% endcomment %}
   </div>
 
 
