@@ -21,63 +21,105 @@
     </address>
   </aside>
 
+  <div class="center">
+    <div class="grid empty">
+      <table>
+        {% for row in rows %}
+        <tr>
+          {% for cell in row %}
 
-  <div class="grid empty">
-    <table>
-      {% for row in rows %}
-      <tr>
-        {% for cell in row %}
+          {% if cell.1 == '.' %}
+          <td class="cell black">
+            0
+          </td>
+          {% else %}
+          <td class="cell">
+            <div class="number empty">
+              {% if cell.0 != 0   %}
+              {{ cell.0 }}
+              {% endif %}
+            </div>
+            <div class="entry hidden">
 
-        {% if cell.1 == '.' %}
-        <td class="cell black">
-          0
-        </td>
-        {% else %}
-        <td class="cell">
-          <div class="number empty">
-            {% if cell.0 != 0   %}
-            {{ cell.0 }}
-            {% endif %}
-          </div>
-          <div class="entry hidden">
-
-          </div>
-        </td>
-        {% endif %}
+            </div>
+          </td>
+          {% endif %}
+          {% endfor %}
+        </tr>
         {% endfor %}
-      </tr>
-      {% endfor %}
-    </table>
+      </table>
+    </div>
   </div>
 
- <br>
 
-  <div class="grid filled">
-    <table>
-      {% for row in rows %}
-      <tr>
-        {% for cell in row %}
+  <div class="page-break"></div>
 
-        {% if cell.1 == '.' %}
-        <td class="cell black">
-          0
-        </td>
-        {% else %}
-        <td class="cell">
-          <div class="number">
-            {% if cell.0 != 0   %}
-            {{ cell.0 }}
-            {% endif %}
-          </div>
-          <div class="entry">
-            {{ cell.1 }}
-          </div>
-        </td>
-        {% endif %}
+
+  <aside>
+    <address id="from">
+      Brian Bonsignore
+      105 Lantern Way
+      Carrboro, NC 27510
+      bonsignore.brian@gmail.com
+    </address>
+  </aside>
+
+  <div class="center">
+    <div class="grid filled">
+      <table>
+        {% for row in rows %}
+        <tr>
+          {% for cell in row %}
+
+          {% if cell.1 == '.' %}
+          <td class="cell black">
+            0
+          </td>
+          {% else %}
+          <td class="cell">
+            <div class="number">
+              {% if cell.0 != 0   %}
+              {{ cell.0 }}
+              {% endif %}
+            </div>
+            <div class="entry">
+              {{ cell.1 }}
+            </div>
+          </td>
+          {% endif %}
+          {% endfor %}
+        </tr>
         {% endfor %}
-      </tr>
-      {% endfor %}
-    </table>
+      </table>
+    </div>
+  </div>
+
+
+  <div class="page-break"></div>
+
+
+  <div class="clues">
+    <div class="clue-list-container">
+      <h4> ACROSS:</h4>
+      <ul class="clue-list">
+        {% for clue in across %}
+        <li class="clue-item">
+        {{ clue.0 }} {{ clue.1}}
+        {% endfor %}
+        </li>
+      </ul>
+    </div>
+
+    <div class="clue-list-container">
+      <h4>DOWN:</h4>
+      <ul class="clue-list">
+        {% for clue in down %}
+        <li class="clue-item">
+        {{ clue.0 }} {{ clue.1}}
+        {% endfor %}
+        </li>
+      </ul>
+    </div>
   </div>
 
 </body>

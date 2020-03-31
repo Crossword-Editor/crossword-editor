@@ -18,9 +18,14 @@ def export_pdf():
     puzzle = Puzzle.objects.get(pk=42).data
     grid, gridnums = puzzle['grid'], puzzle['gridnums']
     colN = puzzle['size']['colN']
-    rows = [[(gridnums[i+j*colN],grid[i+j*colN]) for i in range(colN)] for j in range(colN)]
-    context = {'puzzle': puzzle, 'rows': rows}
-    html = render_to_string('editor/pdf_template.html', context=context)
+    rows = [[(gridnums[i+j*colN], grid[i+j*colN])
+             for i in range(colN)] for j in range(colN)]
+
+    across = sorted(puzzle['clues']['across'].items(), key=lambda x: int(x[0]))
+    down = sorted(puzzle['clues']['down'].items(), key=lambda x: int(x[0]))
+    print(across)
+    context = {'puzzle': puzzle, 'rows': rows, 'across': across, 'down': down}
+    html = render_to_string('editor/ny_times_pdf.html', context=context)
     css = CSS('static/css/ny_times_pdf.css')
     HTML(string=html).write_pdf('./test_exp.pdf', stylesheets=[css])
 
