@@ -104,9 +104,10 @@
       <ul class="clue-list">
         {% for clue in across %}
         <li class="clue-item">
-        {{ clue.0 }} {{ clue.1}}
-        {% endfor %}
+          <span class="clue">{{ clue.0 }} {{ clue.1}}</span>
+          <span class="answer">{{ clue.2 }}</span>
         </li>
+        {% endfor %}
       </ul>
     </div>
 
@@ -115,9 +116,10 @@
       <ul class="clue-list">
         {% for clue in down %}
         <li class="clue-item">
-        {{ clue.0 }} {{ clue.1}}
-        {% endfor %}
+          <span class="clue">{{ clue.0 }} {{ clue.1}}</span>
+          <span class="answer">{{ clue.2 }}</span>
         </li>
+        {% endfor %}
       </ul>
     </div>
   </div>

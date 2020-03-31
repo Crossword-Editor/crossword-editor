@@ -48,7 +48,7 @@ table {
   border-spacing: 0;
 }
 
-td {
+.cell {
   border: 1px solid black;
   position: relative;
   width: 35px;
@@ -82,11 +82,23 @@ td {
 
 /* ========= Clue Lists =========== */
 
-.clue-list-container ul{
+.clue-list-container ul {
   list-style-type: none;
+  margin-bottom: 2rem;
 }
 
-.clue-item{
-margin: 1rem 0;
+.clue-item {
+  margin: 1rem 0;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
 }
 
+.clue {
+  width: 65%;
+}
+
+.answer {
+  width: 30%;
+  float: left;
+}

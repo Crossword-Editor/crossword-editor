@@ -16,14 +16,18 @@ from users.models import User
 
 def export_pdf():
     puzzle = Puzzle.objects.get(pk=42).data
-    grid, gridnums = puzzle['grid'], puzzle['gridnums']
+    grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
     colN = puzzle['size']['colN']
     rows = [[(gridnums[i+j*colN], grid[i+j*colN])
              for i in range(colN)] for j in range(colN)]
-
-    across = sorted(puzzle['clues']['across'].items(), key=lambda x: int(x[0]))
-    down = sorted(puzzle['clues']['down'].items(), key=lambda x: int(x[0]))
-    print(across)
+    across = sorted(clues['across'].items(), key=lambda x: int(x[0]))
+    down = sorted(clues['down'].items(), key=lambda x: int(x[0]))
+    across = [list(pair) for pair in across]
+    down = [list(pair) for pair in down]
+    for i in range(len(across)):
+        across[i].append(answers['across'][i])
+    for i in range(len(down)):
+        down[i].append(answers['down'][i])
     context = {'puzzle': puzzle, 'rows': rows, 'across': across, 'down': down}
     html = render_to_string('editor/ny_times_pdf.html', context=context)
     css = CSS('static/css/ny_times_pdf.css')
