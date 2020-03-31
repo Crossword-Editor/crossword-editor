@@ -427,8 +427,9 @@
         let size = { rowN: this.rowN, colN: this.colN }
         let title = this.title
         let description = this.description
+        let gridnums = this.gridnums
         let pk = puzzleData.pk
-        return { grid, clues, size, title, description, pk }
+        return { grid, gridnums, clues, size, title, description, pk }
       },
 
       savePuzzle() {
