@@ -1,7 +1,7 @@
 import json
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponse, FileResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_http_methods
@@ -67,9 +67,9 @@ def ny_times_pdf(request, pk):
     html = render_to_string('editor/ny_times_pdf.html', context=context)
     css = CSS('static/css/ny_times_pdf.css')
 
-    filename = "{date}-{name}-ny-times-format.pdf".format(
-        date=puzzle_obj.created_at.strftime('%Y-%m-%d'),
-        name=slugify(puzzle.title))
+    filename = "{date}-ny-times-format.pdf".format(
+        date=puzzle_obj.created_at.strftime('%Y-%m-%d'))
+    # filename = "output.pdf"
 
     response = HttpResponse(content_type="application/pdf")
     response['Content-Disposition'] = f"attachment; filename={filename}"
