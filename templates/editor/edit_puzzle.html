@@ -334,6 +334,32 @@
 
       highlighted() {
         return this.getInterval(this.activeCell, this.direction)
+      },
+
+      answers() {
+        let answers = {}
+        let tempGrid = []
+        this.grid.map((e, i) => {
+          if (this.lookLeft(i)) {
+            tempGrid.push('.')
+            tempGrid.push(e)
+          }
+          else {
+            tempGrid.push(e)
+          }
+        })
+        answers.across = tempGrid.join("").split('.').filter((word) => { return word !== "" })
+
+        answers.down = this.clueNumbers.down.map((num) => {
+          let idx = this.gridnums.indexOf(Number(num))
+          return this.getInterval(idx, "down")
+            .map((index) => {
+              return this.grid[index]
+            })
+            .join("")
+        })
+          .filter((word) => { return word !== "" })
+        return answers
       }
     },
 
@@ -358,16 +384,7 @@
           })
         }
 
-        let answers = {}
-        answers.across = grid.join("").split('.').filter((word) => { return word !== "" })
-        answers.down = this.clueNumbers.down.map((idx) => {
-          return this.getInterval(Number(idx), "down")
-            .map((index) => {
-              return this.grid[index]
-            })
-            .join("")
-        })
-          .filter((word) => { return word !== "" })
+        let answers = this.answers
 
         return JSON.stringify({ grid, gridnums, size, clues, answers })
       },
