@@ -153,7 +153,7 @@ def sort_by(queryset, option):
 
 
 def test_pdf(pk):
-    # form_data = json.loads(request.body)
+    """For previewing nyt pdf output styling"""
     puzzle_obj = Puzzle.objects.get(pk=pk)
     puzzle = puzzle_obj.data
     grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
@@ -178,4 +178,4 @@ def test_pdf(pk):
     response = HttpResponse(content_type="application/pdf")
     response['Content-Disposition'] = f"attachment; filename={filename}"
     HTML(string=html).write_pdf('./output.pdf', stylesheets=[css])
-    # return response
+

@@ -200,7 +200,7 @@
               <label for="email">Email:</label>
               <input type="email" id="email" size="30">
             </div>
-            <button class="btn save-btn" type="submit">Download</button> (this may take a second or two)
+            <button id="nyt-btn" class="btn save-btn" type="submit">Download</button> (this may take a second or two)
           </form>
         </div>
       </div>
@@ -733,6 +733,8 @@
 
   document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event) => {
     event.preventDefault()
+    let nytButton = document.querySelector('#nyt-btn')
+    nytButton.textContent = 'Loading...'
     let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
     let formData = {}
     for (let inp of addressInputs) {
@@ -746,7 +748,9 @@
       },
       body: JSON.stringify(formData)
     })
-      .then(resp => resp.blob())
+      .then(resp => {
+        nytButton.textContent = "Download"
+        return resp.blob()})
       .then(blob => {
         let url = window.URL.createObjectURL(blob);
         let a = document.createElement('a');
