@@ -380,18 +380,14 @@
 
       answers() {
         let answers = {}
-        let tempGrid = []
-        this.grid.map((e, i) => {
-          if (this.lookLeft(i)) {
-            tempGrid.push('.')
-            tempGrid.push(e)
-          }
-          else {
-            tempGrid.push(e)
-          }
+        answers.across = this.clueNumbers.across.map((num) => {
+          let idx = this.gridnums.indexOf(Number(num))
+          return this.getInterval(idx, "across")
+            .map((index) => {
+              return this.grid[index]
+            })
+            .join("")
         })
-        answers.across = tempGrid.join("").split('.').filter((word) => { return word !== "" })
-
         answers.down = this.clueNumbers.down.map((num) => {
           let idx = this.gridnums.indexOf(Number(num))
           return this.getInterval(idx, "down")
@@ -400,7 +396,6 @@
             })
             .join("")
         })
-          .filter((word) => { return word !== "" })
         return answers
       }
     },
@@ -752,10 +747,10 @@
     })
       .then(resp => resp.blob())
       .then(blob => {
-        var url = window.URL.createObjectURL(blob);
-        var a = document.createElement('a');
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
         a.href = url;
-        a.download = "test.pdf";
+        a.download = `${editor.title}_nyt_submit_format.pdf`;
         document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
         a.click();
         a.remove();
