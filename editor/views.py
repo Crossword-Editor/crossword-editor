@@ -95,6 +95,13 @@ def delete(request, pk):
         })
 
 
+def sort_by(queryset, option):
+    options = {'date': 'puzzle__created__at',
+               'date-reverse': 'puzzle__created__at',
+               'title': 'puzzle__data__title'}
+    return queryset.order_by(options[option])
+
+
 # @login_required(login_url='/accounts/login')
 # def puzzle_details(request, pk):
 #     user = User.objects.get(username=request.user.username)
