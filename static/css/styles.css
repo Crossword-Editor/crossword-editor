@@ -194,6 +194,37 @@ ________________________________________________ */
   z-index: 1;
 }
 
+.drop-down-container {
+  margin: 2rem 1rem;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-flow: wrap;
+  justify-content: center;
+  margin-top: 0px;
+  width: 95%;
+  z-index: 1;
+}
+
+.dropdown-trigger {
+  font-size: 18px;
+  color: rgb(49, 93, 150);
+}
+
+.dropdown-trigger:hover {
+  background-color: rgb(60, 114, 185);
+}
+
+.dropdown-menu a {
+  font-size: 16px;
+  display: inline-flex;
+  font-weight: 600;
+  color: var(--home-page-link-color)
+}
+
+.dropdown-menu a:hover {
+  color: var(--home-page-link-color-hover);
+}
+
 #new-puzzle-form {
   font-size: 20px;
   /* justify-content: space-between; */
@@ -211,7 +242,7 @@ ________________________________________________ */
 .flex-box {
   display: flex;
   flex-flow: wrap;
-  justify-content: center;
+  justify-content: space-evenly;
   margin-top: 0px;
   width: 95%;
   z-index: 1;
@@ -252,6 +283,8 @@ ________________________________________________ */
     max-width: 100%;
   }
 }
+
+
 
 /* New Puzzle Form
 ________________________________________________ */

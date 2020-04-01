@@ -18,6 +18,20 @@
     </form>
   </div>
 
+
+    <div class='drop-down-container'>
+        <div class="dropdown">
+            <button class="dropdown-trigger" type="button" >Sort Puzzle:</button>
+            <div class="dropdown-menu">
+                <a href="{{request.path}}?sort=date">Ascending</a>
+                <a href="{{request.path}}?sort=date-reverse">Descending</a>
+                <a href="{{request.path}}?sort=date-modify">Modified</a>
+                <a href="{{request.path}}?sort=title">Title</a>
+            </div>
+        </div>
+    </div>
+
+
   <div class="flex-box">
     <div class="draft-box">
       <h3>Draft Puzzles</h3>
@@ -31,7 +45,8 @@
               {% else %}
               My Puzzle
               {% endif %}
-              started at: {{puzzle.created_at}}</p>
+              created: {{puzzle.created_at}}</p>
+              <p>modified: {{puzzle.updated_at}}</p><br>
           </div>
         </a>
       </div>
@@ -43,22 +58,19 @@
       {% for puzzle in completes %}
       <div>
         <a href="">
-
             <p class="puzzle-title-display">
               {% if puzzle.data.title %}
               {{ puzzle.data.title }}
               {% else %}
               My Puzzle
               {% endif %}
-              started at: {{puzzle.created_at}}
-            </p>
-
+              created: {{puzzle.created_at}}</p>
+              <p>modified: {{puzzle.updated_at}}</p><br>
         </a>
       </div>
       {% endfor %}
     </div>
   </div>
-
 
 </div>
 

@@ -19,6 +19,9 @@ def home(request):
         return render(request, 'editor/welcome.html')
     drafts = request.user.puzzles.filter(completed=False)
     completes = request.user.puzzles.filter(completed=True)
+    sort_option = request.GET.get('sort', 'date')
+    drafts = sort_by(drafts, sort_option)
+    completes = sort_by(completes, sort_option)
     context = {'drafts': drafts, 'completes': completes}
     return render(request, 'editor/user_home.html', context=context)
 
@@ -129,6 +132,14 @@ def delete(request, pk):
             "status": "not-ok",
             "message": "An error occured"
         })
+
+
+def sort_by(queryset, option):
+    options = {'date': 'created_at',
+               'date-reverse': '-created_at',
+               'date-modify': 'updated_at',
+               'title': 'data__title'}
+    return queryset.order_by(options[option])
 
 
 # @login_required(login_url='/accounts/login')
