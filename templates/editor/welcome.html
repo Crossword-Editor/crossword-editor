@@ -33,8 +33,23 @@
             </ul>
         </div>
 
+
+
+
     </div>
 </div>
+
+{% comment %} {% block bottombar %}
+    <div class="navbar-bottom">
+      <p>Already have an account? Login. Or, Register Today!</p>
+      <ul class="nav-bottom-links">
+        {% if not user.is_authenticated %}
+        <li><a href="{% url 'auth_login' %}">Login </a></li>
+        <li><a href="{% url 'registration_register' %}">Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  {% endblock bottombar %} {% endcomment %}
 
 {% endblock main %}
 

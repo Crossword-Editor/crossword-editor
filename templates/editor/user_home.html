@@ -18,21 +18,6 @@
     </form>
   </div>
 
-
-  
-    <div class='drop-down-container'>
-        <div class="dropdown">
-            <button type="button" class="dropdown-trigger">Sort by:</button>
-            <div class="dropdown-menu">
-                <a href="{{puzzle.created_at}}?sort=date">Date Added (oldest first)</a>
-                <a href="{{puzzle.created_at}}?sort=date-reverse">Date Added reverse</a>
-                <a href="{{puzzle.data.title}}?sort=title">Title</a>
-            </div>
-        </div>
-    </div>
-
-
-
   <div class="flex-box">
     <div class="draft-box">
       <h3>Draft Puzzles</h3>
@@ -58,6 +43,7 @@
       {% for puzzle in completes %}
       <div>
         <a href="">
+
             <p class="puzzle-title-display">
               {% if puzzle.data.title %}
               {{ puzzle.data.title }}
