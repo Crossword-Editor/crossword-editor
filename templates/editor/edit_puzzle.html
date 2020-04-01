@@ -694,6 +694,10 @@
     created: function () {
       document.addEventListener('keydown', (event) => {
         const ignoreIds = ['clue-input', 'title-inp', 'description-inp']
+        let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
+        for (let inp of addressInputs) {
+          ignoreIds.push(inp.id)
+        }
         if (!ignoreIds.includes(event.target.id)) {
           this.keyhandle(event)
         }
@@ -731,13 +735,8 @@
   }
 
 
-
-
-
-
   document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event) => {
     event.preventDefault()
-
     let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
     let formData = {}
     for (let inp of addressInputs) {
