@@ -50,7 +50,6 @@ def save(request):
 @login_required
 def ny_times_pdf(request, pk):
     form_data = json.loads(request.body)
-    print(form_data)
     puzzle_obj = Puzzle.objects.get(pk=pk)
     puzzle = puzzle_obj.data
     grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
@@ -70,15 +69,11 @@ def ny_times_pdf(request, pk):
                'across': across, 'down': down, 'address': form_data}
     html = render_to_string('editor/ny_times_pdf.html', context=context)
     css = CSS('static/css/ny_times_pdf.css')
-
-    filename = "{date}-ny-times-format.pdf".format(
-        date=puzzle_obj.created_at.strftime('%Y-%m-%d'))
-    # filename = "output.pdf"
+    filename = "nyt_format.pdf"
 
     response = HttpResponse(content_type="application/pdf")
     response['Content-Disposition'] = f"attachment; filename={filename}"
     HTML(string=html).write_pdf(response, stylesheets=[css])
-
     return response
 
 
