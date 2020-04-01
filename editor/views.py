@@ -46,8 +46,11 @@ def save(request):
     return JsonResponse({"message": "Puzzle saved to database"})
 
 
+@csrf_exempt
 @login_required
 def ny_times_pdf(request, pk):
+    form_data = json.loads(request.body)
+    print(form_data)
     puzzle_obj = Puzzle.objects.get(pk=pk)
     puzzle = puzzle_obj.data
     grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
@@ -63,7 +66,8 @@ def ny_times_pdf(request, pk):
     for i, pair in enumerate(down):
         pair.append(answers['down'][i])
 
-    context = {'puzzle': puzzle, 'rows': rows, 'across': across, 'down': down}
+    context = {'puzzle': puzzle, 'rows': rows,
+               'across': across, 'down': down, 'address': form_data}
     html = render_to_string('editor/ny_times_pdf.html', context=context)
     css = CSS('static/css/ny_times_pdf.css')
 

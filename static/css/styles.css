@@ -226,8 +226,6 @@ ________________________________________________ */
   margin: 0;
   margin-left: 100 0 75px;
   text-align: left;
-  height: 100px;
-  width: 400px;
 }
 
 .draft-box h3, .completed-box h3 {
@@ -549,4 +547,46 @@ ________________________________________________ */
   padding: 1rem 2rem;
   border: 1px solid black;
   border-radius: 5px;
+}
+
+.export-container input {
+  font-family: "Source Sans Pro", sans-serif;
+  border: none;
+  background-color: aliceblue;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  height: 2rem;
+  border-radius: 5px;
+}
+
+.export-container a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.export-container a:hover {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.export-container.nytimes form {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.flexrow {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: left;
+  /* height: 2rem; */
+  margin-bottom: .5rem;
+}
+
+.inp-label-container {
+  display: flex;
+  flex-flow: row wrap;
+  margin-bottom: .5rem;
+  margin-right: 2rem
 }

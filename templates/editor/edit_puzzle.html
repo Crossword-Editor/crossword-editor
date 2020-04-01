@@ -163,13 +163,45 @@
           </a>
           (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/</a> format)
         </div>
-        <div class="export-container">
-          <a id="export-nytimes-pdf" href="/export/{{ pk }}" download>
-            <button class="btn save-btn">Download pdf in NY Times submission format</button>
-          </a>
-          (<a href="https://www.nytimes.com/puzzles/submissions/crossword">
-            https://www.nytimes.com/puzzles/submissions/crossword
-          </a>)
+        <div id="nyt-app" class="export-container nytimes">
+          Download a pdf of your puzzle in the
+          <a href="https://www.nytimes.com/puzzles/submissions/crossword">format</a>
+          required to submit to the New York Times (requires an address, which we do not save).
+          <form id="export-nytimes-pdf">
+            <div class="flexrow">
+              <div class="inp-label-container">
+                <label for="firstname">First name:</label>
+                <input type="text" id="firstname">
+              </div>
+              <div class="inp-label-container">
+                <label for="lastname">Last name:</label>
+                <input type="text" id="lastname">
+              </div>
+            </div>
+            <div class="inp-label-container">
+              <label for="street">Street Adress:</label>
+              <input type="text" id="street">
+            </div>
+            <div class="inp-label-container">
+              <label for="city">City:</label>
+              <input type="text" id="city">
+            </div>
+            <div class="flexrow">
+              <div class="inp-label-container">
+                <label for="state">State:</label>
+                <input type="text" id="state" maxlength="2" width="2" placeholder="AA">
+              </div>
+              <div class="inp-label-container">
+                <label for="zip">ZIP Code:</label>
+                <input type="text" id="zip" maxlength="5" width="5" placeholder="00000">
+              </div>
+            </div>
+            <div class="inp-label-container">
+              <label for="email">Email:</label>
+              <input type="email" id="email" size="30">
+            </div>
+            <button class="btn save-btn" type="submit">Download</button> (this may take a second or two)
+          </form>
         </div>
       </div>
     </v-tab>
@@ -669,10 +701,14 @@
     }
   });
 
+
+
   const jsn = editor.exportJSON()
   const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
   let url = window.URL.createObjectURL(data)
   document.querySelector('#export-json').href = url
+
+
 
   const deleteButton = document.querySelector('#delete-btn')
   deleteButton.addEventListener('click', deleteEvent)
@@ -695,6 +731,38 @@
   }
 
 
+
+
+
+
+  document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event) => {
+    event.preventDefault()
+
+    let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
+    let formData = {}
+    for (let inp of addressInputs) {
+      formData[inp.id] = inp.value
+    }
+    console.log(formData)
+    return fetch(`/export/${puzzlePK}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
+    })
+      .then(resp => resp.blob())
+      .then(blob => {
+        var url = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = "test.pdf";
+        document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+        a.click();
+        a.remove();
+      })
+
+  })
 
 </script>
 
