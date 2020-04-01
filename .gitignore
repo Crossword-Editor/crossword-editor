@@ -124,3 +124,6 @@ dmypy.json
 .vscode
 notes.md
 test_exp.pdf
+
+# node module folder
+node_modules
