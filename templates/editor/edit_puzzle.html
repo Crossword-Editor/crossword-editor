@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% load static %} {% block meta %}
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/vue-nav-tabs/themes/vue-tabs.css">
 <script src="https://unpkg.com/vue-nav-tabs/dist/vue-tabs.js"></script>
@@ -154,11 +156,53 @@
     </v-tab>
 
     <v-tab title="Export">
-      <div class="export-file">
-        <a id="export-puzzle-json" download="my_exported_puzzle.json" href="">
-          <button class="btn save-btn">Download as JSON</button>
-        </a>
-        (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/ format</a>)
+      <div class="export-list-container">
+        <div class="export-container">
+          <a id="export-json" download="my_exported_puzzle.json" href="">
+            <button class="btn save-btn">Download as JSON</button>
+          </a>
+          (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/</a> format)
+        </div>
+        <div id="nyt-app" class="export-container nytimes">
+          Download a pdf of your puzzle in the
+          <a href="https://www.nytimes.com/puzzles/submissions/crossword">format</a>
+          required to submit to the New York Times (requires an address, which we do not save).
+          <form id="export-nytimes-pdf">
+            <div class="flexrow">
+              <div class="inp-label-container">
+                <label for="firstname">First name:</label>
+                <input type="text" id="firstname">
+              </div>
+              <div class="inp-label-container">
+                <label for="lastname">Last name:</label>
+                <input type="text" id="lastname">
+              </div>
+            </div>
+            <div class="inp-label-container">
+              <label for="street">Street Adress:</label>
+              <input type="text" id="street">
+            </div>
+            <div class="inp-label-container">
+              <label for="city">City:</label>
+              <input type="text" id="city">
+            </div>
+            <div class="flexrow">
+              <div class="inp-label-container">
+                <label for="state">State:</label>
+                <input type="text" id="state" maxlength="2" width="2" placeholder="AA">
+              </div>
+              <div class="inp-label-container">
+                <label for="zip">ZIP Code:</label>
+                <input type="text" id="zip" maxlength="5" width="5" placeholder="00000">
+              </div>
+            </div>
+            <div class="inp-label-container">
+              <label for="email">Email:</label>
+              <input type="email" id="email" size="30">
+            </div>
+            <button class="btn save-btn" type="submit">Download</button> (this may take a second or two)
+          </form>
+        </div>
       </div>
     </v-tab>
   </vue-tabs>
@@ -172,7 +216,7 @@
 <script>
   // get json string store it in a variable
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
-  puzzleData.pk = {{ pk }}
+  const puzzlePK = {{ pk }}
 
   const BLACK = '.'
 
@@ -332,6 +376,27 @@
 
       highlighted() {
         return this.getInterval(this.activeCell, this.direction)
+      },
+
+      answers() {
+        let answers = {}
+        answers.across = this.clueNumbers.across.map((num) => {
+          let idx = this.gridnums.indexOf(Number(num))
+          return this.getInterval(idx, "across")
+            .map((index) => {
+              return this.grid[index]
+            })
+            .join("")
+        })
+        answers.down = this.clueNumbers.down.map((num) => {
+          let idx = this.gridnums.indexOf(Number(num))
+          return this.getInterval(idx, "down")
+            .map((index) => {
+              return this.grid[index]
+            })
+            .join("")
+        })
+        return answers
       }
     },
 
@@ -356,16 +421,7 @@
           })
         }
 
-        let answers = {}
-        answers.across = grid.join("").split('.').filter((word) => { return word !== "" })
-        answers.down = this.clueNumbers.down.map((idx) => {
-          return this.getInterval(Number(idx), "down")
-            .map((index) => {
-              return this.grid[index]
-            })
-            .join("")
-        })
-          .filter((word) => { return word !== "" })
+        let answers = this.answers
 
         return JSON.stringify({ grid, gridnums, size, clues, answers })
       },
@@ -427,8 +483,10 @@
         let size = { rowN: this.rowN, colN: this.colN }
         let title = this.title
         let description = this.description
-        let pk = puzzleData.pk
-        return { grid, clues, size, title, description, pk }
+        let gridnums = this.gridnums // remove later, maybe
+        let answers = this.answers // remove later, maybe
+        let pk = puzzlePK
+        return { grid, gridnums, clues, size, title, description, answers, pk }
       },
 
       savePuzzle() {
@@ -531,9 +589,10 @@
 
       keyhandle(event) {
         const key = event.key.toUpperCase()
+        let modifierPressed = event.metaKey || event.ctrlKey || event.altKey
         const validEntries = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#'
         const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', ' ']
-        if (validEntries.includes(key)) {
+        if (validEntries.includes(key) && !modifierPressed) {
           this.updateGrid(this.activeCell, key)
           this.applySymmetry(this.activeCell, BLACK)
           this.nextCell()
@@ -631,24 +690,32 @@
     created: function () {
       document.addEventListener('keydown', (event) => {
         const ignoreIds = ['clue-input', 'title-inp', 'description-inp']
-        if (!ignoreIds.includes(event.target.id)) {
+        let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
+        for (let inp of addressInputs) {
+          ignoreIds.push(inp.id)
+        }
+        if (!ignoreIds.includes(event.target.id) ) {
           this.keyhandle(event)
         }
       })
     }
   });
 
+
+
   const jsn = editor.exportJSON()
   const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
   let url = window.URL.createObjectURL(data)
-  document.querySelector('#export-puzzle-json').href = url
+  document.querySelector('#export-json').href = url
+
+
 
   const deleteButton = document.querySelector('#delete-btn')
   deleteButton.addEventListener('click', deleteEvent)
   function deleteEvent(event) {
     const result = confirm('Do you want to permanently delete this puzzle?')
     if (result) {
-      return fetch(`/delete/${puzzleData.pk}/`, { method: 'DELETE' })
+      return fetch(`/delete/${puzzlePK}/`, { method: 'DELETE' })
         .then((resp) => {
           return resp.json()
         })
@@ -664,6 +731,33 @@
   }
 
 
+  document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event) => {
+    event.preventDefault()
+    let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
+    let formData = {}
+    for (let inp of addressInputs) {
+      formData[inp.id] = inp.value
+    }
+    console.log(formData)
+    return fetch(`/export/${puzzlePK}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
+    })
+      .then(resp => resp.blob())
+      .then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = `${editor.title}_nyt_submit_format.pdf`;
+        document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+        a.click();
+        a.remove();
+      })
+
+  })
 
 </script>
 

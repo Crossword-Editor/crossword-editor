@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/ny_times_pdf.css' %}">
+  <title>NY Times Submission</title>
+</head>
+
+<body>
+
+  <aside>
+    <address id="from">
+      {% if address %}
+      {{ address.firstname }} {{ address.lastname }}
+      {{ address.street }}
+      {{ address.city }}, {{ address.city }} {{ address.zip }}
+      {{ address.email }}
+      {% endif %}
+    </address>
+  </aside>
+
+  <div class="center">
+    <div class="grid empty">
+      <table>
+        {% for row in rows %}
+        <tr>
+          {% for cell in row %}
+
+          {% if cell.1 == '.' %}
+          <td class="cell black">
+            0
+          </td>
+          {% else %}
+          <td class="cell">
+            <div class="number empty">
+              {% if cell.0 != 0   %}
+              {{ cell.0 }}
+              {% endif %}
+            </div>
+            <div class="entry hidden">
+
+            </div>
+          </td>
+          {% endif %}
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+
+
+  <div class="page-break"></div>
+
+
+  <aside>
+    <address id="from">
+      {% if address %}
+      {{ address.firstname }} {{ address.lastname }}
+      {{ address.street }}
+      {{ address.city }}, {{ address.city }} {{ address.zip }}
+      {{ address.email }}
+      {% endif %}
+    </address>
+  </aside>
+
+  <div class="center">
+    <div class="grid filled">
+      <table>
+        {% for row in rows %}
+        <tr>
+          {% for cell in row %}
+
+          {% if cell.1 == '.' %}
+          <td class="cell black">
+            0
+          </td>
+          {% else %}
+          <td class="cell">
+            <div class="number">
+              {% if cell.0 != 0   %}
+              {{ cell.0 }}
+              {% endif %}
+            </div>
+            <div class="entry">
+              {{ cell.1 }}
+            </div>
+          </td>
+          {% endif %}
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+
+
+  <div class="page-break"></div>
+
+
+  <div class="clues">
+    <div class="clue-list-container">
+      <h4> ACROSS:</h4>
+      <ul class="clue-list">
+        {% for clue in across %}
+        <li class="clue-item">
+          <span class="clue">{{ clue.0 }} {{ clue.1}}</span>
+          <span class="answer">{{ clue.2 }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="clue-list-container">
+      <h4>DOWN:</h4>
+      <ul class="clue-list">
+        {% for clue in down %}
+        <li class="clue-item">
+          <span class="clue">{{ clue.0 }} {{ clue.1}}</span>
+          <span class="answer">{{ clue.2 }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+</body>
+
+</html>

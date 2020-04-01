@@ -15,6 +15,7 @@ django-registration-redux = "*"
 psycopg2 = "*"
 django-heroku = "*"
 gunicorn = "*"
+weasyprint = "*"
 
 [requires]
 python_version = "3.7"

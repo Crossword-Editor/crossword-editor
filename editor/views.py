@@ -1,12 +1,17 @@
 import json
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_http_methods
+from django.template.loader import render_to_string
+from django.utils.text import slugify
+
+from weasyprint import HTML, CSS
 
 from .models import Puzzle
+from users.models import User
 
 
 def home(request):
@@ -39,6 +44,37 @@ def save(request):
     puzzle.data = json_decoded
     puzzle.save()
     return JsonResponse({"message": "Puzzle saved to database"})
+
+
+@csrf_exempt
+@login_required
+def ny_times_pdf(request, pk):
+    form_data = json.loads(request.body)
+    puzzle_obj = Puzzle.objects.get(pk=pk)
+    puzzle = puzzle_obj.data
+    grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
+    colN = puzzle['size']['colN']
+    rows = [[(gridnums[i+j*colN], grid[i+j*colN])
+             for i in range(colN)] for j in range(colN)]
+    across = sorted(clues['across'].items(), key=lambda x: int(x[0]))
+    down = sorted(clues['down'].items(), key=lambda x: int(x[0]))
+    across = [list(pair) for pair in across]
+    down = [list(pair) for pair in down]
+    for i, pair in enumerate(across):
+        pair.append(answers['across'][i])
+    for i, pair in enumerate(down):
+        pair.append(answers['down'][i])
+
+    context = {'puzzle': puzzle, 'rows': rows,
+               'across': across, 'down': down, 'address': form_data}
+    html = render_to_string('editor/ny_times_pdf.html', context=context)
+    css = CSS('static/css/ny_times_pdf.css')
+    filename = "nyt_format.pdf"
+
+    response = HttpResponse(content_type="application/pdf")
+    response['Content-Disposition'] = f"attachment; filename={filename}"
+    HTML(string=html).write_pdf(response, stylesheets=[css])
+    return response
 
 
 @csrf_exempt

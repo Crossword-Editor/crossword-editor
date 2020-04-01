@@ -226,8 +226,6 @@ ________________________________________________ */
   margin: 0;
   margin-left: 100 0 75px;
   text-align: left;
-  height: 100px;
-  width: 400px;
 }
 
 .draft-box h3, .completed-box h3 {
@@ -274,50 +272,6 @@ ________________________________________________ */
 #new-puzzle-form label:last-of-type {
   margin-right: 10px;
 }
-
-/* Bottom nav-bar
-________________________________________________ */
-
-/*
-.navbar-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 50px;
-  width: 100%;
-
-  background-color: #17202a;
-}
-
-.navbar-bottom p {
-  font-size: 25px;
-  font-family: Montserrat, sans-serif;
-  font-weight: 600;
-  color: whitesmoke;
-  white-space: nowrap;
-  margin-left: 50px;
-}
-
-.navbar-bottom .nav-bottom-links {
-  font-size: 24px;
-  font-family: Montserrat, sans-serif;
-  font-weight: 600;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  list-style: none;
-  margin-right: 40px;
-  background-color: #17202a;
-}
-
-.navbar-bottom .nav-bottom-links a {
-  color: #e6401d;
-  padding: 15px;
-}
-
-.navbar-bottom .nav-bottom-links a:hover {
-  color: whitesmoke;
-} */
 
 /* -------- Crossword pages ----------- */
 
@@ -564,8 +518,8 @@ ________________________________________________ */
   border-radius: 5px;
 }
 
-.radio-container label{
-margin: .5rem ;
+.radio-container label {
+  margin: .5rem;
   display: inline;
 }
 
@@ -582,4 +536,57 @@ margin: .5rem ;
   margin: 1.25rem;
   margin-top: 0;
   text-align: left;
+}
+
+.export-list-container {
+  width: 100%;
+}
+
+.export-container {
+  margin: 2rem 1rem;
+  padding: 1rem 2rem;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.export-container input {
+  font-family: "Source Sans Pro", sans-serif;
+  border: none;
+  background-color: aliceblue;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  height: 2rem;
+  border-radius: 5px;
+}
+
+.export-container a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.export-container a:hover {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.export-container.nytimes form {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.flexrow {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: left;
+  /* height: 2rem; */
+  margin-bottom: .5rem;
+}
+
+.inp-label-container {
+  display: flex;
+  flex-flow: row wrap;
+  margin-bottom: .5rem;
+  margin-right: 2rem
 }

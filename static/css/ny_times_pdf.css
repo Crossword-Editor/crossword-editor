@@ -1,0 +1,105 @@
+@charset "UTF-8";
+@page {
+  size: 8.5in 11in;
+  margin: 1in 1in 1in 1in;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.page-break {
+  page-break-before: always;
+}
+
+/* ========= Adress =========== */
+
+aside {
+  display: flex;
+  margin-bottom: 5em;
+}
+
+aside address {
+  font-style: normal;
+  white-space: pre-line;
+  font-weight: 600;
+}
+
+aside address#from {
+  flex: 1;
+}
+
+aside address#to {
+  text-align: right;
+}
+
+.center {
+  display: flex;
+  flex-flow: row nowrap;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+/* ========= Grid =========== */
+
+table {
+  border-spacing: 0;
+  border: 1px solid black;
+}
+
+.cell {
+  border: 1px solid black;
+  position: relative;
+  width: 35px;
+  height: 35px;
+  text-align: center;
+  border-radius: 0px;
+  font-size: 25px;
+  outline: none;
+}
+
+.number {
+  font-size: 10px;
+  font-weight: bold;
+  position: absolute;
+  box-sizing: content-box;
+  bottom: 20px;
+  left: 1px;
+}
+
+.number.empty {
+  bottom: 6px;
+}
+
+.entry {
+  margin-top: 2px;
+}
+
+.black {
+  background-color: black;
+}
+
+/* ========= Clue Lists =========== */
+
+.clue-list-container ul {
+  list-style-type: none;
+  margin-bottom: 2rem;
+}
+
+.clue-item {
+  margin: 1rem 0;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.clue {
+  width: 65%;
+}
+
+.answer {
+  width: 30%;
+  float: left;
+}
