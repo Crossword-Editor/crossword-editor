@@ -589,9 +589,10 @@
 
       keyhandle(event) {
         const key = event.key.toUpperCase()
+        let modifierPressed = event.metaKey || event.ctrlKey || event.altKey
         const validEntries = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#'
         const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', ' ']
-        if (validEntries.includes(key)) {
+        if (validEntries.includes(key) && !modifierPressed) {
           this.updateGrid(this.activeCell, key)
           this.applySymmetry(this.activeCell, BLACK)
           this.nextCell()
@@ -693,7 +694,7 @@
         for (let inp of addressInputs) {
           ignoreIds.push(inp.id)
         }
-        if (!ignoreIds.includes(event.target.id)) {
+        if (!ignoreIds.includes(event.target.id) ) {
           this.keyhandle(event)
         }
       })
