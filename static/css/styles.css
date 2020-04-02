@@ -1,7 +1,7 @@
 :root {
   --active-black-color: #645500;
   --home-page-link-color: #0518c2;
-  --home-page-link-color-hover: #879ff1;
+  --home-page-link-color-hover: #4378eb;
 }
 
 * {
@@ -186,58 +186,61 @@ ________________________________________________ */
 }
 
 .user-homepage .user-text {
-  font-size: 20px;
+  font-size: 1.2rem;
   font-family: Montserrat, sans-serif;
   text-align: center;
-  margin: 50px 0 30px;
+  margin: 1rem auto;
   color: #17202a;
   z-index: 1;
 }
 
-.drop-down-container {
-  margin: 2rem 1rem;
-  padding: 1rem 2rem;
-  display: flex;
-  flex-flow: wrap;
-  justify-content: center;
-  margin-top: 0px;
-  width: 95%;
-  z-index: 1;
+.date {
+  font-weight: 400;
+}
+
+/* === Dropdown === */
+
+.dropdown-container {
+  display: inline-block;
+  position: relative;
 }
 
 .dropdown-trigger {
-  font-size: 18px;
+  font-size: 1rem;
+  font-weight: 600;
   color: rgb(49, 93, 150);
+  background-color: rgb(205, 229, 255);
+  padding: 8px;
+  border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #91b5f9;
 }
 
-.dropdown-trigger:hover {
-  background-color: rgb(60, 114, 185);
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: rgba(248, 248, 248, 0.9);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 2;
 }
 
 .dropdown-menu a {
-  font-size: 16px;
-  display: inline-flex;
   font-weight: 600;
-  color: var(--home-page-link-color)
+  color: var(--home-page-link-color);
+  padding: 8px 14px;
+  text-decoration: none;
+  display: block;
 }
 
 .dropdown-menu a:hover {
   color: var(--home-page-link-color-hover);
+  background-color: rgb(228, 238, 255, .75);
 }
 
-#new-puzzle-form {
-  font-size: 20px;
-  /* justify-content: space-between; */
+.dropdown-container:hover .dropdown-menu {
+  display: block;
 }
-
-#new-puzzle-form input {
-  font-size: 16px;
-  justify-content: space-between;
-}
-
-/* #new-puzzle-form label:last-of-type {
-  margin-right: .25px;
-} */
 
 .flex-box {
   display: flex;
@@ -283,8 +286,6 @@ ________________________________________________ */
     max-width: 100%;
   }
 }
-
-
 
 /* New Puzzle Form
 ________________________________________________ */
@@ -463,11 +464,11 @@ ________________________________________________ */
 }
 
 #create-btn {
-  background-color: var(--home-page-link-color);
+  background-color: var(--home-page-link-color-hover)
 }
 
 #create-btn:hover {
-  background-color: var(--home-page-link-color-hover)
+  background-color: var(--home-page-link-color);
 }
 
 .save-btn {

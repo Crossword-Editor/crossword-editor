@@ -14,60 +14,70 @@
       <label for="rowN">rows</label>
       and <input type="number" id="colN" name="colN" min="1" max="25" style="display: inline;" class="inp" value="15">
       <label for="colN">columns.</label>
-      <button type="submit" id="create-btn" class='btn'>Create</button>
+      <button type="submit" id="create-btn" class='btn homepage-btn'>Create</button>
     </form>
   </div>
 
-
-    <div class='drop-down-container'>
-        <div class="dropdown">
-            <button class="dropdown-trigger" type="button" >Sort Puzzle:</button>
-            <div class="dropdown-menu">
-                <a href="{{request.path}}?sort=date">Ascending</a>
-                <a href="{{request.path}}?sort=date-reverse">Descending</a>
-                <a href="{{request.path}}?sort=date-modify">Modified</a>
-                <a href="{{request.path}}?sort=title">Title</a>
-            </div>
-        </div>
+  <div class='dropdown-container'>
+    <button class="dropdown-trigger homepage-btn">Sort puzzles by:</button>
+    <div class="dropdown-menu">
+      <a href="{{request.path}}?sort=date"> Created (newest first)</a>
+      <a href="{{request.path}}?sort=date-rev">Created (oldest first)</a>
+      <a href="{{request.path}}?sort=modified">Modified (newest first)</a>
+      <a href="{{request.path}}?sort=modified-rev">Modified (oldest first)</a>
+      <a href="{{request.path}}?sort=title">Title</a>
     </div>
+  </div>
 
 
   <div class="flex-box">
     <div class="draft-box">
       <h3>Draft Puzzles</h3>
       {% for puzzle in drafts %}
-      <div>
+      <div class="puzzle-title-display">
         <a href="{% url 'edit' puzzle.pk %}">
-          <div class="display-title">
-            <p class="puzzle-title-display">
-              {% if puzzle.data.title %}
-              {{ puzzle.data.title }}
-              {% else %}
-              My Puzzle
-              {% endif %}
-              created: {{puzzle.created_at}}</p>
-              <p>modified: {{puzzle.updated_at}}</p><br>
-          </div>
+          <p>
+            Title:
+            {% if puzzle.data.title %}
+            {{ puzzle.data.title }}
+            {% else %}
+            untitled
+            {% endif %}
+          </p>
+          <p>
+            modified: <span class="date">{{ puzzle.updated_at|date:"c" }}</span>
+          </p>
+          <p>
+            created: <span class="date">{{ puzzle.created_at|date:"c" }}</span>
+          </p>
         </a>
       </div>
+      <br>
       {% endfor %}
     </div>
 
     <div class="completed-box">
       <h3>Completed Puzzles</h3>
       {% for puzzle in completes %}
-      <div>
+      <div class="puzzle-title-display">
         <a href="">
-            <p class="puzzle-title-display">
-              {% if puzzle.data.title %}
-              {{ puzzle.data.title }}
-              {% else %}
-              My Puzzle
-              {% endif %}
-              created: {{puzzle.created_at}}</p>
-              <p>modified: {{puzzle.updated_at}}</p><br>
+          <p>
+            Title:
+            {% if puzzle.data.title %}
+            {{ puzzle.data.title }}
+            {% else %}
+            untitled
+            {% endif %}
+          </p>
+          <p>
+            modified: <span class="date">{{ puzzle.updated_at|date:"c" }}</span>
+          </p>
+          <p>
+            created: <span class="date">{{ puzzle.created_at|date:"c" }}</span>
+          </p>
         </a>
       </div>
+      <br>
       {% endfor %}
     </div>
   </div>
@@ -92,6 +102,13 @@
         window.location.href = `/edit/${data.pk}`
       })
   })
+
+  const dates = document.querySelectorAll('.date')
+  for (date of dates) {
+    let oldString = date.textContent
+    let newString = new Date(oldString).toLocaleString()
+    date.textContent = newString
+  }
 </script>
 
 {% endblock main %}

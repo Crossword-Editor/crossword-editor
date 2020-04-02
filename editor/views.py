@@ -135,9 +135,10 @@ def delete(request, pk):
 
 
 def sort_by(queryset, option):
-    options = {'date': 'created_at',
-               'date-reverse': '-created_at',
-               'date-modify': 'updated_at',
+    options = {'date': '-created_at',
+               'date-rev': 'created_at',
+               'modified': '-updated_at',
+               'modified-rev': 'updated_at',
                'title': 'data__title'}
     return queryset.order_by(options[option])
 
