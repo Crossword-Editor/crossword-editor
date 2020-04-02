@@ -113,6 +113,7 @@ def createEmptyGrid(rowN, colN):
     puzzle["clues"]["down"] = {f'{i+1}': '' for i in range(colN)}
     puzzle["clues"]["across"] = {
         ('1' if i == 0 else f'{i+colN}'): '' for i in range(rowN)}
+    puzzle['symmetry'] = 'rotational'
     return puzzle
 
 
