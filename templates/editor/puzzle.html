@@ -95,8 +95,8 @@
           <label for="description-inp">Description/Notes:</label>
           <textarea v-model="description" id="description-inp" maxlength="1023" :disabled="completed"></textarea>
         </div>
-        {% if not completed %}
-        <div class="symmetry-container prop-container">
+
+        <div v-if="!completed" class="symmetry-container prop-container">
           These symmetry options determine how the black squares are automatically filled in symetrically.
           180&deg; rotational symmetry is the default and the pattern that most NY Times crosswords follow.
           You can change this setting at will as you write your puzzle, and turn off automatic black square
@@ -118,14 +118,16 @@
             <label for="none">None</label>
           </div>
         </div>
-        {% endif %}
+
         <div class="complete-container prop-container">
-          <button v-if="!completed" id="complete-btn" class="btn green" @click="completePuzzle">Mark as
-            complete</button>
+          <button v-if="!completed" id="complete-btn" class="btn green" @click="completePuzzle">
+            Mark as complete
+          </button>
+          <button v-if="completed" id="complete-btn" class="btn green" @click="editPuzzle">
+            Edit
+          </button>
         </div>
-        <div class="complete-container prop-container">
-          <button v-if="completed" id="complete-btn" class="btn green" @click="editPuzzle">Edit</button>
-        </div>
+
         <div class="delete-container prop-container">
           <label for="delete-btn">Delete this puzzle (this cannot be undone; export this puzzle's data if you need
             to keep a copy)</label>
