@@ -170,7 +170,7 @@ def sort_by(queryset, option):
 #     return render(request, 'editor/puzzle_details.html', context=context)
 
 
-def test_pdf(pk):
+def user_pdf(pk):
     """For previewing nyt pdf output styling"""
     puzzle_obj = Puzzle.objects.get(pk=pk)
     puzzle = puzzle_obj.data
@@ -189,11 +189,6 @@ def test_pdf(pk):
 
     context = {'puzzle': puzzle, 'rows': rows,
                'across': across, 'down': down}
-    html = render_to_string('editor/ny_times_pdf.html', context=context)
-    css = CSS('static/css/ny_times_pdf.css')
-    filename = "nyt_format.pdf"
-
-    response = HttpResponse(content_type="application/pdf")
-    response['Content-Disposition'] = f"attachment; filename={filename}"
+    html = render_to_string('editor/user_pdf.html', context=context)
+    css = CSS('static/css/user_all_pdf.css')
     HTML(string=html).write_pdf('./output.pdf', stylesheets=[css])
-
