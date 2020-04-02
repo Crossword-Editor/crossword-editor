@@ -46,7 +46,7 @@
         </span>
         <div class="clue-input-container">
           <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;"
-            v-model.trim="currentClue"></textarea>
+            v-model.trim="currentClue" :disabled="completed"></textarea>
         </div>
 
         <div class="grid-container" tabindex="0">
@@ -89,13 +89,14 @@
       <div class="properties-container">
         <div class="title-container prop-container">
           <label for="title-inp">Title:</label>
-          <input v-model="title" type="text" id="title-inp" maxlength="64">
+          <input v-model="title" type="text" id="title-inp" maxlength="64" :disabled="completed">
         </div>
         <div class="description-container prop-container">
           <label for="description-inp">Description/Notes:</label>
-          <textarea v-model="description" id="description-inp" maxlength="1023"></textarea>
+          <textarea v-model="description" id="description-inp" maxlength="1023" :disabled="completed"></textarea>
         </div>
-        <div class="symmetry-container prop-container">
+
+        <div v-if="!completed" class="symmetry-container prop-container">
           These symmetry options determine how the black squares are automatically filled in symetrically.
           180&deg; rotational symmetry is the default and the pattern that most NY Times crosswords follow.
           You can change this setting at will as you write your puzzle, and turn off automatic black square
@@ -119,7 +120,12 @@
         </div>
 
         <div class="complete-container prop-container">
-          <button id="complete-btn" class="btn green" @click="completePuzzle">Mark as complete</button>
+          <button v-if="!completed" id="complete-btn" class="btn green" @click="completePuzzle">
+            Mark as complete
+          </button>
+          <button v-if="completed" id="complete-btn" class="btn green" @click="editPuzzle">
+            Edit
+          </button>
         </div>
 
         <div class="delete-container prop-container">
@@ -162,7 +168,7 @@
       <div class="export-list-container">
         <div class="export-container">
           <a id="export-json" download="my_exported_puzzle.json" href="">
-            <button class="btn save-btn">Download as JSON</button>
+            <button id="json-btn" class="btn save-btn">Download as JSON</button>
           </a>
           (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/</a> format)
         </div>
@@ -220,6 +226,7 @@
   // get json string store it in a variable
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
   const puzzlePK = {{ pk }}
+  const completed = {{ completed }}
 
   const BLACK = '.'
 
@@ -314,7 +321,8 @@
       down: 'down', // string needed for x-clue component prop
       activeCell: 0,
       inputArea: 0,
-      lastSaved: ''
+      lastSaved: '',
+      completed: completed
     },
 
     computed: {
@@ -507,6 +515,18 @@
             console.log(jsonResp.message)
             let dt = new Date()
             this.lastSaved = { date: dt.toLocaleDateString(), time: dt.toLocaleTimeString() }
+          })
+      },
+
+      editPuzzle() {
+        saveData = this.prepareSaveData(puzzleData)
+        return fetch(`/toggle-complete/?pk=${puzzlePK}`
+        )
+          .then(resp => resp.json())
+          .then(jsonData => {
+            if (jsonData.redirect === true) {
+              window.location.replace(`/edit/${puzzlePK}`)
+            }
           })
       },
 
@@ -739,10 +759,14 @@
 
 
   // === Export Handlers ===
-  const jsn = editor.exportJSON()
-  const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
-  let url = window.URL.createObjectURL(data)
-  document.querySelector('#export-json').href = url
+  document.querySelector('#json-btn').addEventListener('click',(event)=>{
+    const jsn = editor.exportJSON()
+    const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
+    let url = window.URL.createObjectURL(data)
+    let anchor = document.querySelector('#export-json')
+    anchor.href = url
+    editor.savePuzzle()
+  })
 
 
   document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event) => {
@@ -756,19 +780,19 @@
     }
     console.log(formData)
     return editor.savePuzzle()
-    .then(r => {
-      return fetch(`/export/${puzzlePK}/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      })
-        .then(resp => {
-          nytButton.textContent = "Download"
-          return resp.blob()
+      .then(r => {
+        return fetch(`/export/${puzzlePK}/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
         })
-    })
+          .then(resp => {
+            nytButton.textContent = "Download"
+            return resp.blob()
+          })
+      })
       .then(blob => {
         let url = window.URL.createObjectURL(blob);
         let a = document.createElement('a');
