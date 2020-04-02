@@ -717,13 +717,6 @@
 
 
 
-  const jsn = editor.exportJSON()
-  const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
-  let url = window.URL.createObjectURL(data)
-  document.querySelector('#export-json').href = url
-
-
-
   const deleteButton = document.querySelector('#delete-btn')
   deleteButton.addEventListener('click', deleteEvent)
   function deleteEvent(event) {
@@ -745,6 +738,13 @@
   }
 
 
+  // === Export Handlers ===
+  const jsn = editor.exportJSON()
+  const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
+  let url = window.URL.createObjectURL(data)
+  document.querySelector('#export-json').href = url
+
+
   document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event) => {
     event.preventDefault()
     let nytButton = document.querySelector('#nyt-btn')
@@ -755,17 +755,20 @@
       formData[inp.id] = inp.value
     }
     console.log(formData)
-    return fetch(`/export/${puzzlePK}/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData)
-    })
-      .then(resp => {
-        nytButton.textContent = "Download"
-        return resp.blob()
+    return editor.savePuzzle()
+    .then(r => {
+      return fetch(`/export/${puzzlePK}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
       })
+        .then(resp => {
+          nytButton.textContent = "Download"
+          return resp.blob()
+        })
+    })
       .then(blob => {
         let url = window.URL.createObjectURL(blob);
         let a = document.createElement('a');
@@ -775,7 +778,6 @@
         a.click();
         a.remove();
       })
-
   })
 
 </script>
