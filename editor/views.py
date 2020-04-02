@@ -83,12 +83,12 @@ def ny_times_pdf(request, pk):
     context = {'puzzle': puzzle, 'rows': rows,
                'across': across, 'down': down, 'address': form_data}
     html = render_to_string('editor/ny_times_pdf.html', context=context)
-    css = CSS('static/css/ny_times_pdf.css')
+    # css = CSS('static/css/ny_times_pdf.css')
     filename = "nyt_format.pdf"
 
     response = HttpResponse(content_type="application/pdf")
     response['Content-Disposition'] = f"attachment; filename={filename}"
-    HTML(string=html).write_pdf(response, stylesheets=[css])
+    HTML(string=html).write_pdf(response)
     return response
 
 
@@ -192,10 +192,10 @@ def test_pdf(pk):
     context = {'puzzle': puzzle, 'rows': rows,
                'across': across, 'down': down}
     html = render_to_string('editor/ny_times_pdf.html', context=context)
-    css = CSS('static/css/ny_times_pdf.css')
+    # css = CSS('static/css/ny_times_pdf.css')
     filename = "nyt_format.pdf"
 
     response = HttpResponse(content_type="application/pdf")
     response['Content-Disposition'] = f"attachment; filename={filename}"
-    HTML(string=html).write_pdf('./output.pdf', stylesheets=[css])
+    HTML(string=html).write_pdf('./output.pdf')
 
