@@ -95,8 +95,11 @@
           <label for="description-inp">Description/Notes:</label>
           <textarea v-model="description" id="description-inp" maxlength="1023"></textarea>
         </div>
-
         <div class="symmetry-container prop-container">
+          These symmetry options determine how the black squares are automatically filled in symetrically.
+          180&deg; rotational symmetry is the default and the pattern that most NY Times crosswords follow.
+          You can change this setting at will as you write your puzzle, and turn off automatic black square
+          addition/deletion by choosing 'None'
           <div class="radio-container">
             <input type="radio" id="rotational" name="symmetry" value="rotational" v-model="symmetry">
             <label for="rotational">Rotational (default)</label>
