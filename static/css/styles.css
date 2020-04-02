@@ -324,8 +324,8 @@ ________________________________________________ */
 } */
 
 .cell {
-  width: 30px;
-  height: 30px;
+  /* width: 30px;
+  height: 30px; */
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -342,20 +342,21 @@ ________________________________________________ */
 }
 
 .entry {
-  font-size: 23px;
+  /* font-size: 23px; */
   text-align: center;
   width: 100%;
-  /* padding: 2px; */
+  padding-bottom: 1px;
 }
 
 .number {
-  font-size: 9px;
+  /* font-size: 10px; */
   font-weight: bold;
   width: 100%;
   height: 0;
   padding: 1px;
   position: relative;
-  bottom: 1px;
+  bottom: 3px;
+  margin-bottom: 1px;
 }
 
 .black {
