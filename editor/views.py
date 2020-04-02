@@ -30,8 +30,9 @@ def home(request):
 def edit(request, pk):
     puzzle = get_object_or_404(Puzzle, pk=pk)
     if request.user == puzzle.owner:
-        context = {'puzzle': puzzle.data, 'pk': pk}
-        return render(request, 'editor/edit_puzzle.html', context=context)
+        js_boolean = 'true' if puzzle.completed else 'false'
+        context = {'puzzle': puzzle.data, 'pk': pk, 'completed': js_boolean }
+        return render(request, 'editor/puzzle.html', context=context)
     else:
         redirect('home')
 
@@ -40,8 +41,9 @@ def edit(request, pk):
 def review_complete(request, pk):
     puzzle = get_object_or_404(Puzzle, pk=pk)
     if request.user == puzzle.owner:
-        context = {'puzzle': puzzle.data, 'pk': pk}
-        return render(request, 'editor/completed_puzzle.html', context=context)
+        js_boolean = 'true' if puzzle.completed else 'false'
+        context = {'puzzle': puzzle.data, 'pk': pk, 'completed': js_boolean }
+        return render(request, 'editor/puzzle.html', context=context)
     else:
         redirect('home')
 

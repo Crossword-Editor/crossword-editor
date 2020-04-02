@@ -507,7 +507,7 @@ ________________________________________________ */
   flex-flow: row nowrap;
   align-items: flex-start;
   padding: 0 .5rem;
-  width: 100vw;
+  width: 100%;
 }
 
 .properties-container label {
