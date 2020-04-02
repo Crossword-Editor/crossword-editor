@@ -69,6 +69,8 @@ def ny_times_pdf(request, pk):
     puzzle = puzzle_obj.data
     grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
     colN = puzzle['size']['colN']
+    cell_class = "cell" if int(colN) <= 15 else "cell small-cell"
+    num_class = "number" if int(colN) <= 15 else "number small-num"
     rows = [[(gridnums[i+j*colN], grid[i+j*colN])
              for i in range(colN)] for j in range(colN)]
     across = sorted(clues['across'].items(), key=lambda x: int(x[0]))
@@ -81,14 +83,15 @@ def ny_times_pdf(request, pk):
         pair.append(answers['down'][i])
 
     context = {'puzzle': puzzle, 'rows': rows,
-               'across': across, 'down': down, 'address': form_data}
+               'across': across, 'down': down, 'address': form_data,
+               'cell_class': cell_class, 'num_class': num_class}
     html = render_to_string('editor/ny_times_pdf.html', context=context)
-    # css = CSS('static/css/ny_times_pdf.css')
+    css = CSS('static/css/ny_times_pdf.css')
     filename = "nyt_format.pdf"
 
     response = HttpResponse(content_type="application/pdf")
     response['Content-Disposition'] = f"attachment; filename={filename}"
-    HTML(string=html).write_pdf(response)
+    HTML(string=html).write_pdf(response, stylesheets=[css])
     return response
 
 
@@ -163,12 +166,15 @@ def sort_by(queryset, option):
     return queryset.order_by(options[option])
 
 
-def test_pdf(pk):
+def test_pdf(request, pk):
     """For previewing nyt pdf output styling"""
     puzzle_obj = Puzzle.objects.get(pk=pk)
     puzzle = puzzle_obj.data
     grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
     colN = puzzle['size']['colN']
+    cell_class = "cell" if int(colN) <= 15 else "cell small-cell"
+    num_class = "number" if int(colN) <= 15 else "number small-num"
+    print(cell_class)
     rows = [[(gridnums[i+j*colN], grid[i+j*colN])
              for i in range(colN)] for j in range(colN)]
     across = sorted(clues['across'].items(), key=lambda x: int(x[0]))
@@ -181,11 +187,13 @@ def test_pdf(pk):
         pair.append(answers['down'][i])
 
     context = {'puzzle': puzzle, 'rows': rows,
-               'across': across, 'down': down}
+               'across': across, 'down': down, 'cell_class': cell_class,
+               'num_class': num_class}
     html = render_to_string('editor/ny_times_pdf.html', context=context)
-    # css = CSS('static/css/ny_times_pdf.css')
+    css = CSS('static/css/ny_times_pdf.css')
     filename = "nyt_format.pdf"
 
     response = HttpResponse(content_type="application/pdf")
     response['Content-Disposition'] = f"attachment; filename={filename}"
-    HTML(string=html).write_pdf('./output.pdf')
+    HTML(string=html).write_pdf('./output.pdf', stylesheets=[css])
+    return render(request, 'editor/ny_times_pdf.html', context=context)

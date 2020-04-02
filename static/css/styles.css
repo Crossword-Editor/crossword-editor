@@ -384,7 +384,7 @@ ________________________________________________ */
 
 .clue-input-container {
   width: 100%;
-  max-width: 450px;
+  max-width: 525px;
   border: 1px solid #ccc;
   background-color: aliceblue;
   border-radius: 4px;
@@ -624,4 +624,8 @@ ________________________________________________ */
   flex-flow: row wrap;
   margin-bottom: .5rem;
   margin-right: 2rem
+}
+
+input:disabled, textarea:disabled {
+  color: rgb(48, 48, 48);
 }

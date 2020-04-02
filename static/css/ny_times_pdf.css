@@ -1,7 +1,7 @@
 @charset "UTF-8";
 @page {
   size: 8.5in 11in;
-  margin: 1in 1in 1in 1in;
+  margin: .5in .5in;
 }
 
 * {
@@ -52,8 +52,10 @@ table {
 .cell {
   border: 1px solid black;
   position: relative;
+  /* for some reason the pdf stretches the cells into rectangles
+  so the height is a little bigger to compensate */
   width: 30px;
-  height: 30px;
+  height: 33px;
   text-align: center;
   border-radius: 0px;
   font-size: 20px;
@@ -61,23 +63,35 @@ table {
   padding: 1px;
 }
 
+.cell.small-cell {
+  width: 25px;
+  height: 28px;
+  font-size: 16px;
+}
+
 .number {
   font-size: 9px;
-  font-weight: bold;
+  /* font-weight: bold; */
   position: absolute;
-  box-sizing: content-box;
-  bottom: 20px;
+  bottom: 19px;
   left: 1px;
   height: 30%;
+  margin: 2px 0;
+}
+
+.number.small-num {
+  font-size: 8px;
+  bottom: 16px;
 }
 
 .number.empty {
-  bottom: 15px;
+  bottom: 12px;
 }
 
 .entry {
-  height: 70%;
-  margin-top: 8px;
+  height: 45%;
+  padding-top: 3px;
+  font-weight: 600;
 }
 
 .black {
