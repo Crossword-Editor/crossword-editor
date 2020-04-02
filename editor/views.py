@@ -19,7 +19,7 @@ def home(request):
         return render(request, 'editor/welcome.html')
     drafts = request.user.puzzles.filter(completed=False)
     completes = request.user.puzzles.filter(completed=True)
-    sort_option = request.GET.get('sort', 'date')
+    sort_option = request.GET.get('sort', 'modified')
     drafts = sort_by(drafts, sort_option)
     completes = sort_by(completes, sort_option)
     context = {'drafts': drafts, 'completes': completes}
