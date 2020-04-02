@@ -92,7 +92,7 @@ def ny_times_pdf(request, pk):
 
 @csrf_exempt
 @login_required
-def mark_complete(request):
+def toggle_complete(request):
     if request.method == 'POST':
         json_string = request.body
         json_decoded = json.loads(json_string)

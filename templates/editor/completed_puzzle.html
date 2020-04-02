@@ -490,7 +490,7 @@
 
       editPuzzle() {
         saveData = this.prepareSaveData(puzzleData)
-        return fetch(`/mark-complete/?pk=${puzzlePK}`
+        return fetch(`/toggle-complete/?pk=${puzzlePK}`
         )
           .then(resp => resp.json())
           .then(jsonData => {

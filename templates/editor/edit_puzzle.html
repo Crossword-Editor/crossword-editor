@@ -508,7 +508,7 @@
 
       completePuzzle() {
         saveData = this.prepareSaveData(puzzleData)
-        return fetch(`/mark-complete/`, {
+        return fetch(`/toggle-complete/`, {
           method: 'POST',
           headers: {
             'Content-type': 'application/json'

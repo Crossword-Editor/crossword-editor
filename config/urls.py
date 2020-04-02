@@ -25,7 +25,7 @@ urlpatterns = [
     path('', views.home, name="home"),
     path('edit/<int:pk>', views.edit, name='edit'),
     path('save/', views.save, name='save'),
-    path('mark-complete/', views.mark_complete, name='mark-complete'),
+    path('toggle-complete/', views.toggle_complete, name='toggle-complete'),
     path('review-complete/<int:pk>/',
          views.review_complete, name='review-complete'),
     path('new/', views.new, name='new'),
