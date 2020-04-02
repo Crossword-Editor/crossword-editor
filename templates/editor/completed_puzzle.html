@@ -46,7 +46,7 @@
         </span>
         <div class="clue-input-container">
           <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;"
-            v-model.trim="currentClue"></textarea>
+            v-model.trim="currentClue" disabled></textarea>
         </div>
 
         <div class="grid-container" tabindex="0">
@@ -89,34 +89,16 @@
       <div class="properties-container">
         <div class="title-container prop-container">
           <label for="title-inp">Title:</label>
-          <input v-model="title" type="text" id="title-inp" maxlength="64">
+          <input v-model="title" type="text" id="title-inp" maxlength="64" disabled>
         </div>
         <div class="description-container prop-container">
           <label for="description-inp">Description/Notes:</label>
-          <textarea v-model="description" id="description-inp" maxlength="1023"></textarea>
+          <textarea v-model="description" id="description-inp" maxlength="1023" disabled></textarea>
         </div>
 
-        <div class="symmetry-container prop-container">
-          <div class="radio-container">
-            <input type="radio" id="rotational" name="symmetry" value="rotational" v-model="symmetry">
-            <label for="rotational">Rotational (default)</label>
-          </div>
-          <div class="radio-container">
-            <input type="radio" id="vertical" name="symmetry" value="vertical" v-model="symmetry">
-            <label for="vertical">Vertical</label>
-          </div>
-          <div class="radio-container">
-            <input type="radio" id="horizontal" name="symmetry" value="horizontal" v-model="symmetry">
-            <label for="horizontal">Horizontal</label>
-          </div>
-          <div class="radio-container">
-            <input type="radio" id="none" name="symmetry" value="none" v-model="symmetry">
-            <label for="none">None</label>
-          </div>
-        </div>
 
         <div class="complete-container prop-container">
-          <button id="complete-btn" class="btn green" @click="completePuzzle">Mark as complete</button>
+          <button id="complete-btn" class="btn green" @click="editPuzzle">Edit</button>
         </div>
 
         <div class="delete-container prop-container">
@@ -506,19 +488,14 @@
           })
       },
 
-      completePuzzle() {
+      editPuzzle() {
         saveData = this.prepareSaveData(puzzleData)
-        return fetch(`/toggle-complete/`, {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify(saveData)
-        })
+        return fetch(`/toggle-complete/?pk=${puzzlePK}`
+        )
           .then(resp => resp.json())
           .then(jsonData => {
             if (jsonData.redirect === true) {
-              window.location.replace("/")
+              window.location.replace(`/edit/${puzzlePK}`)
             }
           })
       },
@@ -686,19 +663,6 @@
 
     },
 
-
-    created: function () {
-      document.addEventListener('keydown', (event) => {
-        const ignoreIds = ['clue-input', 'title-inp', 'description-inp']
-        let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
-        for (let inp of addressInputs) {
-          ignoreIds.push(inp.id)
-        }
-        if (!ignoreIds.includes(event.target.id)) {
-          this.keyhandle(event)
-        }
-      })
-    }
   });
 
 
