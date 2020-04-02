@@ -31,7 +31,7 @@ def edit(request, pk):
     puzzle = get_object_or_404(Puzzle, pk=pk)
     if request.user == puzzle.owner:
         js_boolean = 'true' if puzzle.completed else 'false'
-        context = {'puzzle': puzzle.data, 'pk': pk, 'completed': js_boolean }
+        context = {'puzzle': puzzle.data, 'pk': pk, 'completed': js_boolean}
         return render(request, 'editor/puzzle.html', context=context)
     else:
         redirect('home')
@@ -42,7 +42,7 @@ def review_complete(request, pk):
     puzzle = get_object_or_404(Puzzle, pk=pk)
     if request.user == puzzle.owner:
         js_boolean = 'true' if puzzle.completed else 'false'
-        context = {'puzzle': puzzle.data, 'pk': pk, 'completed': js_boolean }
+        context = {'puzzle': puzzle.data, 'pk': pk, 'completed': js_boolean}
         return render(request, 'editor/puzzle.html', context=context)
     else:
         redirect('home')
@@ -163,15 +163,6 @@ def sort_by(queryset, option):
     return queryset.order_by(options[option])
 
 
-# @login_required(login_url='/accounts/login')
-# def puzzle_details(request, pk):
-#     user = User.objects.get(username=request.user.username)
-#     puzzles = Puzzle.objects.all()
-#     puzzle = Puzzle.objects.get(pk=pk)
-#     context = {'puzzle': puzzle, 'pk': pk}
-#     return render(request, 'editor/puzzle_details.html', context=context)
-
-
 def test_pdf(pk):
     """For previewing nyt pdf output styling"""
     puzzle_obj = Puzzle.objects.get(pk=pk)
@@ -198,4 +189,3 @@ def test_pdf(pk):
     response = HttpResponse(content_type="application/pdf")
     response['Content-Disposition'] = f"attachment; filename={filename}"
     HTML(string=html).write_pdf('./output.pdf')
-
