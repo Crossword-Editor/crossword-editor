@@ -52,29 +52,32 @@ table {
 .cell {
   border: 1px solid black;
   position: relative;
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
   text-align: center;
   border-radius: 0px;
-  font-size: 25px;
+  font-size: 20px;
   outline: none;
+  padding: 1px;
 }
 
 .number {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: bold;
   position: absolute;
   box-sizing: content-box;
   bottom: 20px;
   left: 1px;
+  height: 30%;
 }
 
 .number.empty {
-  bottom: 6px;
+  bottom: 15px;
 }
 
 .entry {
-  margin-top: 2px;
+  height: 70%;
+  margin-top: 8px;
 }
 
 .black {

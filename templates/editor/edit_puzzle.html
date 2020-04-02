@@ -95,8 +95,11 @@
           <label for="description-inp">Description/Notes:</label>
           <textarea v-model="description" id="description-inp" maxlength="1023"></textarea>
         </div>
-
         <div class="symmetry-container prop-container">
+          These symmetry options determine how the black squares are automatically filled in symetrically.
+          180&deg; rotational symmetry is the default and the pattern that most NY Times crosswords follow.
+          You can change this setting at will as you write your puzzle, and turn off automatic black square
+          addition/deletion by choosing 'None'
           <div class="radio-container">
             <input type="radio" id="rotational" name="symmetry" value="rotational" v-model="symmetry">
             <label for="rotational">Rotational (default)</label>
@@ -200,7 +203,7 @@
               <label for="email">Email:</label>
               <input type="email" id="email" size="30">
             </div>
-            <button class="btn save-btn" type="submit">Download</button> (this may take a second or two)
+            <button id="nyt-btn" class="btn save-btn" type="submit">Download</button> (this may take a second or two)
           </form>
         </div>
       </div>
@@ -304,7 +307,7 @@
       colN: puzzleData.size.colN,
       title: puzzleData.title,
       description: puzzleData.description,
-      symmetry: 'rotational', // other values: none, vertical, horizontal
+      symmetry: puzzleData.symmetry, // other values: none, vertical, horizontal
       isVertical: false,
       BLACK: '.',
       across: 'across', // string needed for x-clue component prop
@@ -483,10 +486,11 @@
         let size = { rowN: this.rowN, colN: this.colN }
         let title = this.title
         let description = this.description
+        let symmetry = this.symmetry
         let gridnums = this.gridnums // remove later, maybe
         let answers = this.answers // remove later, maybe
         let pk = puzzlePK
-        return { grid, gridnums, clues, size, title, description, answers, pk }
+        return { grid, gridnums, clues, size, title, description, answers, symmetry, pk }
       },
 
       savePuzzle() {
@@ -545,6 +549,9 @@
           case "horizontal":
             return this.coorToArray(newRow, col)
             break
+          case "none":
+            return this.activeCell
+            break
         }
       },
 
@@ -593,8 +600,15 @@
         const validEntries = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#'
         const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', ' ']
         if (validEntries.includes(key) && !modifierPressed) {
-          this.updateGrid(this.activeCell, key)
-          this.applySymmetry(this.activeCell, BLACK)
+          if (this.grid[this.activeCell] === BLACK) {
+            let symmetricEntry = key === BLACK ? BLACK : ''
+            this.applySymmetry(this.activeCell, symmetricEntry)
+            this.updateGrid(this.activeCell, key)
+          }
+          else {
+            this.updateGrid(this.activeCell, key)
+            this.applySymmetry(this.activeCell, BLACK)
+          }
           this.nextCell()
         }
         else if (validDirectives.includes(key)) {
@@ -703,13 +717,6 @@
 
 
 
-  const jsn = editor.exportJSON()
-  const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
-  let url = window.URL.createObjectURL(data)
-  document.querySelector('#export-json').href = url
-
-
-
   const deleteButton = document.querySelector('#delete-btn')
   deleteButton.addEventListener('click', deleteEvent)
   function deleteEvent(event) {
@@ -731,22 +738,37 @@
   }
 
 
+  // === Export Handlers ===
+  const jsn = editor.exportJSON()
+  const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
+  let url = window.URL.createObjectURL(data)
+  document.querySelector('#export-json').href = url
+
+
   document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event) => {
     event.preventDefault()
+    let nytButton = document.querySelector('#nyt-btn')
+    nytButton.textContent = 'Loading...'
     let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
     let formData = {}
     for (let inp of addressInputs) {
       formData[inp.id] = inp.value
     }
     console.log(formData)
-    return fetch(`/export/${puzzlePK}/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData)
+    return editor.savePuzzle()
+    .then(r => {
+      return fetch(`/export/${puzzlePK}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+        .then(resp => {
+          nytButton.textContent = "Download"
+          return resp.blob()
+        })
     })
-      .then(resp => resp.blob())
       .then(blob => {
         let url = window.URL.createObjectURL(blob);
         let a = document.createElement('a');
@@ -756,7 +778,6 @@
         a.click();
         a.remove();
       })
-
   })
 
 </script>

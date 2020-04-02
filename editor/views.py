@@ -19,7 +19,7 @@ def home(request):
         return render(request, 'editor/welcome.html')
     drafts = request.user.puzzles.filter(completed=False)
     completes = request.user.puzzles.filter(completed=True)
-    sort_option = request.GET.get('sort', 'date')
+    sort_option = request.GET.get('sort', 'modified')
     drafts = sort_by(drafts, sort_option)
     completes = sort_by(completes, sort_option)
     context = {'drafts': drafts, 'completes': completes}
@@ -130,6 +130,7 @@ def createEmptyGrid(rowN, colN):
     puzzle["clues"]["down"] = {f'{i+1}': '' for i in range(colN)}
     puzzle["clues"]["across"] = {
         ('1' if i == 0 else f'{i+colN}'): '' for i in range(rowN)}
+    puzzle['symmetry'] = 'rotational'
     return puzzle
 
 
@@ -167,3 +168,32 @@ def sort_by(queryset, option):
 #     puzzle = Puzzle.objects.get(pk=pk)
 #     context = {'puzzle': puzzle, 'pk': pk}
 #     return render(request, 'editor/puzzle_details.html', context=context)
+
+
+def test_pdf(pk):
+    """For previewing nyt pdf output styling"""
+    puzzle_obj = Puzzle.objects.get(pk=pk)
+    puzzle = puzzle_obj.data
+    grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
+    colN = puzzle['size']['colN']
+    rows = [[(gridnums[i+j*colN], grid[i+j*colN])
+             for i in range(colN)] for j in range(colN)]
+    across = sorted(clues['across'].items(), key=lambda x: int(x[0]))
+    down = sorted(clues['down'].items(), key=lambda x: int(x[0]))
+    across = [list(pair) for pair in across]
+    down = [list(pair) for pair in down]
+    for i, pair in enumerate(across):
+        pair.append(answers['across'][i])
+    for i, pair in enumerate(down):
+        pair.append(answers['down'][i])
+
+    context = {'puzzle': puzzle, 'rows': rows,
+               'across': across, 'down': down}
+    html = render_to_string('editor/ny_times_pdf.html', context=context)
+    css = CSS('static/css/ny_times_pdf.css')
+    filename = "nyt_format.pdf"
+
+    response = HttpResponse(content_type="application/pdf")
+    response['Content-Disposition'] = f"attachment; filename={filename}"
+    HTML(string=html).write_pdf('./output.pdf', stylesheets=[css])
+
