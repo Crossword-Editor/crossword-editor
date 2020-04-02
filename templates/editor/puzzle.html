@@ -168,7 +168,7 @@
       <div class="export-list-container">
         <div class="export-container">
           <a id="export-json" download="my_exported_puzzle.json" href="">
-            <button class="btn save-btn">Download as JSON</button>
+            <button id="json-btn" class="btn save-btn">Download as JSON</button>
           </a>
           (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/</a> format)
         </div>
@@ -759,10 +759,14 @@
 
 
   // === Export Handlers ===
-  const jsn = editor.exportJSON()
-  const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
-  let url = window.URL.createObjectURL(data)
-  document.querySelector('#export-json').href = url
+  document.querySelector('#json-btn').addEventListener('click',(event)=>{
+    const jsn = editor.exportJSON()
+    const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
+    let url = window.URL.createObjectURL(data)
+    let anchor = document.querySelector('#export-json')
+    anchor.href = url
+    editor.savePuzzle()
+  })
 
 
   document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event) => {
