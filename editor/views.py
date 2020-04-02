@@ -36,6 +36,16 @@ def edit(request, pk):
         redirect('home')
 
 
+@login_required
+def review_complete(request, pk):
+    puzzle = get_object_or_404(Puzzle, pk=pk)
+    if request.user == puzzle.owner:
+        context = {'puzzle': puzzle.data, 'pk': pk}
+        return render(request, 'editor/completed_puzzle.html', context=context)
+    else:
+        redirect('home')
+
+
 @csrf_exempt
 @require_POST
 @login_required
@@ -81,17 +91,24 @@ def ny_times_pdf(request, pk):
 
 
 @csrf_exempt
-@require_POST
 @login_required
 def mark_complete(request):
-    json_string = request.body
-    json_decoded = json.loads(json_string)
-    pk = json_decoded['pk']
-    puzzle = Puzzle.objects.get(pk=pk)
-    puzzle.data = json_decoded
-    puzzle.completed = True
-    puzzle.save()
-    return JsonResponse({"redirect": True})
+    if request.method == 'POST':
+        json_string = request.body
+        json_decoded = json.loads(json_string)
+        pk = json_decoded['pk']
+        puzzle = Puzzle.objects.get(pk=pk)
+        puzzle.data = json_decoded
+        puzzle.completed = True
+        puzzle.save()
+        return JsonResponse({"redirect": True})
+
+    else:
+        pk = int(request.GET.get('pk'))
+        puzzle = Puzzle.objects.get(pk=pk)
+        puzzle.completed = False
+        puzzle.save()
+        return JsonResponse({"redirect": True})
 
 
 @csrf_exempt

@@ -33,52 +33,54 @@
   <div class="flex-box">
     <div class="draft-box">
       <h3>Draft Puzzles</h3>
-      {% for puzzle in drafts %}
-      <div class="puzzle-title-display">
-        <a href="{% url 'edit' puzzle.pk %}">
-          <p>
-            Title:
-            {% if puzzle.data.title %}
-            {{ puzzle.data.title }}
-            {% else %}
-            untitled
-            {% endif %}
-          </p>
-          <p>
-            modified: <span class="date">{{ puzzle.updated_at|date:"c" }}</span>
-          </p>
-          <p>
-            created: <span class="date">{{ puzzle.created_at|date:"c" }}</span>
-          </p>
-        </a>
+      <div class="scroll-puzzles">
+        {% for puzzle in drafts %}
+        <div class="puzzle-title-display">
+          <a href="{% url 'edit' puzzle.pk %}">
+            <p>
+              {% if puzzle.data.title %}
+              {{ puzzle.data.title }}
+              {% else %}
+              untitled
+              {% endif %}
+            </p>
+            <p>
+              modified: <span class="date">{{ puzzle.updated_at|date:"c" }}</span>
+            </p>
+            <p>
+              created: <span class="date">{{ puzzle.created_at|date:"c" }}</span>
+            </p>
+          </a>
+        </div>
+        <br>
+        {% endfor %}
       </div>
-      <br>
-      {% endfor %}
     </div>
 
     <div class="completed-box">
       <h3>Completed Puzzles</h3>
-      {% for puzzle in completes %}
-      <div class="puzzle-title-display">
-        <a href="">
-          <p>
-            Title:
-            {% if puzzle.data.title %}
-            {{ puzzle.data.title }}
-            {% else %}
-            untitled
-            {% endif %}
-          </p>
-          <p>
-            modified: <span class="date">{{ puzzle.updated_at|date:"c" }}</span>
-          </p>
-          <p>
-            created: <span class="date">{{ puzzle.created_at|date:"c" }}</span>
-          </p>
-        </a>
+      <div class="scroll-puzzles">
+        {% for puzzle in completes %}
+        <div class="puzzle-title-display">
+          <a href="{% url 'review-complete' puzzle.pk %}">
+            <p>
+              {% if puzzle.data.title %}
+              {{ puzzle.data.title }}
+              {% else %}
+              untitled
+              {% endif %}
+            </p>
+            <p>
+              modified: <span class="date">{{ puzzle.updated_at|date:"c" }}</span>
+            </p>
+            <p>
+              created: <span class="date">{{ puzzle.created_at|date:"c" }}</span>
+            </p>
+          </a>
+        </div>
+        <br>
+        {% endfor %}
       </div>
-      <br>
-      {% endfor %}
     </div>
   </div>
 
