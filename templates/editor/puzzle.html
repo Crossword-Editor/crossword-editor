@@ -357,7 +357,8 @@
       },
 
       numberStyle() {
-        return { 'font-size': this.colN > 10 ? '10px' : '15px' }
+        let max = Math.max(this.rowN, this.colN)
+        return { 'font-size': max > 10 ? '10px' : '14px' }
       },
 
       clueNumbers() {
