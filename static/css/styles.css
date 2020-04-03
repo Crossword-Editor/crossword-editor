@@ -326,6 +326,7 @@ ________________________________________________ */
 .cell {
   /* width: 30px;
   height: 30px; */
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -333,12 +334,24 @@ ________________________________________________ */
   border: 0.5px solid gray;
 }
 
+.rebus {
+  background-color: rgb(247, 210, 162);
+}
+
 .highlighted {
   background-color: #a7d8ff;
 }
 
+.highlighted.rebus {
+  background-color: rgb(170, 170, 129);
+}
+
 .active {
   background-color: #ffda00;
+}
+
+.active.rebus {
+  background-color: rgb(122, 184, 122);
 }
 
 .entry {
@@ -628,4 +641,27 @@ ________________________________________________ */
 
 input:disabled, textarea:disabled {
   color: rgb(48, 48, 48);
+}
+
+/* === REBUS === */
+
+#rebus-input, #rebus-initial {
+  font-family: "Source Sans Pro", sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  border: 1px solid #91b5f9;
+  background-color: rgba(240, 248, 255, 0.9);
+  font-size: 1.3rem;
+  padding: 0.5rem 1rem;
+}
+
+.cell input {
+  position: absolute;
+  border: 0.5px solid gray;
+  top: 0;
+  left: 0;
+  text-transform: uppercase;
+  background-color: aliceblue;
+  /* width: 3.5rem; */
+  z-index: 2;
 }

@@ -57,7 +57,7 @@
                 <span v-if="gridnums[n-1] !== 0">${ gridnums[n-1] }</span>
               </div>
               <div slot="entry" class="entry" :style="entryStyle">
-                ${ grid[n-1] }
+                ${ grid[n-1].length > 1 ? grid[n-1][0] : grid[n-1] }
               </div>
             </x-cell>
           </div>
@@ -220,6 +220,13 @@
     </v-tab>
   </vue-tabs>
 
+  {% comment %}
+  <div class="rebus-container">
+    <p>Rebus Input:</p>
+    Full word: <input type="text" id="rebus-input" v-modal="rebusWord">
+    Display character: <input type="text" id="rebus-initial" maxlength="1" v-modal="rebusInitial">
+  </div> {% endcomment %}
+
   {% endblock main %}
 
 </div>
@@ -293,23 +300,39 @@
         return this.highlighted.includes(this.idx)
       },
       cellClasses() {
-        return { active: this.isActive, black: this.isBlack, highlighted: this.isHighlighted }
+        return {
+          active: this.isActive,
+          black: this.isBlack,
+          highlighted: this.isHighlighted,
+          rebus: this.grid[this.idx].length > 1
+        }
       },
       cellStyle() {
         let max = Math.max(this.rowN, this.colN)
-        console.log(max, 525/max)
         return { 'width': `${525 / max}px`, 'height': `${525 / max}px` }
       }
     },
     methods: {
       clicked() {
-        this.$emit("cell-clicked", this.idx);
+        this.$emit("cell-clicked", this.idx)
       }
     }
   });
 
 
+  Vue.component('x-rebus', {
+    template: `
+    `,
+    props: ['grid', 'idx'],
+    data: function () {
+      return {
+        rebusWord: this.grid[this.idx],
+        rebusInitial: this.grid[this.idx].length > 0 ? this.grid[this.idx][0] : ''
+      }
+    }
 
+
+  })
 
 
   /* ================ Editor APP =================================*/
@@ -324,6 +347,8 @@
       title: puzzleData.title,
       description: puzzleData.description,
       symmetry: puzzleData.symmetry, // default: rotational (other values: none, vertical, horizontal )
+      rebus: puzzleData.rebus, // Ex: {idx: {display character: 'R', word: 'REBUS'}, ...}
+      completed: completed, // defined line 240
       isVertical: false,
       BLACK: '.',
       across: 'across', // string needed for x-clue component prop
@@ -331,7 +356,6 @@
       activeCell: 0,
       inputArea: 0,
       lastSaved: '',
-      completed: completed
     },
 
     computed: {
@@ -350,10 +374,13 @@
           'grid-auto-rows': '1fr'
         }
       },
+      entryFontSize() {
+        let max = Math.max(this.rowN, this.colN)
+        return `${420 / max}px`
+      },
 
       entryStyle() {
-        let max = Math.max(this.rowN, this.colN)
-        return { 'font-size': `${420 / max}px` }
+        return { 'font-size': this.entryFontSize }
       },
 
       numberStyle() {
@@ -492,10 +519,42 @@
       },
 
       handleCellClick(idx) {
-        if (this.activeCell === idx) {
-          this.toggleVertical()
+        if (event.metaKey) {
+          this.activeCell = idx;
+          this.rebusHandler(event, idx)
         }
-        this.activeCell = idx;
+        else {
+          if (this.activeCell === idx) {
+            this.toggleVertical()
+          }
+          this.activeCell = idx;
+        }
+      },
+
+      rebusHandler(event, idx) {
+        console.log(event.x, event.y)
+        let rebusCell = document.createElement('input', { type: 'text' })
+        rebusCell.classList.add('active-rebus')
+        rebusCell.id = 'rebus-input'
+        let cell = event.target.closest('.cell')
+        cell.insertAdjacentHTML
+        cell.appendChild(rebusCell)
+        let max = Math.max(this.rowN, this.colN)
+        rebusCell.style = `font-size:${this.entryFontSize}; height:${525 / max}px`
+        rebusCell.focus()
+        rebusCell.value = this.grid[idx]
+        rebusCell.style.width = `${rebusCell.value.length + 3}rem`
+        rebusCell.setAttribute('onkeypress', "this.style.width = (this.value.length + 3) + 'rem';")
+        rebusCell.addEventListener('keydown', (e) => {
+          if (e.key.toUpperCase() === 'ENTER') {
+            let value = rebusCell.value
+            this.updateGrid(idx, value)
+            rebusCell.remove()
+          }
+        })
+        rebusCell.addEventListener('focusout', (e) => {
+          rebusCell.remove()
+        })
       },
 
       handleClueClick(number, clueType) {
@@ -742,7 +801,7 @@
 
     created: function () {
       document.addEventListener('keydown', (event) => {
-        const ignoreIds = ['clue-input', 'title-inp', 'description-inp']
+        const ignoreIds = ['clue-input', 'title-inp', 'description-inp', 'rebus-input']
         let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
         for (let inp of addressInputs) {
           ignoreIds.push(inp.id)
