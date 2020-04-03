@@ -52,7 +52,7 @@
         <div class="grid-container" tabindex="0">
           <div class='grid' :style="gridStyle">
             <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea"
-              :grid="grid" :highlighted="highlighted" :col-n="colN" @cell-clicked="handleCellClick">
+              :grid="grid" :highlighted="highlighted" :col-n="colN" :row-n="rowN" @cell-clicked="handleCellClick">
               <div slot="number" class="number" :style="numberStyle">
                 <span v-if="gridnums[n-1] !== 0">${ gridnums[n-1] }</span>
               </div>
@@ -273,7 +273,7 @@
         <slot name="number"></slot>
         <slot name="entry"></slot>
       </div>`,
-    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted', 'colN'],
+    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted', 'colN', 'rowN'],
     data: function () {
       return {
         test: 1
@@ -296,7 +296,9 @@
         return { active: this.isActive, black: this.isBlack, highlighted: this.isHighlighted }
       },
       cellStyle() {
-        return { 'width': `${525 / this.colN}px`, 'height': `${525 / this.colN}px` }
+        let max = Math.max(this.rowN, this.colN)
+        console.log(max, 525/max)
+        return { 'width': `${525 / max}px`, 'height': `${525 / max}px` }
       }
     },
     methods: {
@@ -350,7 +352,8 @@
       },
 
       entryStyle() {
-        return { 'font-size': `${420 / this.colN}px` }
+        let max = Math.max(this.rowN, this.colN)
+        return { 'font-size': `${420 / max}px` }
       },
 
       numberStyle() {
