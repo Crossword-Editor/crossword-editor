@@ -68,11 +68,11 @@ def ny_times_pdf(request, pk):
     puzzle_obj = Puzzle.objects.get(pk=pk)
     puzzle = puzzle_obj.data
     grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
-    colN = puzzle['size']['colN']
+    colN, rowN = puzzle['size']['colN'], puzzle['size']['rowN']
     cell_class = "cell" if int(colN) <= 15 else "cell small-cell"
     num_class = "number" if int(colN) <= 15 else "number small-num"
-    rows = [[(gridnums[i+j*colN], grid[i+j*colN])
-             for i in range(colN)] for j in range(colN)]
+    rows = [[(gridnums[i*colN+j], grid[i*colN+j]) for j in range(colN)]
+            for i in range(rowN)]
     across = sorted(clues['across'].items(), key=lambda x: int(x[0]))
     down = sorted(clues['down'].items(), key=lambda x: int(x[0]))
     across = [list(pair) for pair in across]
@@ -171,12 +171,11 @@ def test_pdf(request, pk):
     puzzle_obj = Puzzle.objects.get(pk=pk)
     puzzle = puzzle_obj.data
     grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
-    colN = puzzle['size']['colN']
+    colN, rowN = puzzle['size']['colN'], puzzle['size']['rowN']
     cell_class = "cell" if int(colN) <= 15 else "cell small-cell"
     num_class = "number" if int(colN) <= 15 else "number small-num"
-    print(cell_class)
-    rows = [[(gridnums[i+j*colN], grid[i+j*colN])
-             for i in range(colN)] for j in range(colN)]
+    rows = [[(gridnums[i*colN+j], grid[i*colN+j]) for j in range(colN)]
+            for i in range(rowN)]
     across = sorted(clues['across'].items(), key=lambda x: int(x[0]))
     down = sorted(clues['down'].items(), key=lambda x: int(x[0]))
     across = [list(pair) for pair in across]
