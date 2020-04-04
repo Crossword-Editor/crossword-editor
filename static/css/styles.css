@@ -1,5 +1,5 @@
 :root {
-  --active-black-color: #645500;
+  --active-black-color: #493e00;
   --home-page-link-color: #0518c2;
   --home-page-link-color-hover: #4378eb;
 }
@@ -335,7 +335,7 @@ ________________________________________________ */
 }
 
 .rebus {
-  background-color: rgb(247, 210, 162);
+  background-color: rgb(255, 202, 202);
 }
 
 .highlighted {
@@ -343,7 +343,7 @@ ________________________________________________ */
 }
 
 .highlighted.rebus {
-  background-color: rgb(170, 170, 129);
+  background-color: rgb(167, 189, 255);
 }
 
 .active {
