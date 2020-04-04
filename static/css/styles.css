@@ -412,6 +412,7 @@ ________________________________________________ */
   background-color: aliceblue;
   font-size: 1.1rem;
   height: 45px;
+  width: 100%;
 }
 
 .clue-list-container {
