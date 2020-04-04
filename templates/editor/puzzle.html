@@ -559,7 +559,7 @@
         rebusCell.setAttribute('onkeypress', "this.style.width = (this.value.length + 3) + 'rem';")
         rebusCell.addEventListener('keydown', (e) => {
           if (e.key.toUpperCase() === 'ENTER') {
-            let value = rebusCell.value
+            let value = rebusCell.value.toUpperCase()
             this.updateGrid(idx, value)
             rebusCell.remove()
           }
