@@ -52,9 +52,13 @@
         <div class="grid-container" tabindex="0">
           <div class='grid' :style="gridStyle">
             <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea"
-              :grid="grid" :highlighted="highlighted" @cell-clicked="handleCellClick">
-              <div slot="number" class="number"><span v-if="gridnums[n-1] !== 0">${ gridnums[n-1] }</span></div>
-              <div slot="entry" class="entry">${ grid[n-1] }</div>
+              :grid="grid" :highlighted="highlighted" :col-n="colN" :row-n="rowN" @cell-clicked="handleCellClick">
+              <div slot="number" class="number" :style="numberStyle">
+                <span v-if="gridnums[n-1] !== 0">${ gridnums[n-1] }</span>
+              </div>
+              <div slot="entry" class="entry" :style="entryStyle">
+                ${ grid[n-1][0] }
+              </div>
             </x-cell>
           </div>
         </div>
@@ -89,11 +93,15 @@
       <div class="properties-container">
         <div class="title-container prop-container">
           <label for="title-inp">Title:</label>
-          <input v-model="title" type="text" id="title-inp" maxlength="64" :disabled="completed">
+          <input v-model="title" type="text" id="title-inp" class="prop-inp" maxlength="64" :disabled="completed">
         </div>
         <div class="description-container prop-container">
           <label for="description-inp">Description/Notes:</label>
           <textarea v-model="description" id="description-inp" maxlength="1023" :disabled="completed"></textarea>
+        </div>
+        <div class="prop-container">
+          <label for="author-inp">Author(s) can be recorded here:</label>
+          <input v-model="author" type="text" id="author-inp" class="prop-inp" maxlength="128" :disabled="completed">
         </div>
 
         <div v-if="!completed" class="symmetry-container prop-container">
@@ -160,6 +168,22 @@
           <p>✚ When editing current clue, <strong>TAB</strong> to return to grid.</p>
           <p>✚ <strong>SHIFT + TAB</strong> to edit clue for current word.</p>
           <p>✚ Select <strong>Puzzle Properties</strong> tab to change Symmetry Options.</p>
+        </ul>
+
+        <h3>Rebus:</h3>
+        <ul>
+          <p>✚ Entering 'Command+Enter' on a Mac or 'Windows Key + Enter' other PC's allow you to type a rebus entry in
+            the active cell.
+          </p>
+          <p>✚ Click any cell while holding the meta/super key (i.e. windows key or command key on amac) to enter a
+            rebus entry.
+          </p>
+          <p>✚ Press Enter to keep the rebus entry, or click elsewhere on the page to close and cancel the rebus input.
+          </p>
+          <p>✚ Grid cells will be highlighted to indicate they are a rebus entry and show the first character of the
+            rebus word.
+          </p>
+          <p>✚ To unmark a cell as a rebus, edit the rebus word back down to 0 or 1 character.</p>
         </ul>
       </div>
     </v-tab>
@@ -265,11 +289,11 @@
   /* ================ CELL Component =================================*/
   Vue.component("x-cell", {
     template: `
-      <div class="cell" :class="cellClasses" @click="clicked">
+      <div class="cell" :class="cellClasses" :style="cellStyle" @click="clicked">
         <slot name="number"></slot>
         <slot name="entry"></slot>
       </div>`,
-    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted'],
+    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted', 'colN', 'rowN'],
     data: function () {
       return {
         test: 1
@@ -289,18 +313,39 @@
         return this.highlighted.includes(this.idx)
       },
       cellClasses() {
-        return { active: this.isActive, black: this.isBlack, highlighted: this.isHighlighted }
+        return {
+          active: this.isActive,
+          black: this.isBlack,
+          highlighted: this.isHighlighted,
+          rebus: this.grid[this.idx].length > 1
+        }
+      },
+      cellStyle() {
+        let max = Math.max(this.rowN, this.colN)
+        return { 'width': `${525 / max}px`, 'height': `${525 / max}px` }
       }
     },
     methods: {
       clicked() {
-        this.$emit("cell-clicked", this.idx);
+        this.$emit("cell-clicked", this.idx)
       }
     }
   });
 
 
+  Vue.component('x-rebus', {
+    template: `
+    `,
+    props: ['grid', 'idx'],
+    data: function () {
+      return {
+        rebusWord: this.grid[this.idx],
+        rebusInitial: this.grid[this.idx].length > 0 ? this.grid[this.idx][0] : ''
+      }
+    }
 
+
+  })
 
 
   /* ================ Editor APP =================================*/
@@ -314,7 +359,10 @@
       colN: puzzleData.size.colN,
       title: puzzleData.title,
       description: puzzleData.description,
-      symmetry: puzzleData.symmetry, // other values: none, vertical, horizontal
+      author: puzzleData.author,
+      symmetry: puzzleData.symmetry, // default: rotational (other values: none, vertical, horizontal )
+      rebus: puzzleData.rebus, // Ex: {idx: {display character: 'R', word: 'REBUS'}, ...}
+      completed: completed, // defined line 240
       isVertical: false,
       BLACK: '.',
       across: 'across', // string needed for x-clue component prop
@@ -322,7 +370,6 @@
       activeCell: 0,
       inputArea: 0,
       lastSaved: '',
-      completed: completed
     },
 
     computed: {
@@ -340,6 +387,19 @@
           'grid-template-columns': `repeat(${this.colN}, 1fr [col-start])`,
           'grid-auto-rows': '1fr'
         }
+      },
+      entryFontSize() {
+        let max = Math.max(this.rowN, this.colN)
+        return `${420 / max}px`
+      },
+
+      entryStyle() {
+        return { 'font-size': this.entryFontSize }
+      },
+
+      numberStyle() {
+        let max = Math.max(this.rowN, this.colN)
+        return { 'font-size': max > 10 ? '10px' : '14px' }
       },
 
       clueNumbers() {
@@ -473,10 +533,40 @@
       },
 
       handleCellClick(idx) {
-        if (this.activeCell === idx) {
-          this.toggleVertical()
+        if (event.metaKey) {
+          this.activeCell = idx
+          this.rebusHandler(event, idx, clicked = true)
         }
-        this.activeCell = idx;
+        else {
+          if (this.activeCell === idx) {
+            this.toggleVertical()
+          }
+          this.activeCell = idx;
+        }
+      },
+
+      rebusHandler(event, idx, clicked = false) {
+        let rebusCell = document.createElement('input', { type: 'text' })
+        rebusCell.classList.add('active-rebus')
+        rebusCell.id = 'rebus-input'
+        let cell = clicked ? event.target.closest('.cell') : document.querySelector('.cell.active')
+        cell.appendChild(rebusCell)
+        let max = Math.max(this.rowN, this.colN)
+        rebusCell.style = `font-size:${this.entryFontSize}; height:${525 / max}px`
+        rebusCell.focus()
+        rebusCell.value = this.grid[idx]
+        rebusCell.style.width = `${rebusCell.value.length + 3}rem`
+        rebusCell.setAttribute('onkeypress', "this.style.width = (this.value.length + 3) + 'rem';")
+        rebusCell.addEventListener('keydown', (e) => {
+          if (e.key.toUpperCase() === 'ENTER') {
+            let value = rebusCell.value.toUpperCase()
+            this.updateGrid(idx, value)
+            rebusCell.remove()
+          }
+        })
+        rebusCell.addEventListener('focusout', (e) => {
+          rebusCell.remove()
+        })
       },
 
       handleClueClick(number, clueType) {
@@ -495,10 +585,11 @@
         let title = this.title
         let description = this.description
         let symmetry = this.symmetry
+        let author = this.author
         let gridnums = this.gridnums // remove later, maybe
         let answers = this.answers // remove later, maybe
         let pk = puzzlePK
-        return { grid, gridnums, clues, size, title, description, answers, symmetry, pk }
+        return { grid, gridnums, clues, size, title, description, author, answers, symmetry, pk }
       },
 
       savePuzzle() {
@@ -644,7 +735,7 @@
           }
         }
         else {
-          this.activeCell += (this.activeCell + this.colN <= this.length) ? this.colN : 0
+          this.activeCell += (this.activeCell + this.colN < this.length) ? this.colN : 0
         }
       },
 
@@ -682,7 +773,12 @@
           }
         }
         else if (key === 'ENTER' || key === ' ') {
-          this.toggleVertical()
+          if (event.metaKey) {
+            this.rebusHandler(event, this.activeCell)
+          }
+          else {
+            this.toggleVertical()
+          }
         }
         else if (key === "ARROWRIGHT") {
           if (this.isVertical) {
@@ -723,7 +819,7 @@
 
     created: function () {
       document.addEventListener('keydown', (event) => {
-        const ignoreIds = ['clue-input', 'title-inp', 'description-inp']
+        const ignoreIds = ['clue-input', 'title-inp', 'description-inp', 'rebus-input', 'author-inp']
         let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
         for (let inp of addressInputs) {
           ignoreIds.push(inp.id)
@@ -759,7 +855,7 @@
 
 
   // === Export Handlers ===
-  document.querySelector('#json-btn').addEventListener('click',(event)=>{
+  document.querySelector('#json-btn').addEventListener('click', (event) => {
     const jsn = editor.exportJSON()
     const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
     let url = window.URL.createObjectURL(data)

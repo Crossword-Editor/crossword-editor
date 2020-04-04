@@ -1,5 +1,5 @@
 :root {
-  --active-black-color: #645500;
+  --active-black-color: #493e00;
   --home-page-link-color: #0518c2;
   --home-page-link-color-hover: #4378eb;
 }
@@ -324,8 +324,9 @@ ________________________________________________ */
 } */
 
 .cell {
-  width: 30px;
-  height: 30px;
+  /* width: 30px;
+  height: 30px; */
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -333,29 +334,42 @@ ________________________________________________ */
   border: 0.5px solid gray;
 }
 
+.rebus {
+  background-color: rgb(255, 202, 202);
+}
+
 .highlighted {
   background-color: #a7d8ff;
+}
+
+.highlighted.rebus {
+  background-color: rgb(167, 189, 255);
 }
 
 .active {
   background-color: #ffda00;
 }
 
+.active.rebus {
+  background-color: rgb(122, 184, 122);
+}
+
 .entry {
-  font-size: 23px;
+  /* font-size: 23px; */
   text-align: center;
   width: 100%;
-  /* padding: 2px; */
+  padding-bottom: 1px;
 }
 
 .number {
-  font-size: 9px;
+  /* font-size: 10px; */
   font-weight: bold;
   width: 100%;
   height: 0;
   padding: 1px;
   position: relative;
-  bottom: 1px;
+  bottom: 3px;
+  margin-bottom: 1px;
 }
 
 .black {
@@ -383,7 +397,7 @@ ________________________________________________ */
 
 .clue-input-container {
   width: 100%;
-  max-width: 450px;
+  max-width: 525px;
   border: 1px solid #ccc;
   background-color: aliceblue;
   border-radius: 4px;
@@ -398,6 +412,7 @@ ________________________________________________ */
   background-color: aliceblue;
   font-size: 1.1rem;
   height: 45px;
+  width: 100%;
 }
 
 .clue-list-container {
@@ -414,7 +429,7 @@ ________________________________________________ */
 
 .clue-list ul {
   list-style-type: none;
-  height: 75vh;
+  height: 83vh;
   overflow-y: scroll;
   /* width: 100%; */
 }
@@ -530,7 +545,7 @@ ________________________________________________ */
   border-radius: 5px;
 }
 
-#title-inp {
+.prop-inp {
   font-family: "Source Sans Pro", sans-serif;
   border: none;
   background-color: aliceblue;
@@ -623,4 +638,21 @@ ________________________________________________ */
   flex-flow: row wrap;
   margin-bottom: .5rem;
   margin-right: 2rem
+}
+
+input:disabled, textarea:disabled {
+  color: rgb(48, 48, 48);
+}
+
+/* === REBUS === */
+
+.cell input {
+  font-family: "Source Sans Pro", sans-serif;
+  position: absolute;
+  border: 0.5px solid gray;
+  top: 0;
+  left: 0;
+  text-transform: uppercase;
+  background-color: aliceblue;
+  z-index: 2;
 }

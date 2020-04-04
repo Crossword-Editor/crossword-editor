@@ -31,6 +31,7 @@ urlpatterns = [
     path('new/', views.new, name='new'),
     path('delete/<int:pk>/', views.delete, name='delete'),
     path('export/<int:pk>/', views.ny_times_pdf, name='ny_times_pdf'),
+    path('test/<int:pk>/', views.test_pdf, name='ny_times_pdf'),
 ]
 
 if settings.DEBUG:
