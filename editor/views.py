@@ -30,8 +30,9 @@ def home(request):
 def edit(request, pk):
     puzzle = get_object_or_404(Puzzle, pk=pk)
     if request.user == puzzle.owner:
-        context = {'puzzle': puzzle.data, 'pk': pk}
-        return render(request, 'editor/edit_puzzle.html', context=context)
+        js_boolean = 'true' if puzzle.completed else 'false'
+        context = {'puzzle': puzzle.data, 'pk': pk, 'completed': js_boolean }
+        return render(request, 'editor/puzzle.html', context=context)
     else:
         redirect('home')
 
@@ -40,8 +41,9 @@ def edit(request, pk):
 def review_complete(request, pk):
     puzzle = get_object_or_404(Puzzle, pk=pk)
     if request.user == puzzle.owner:
-        context = {'puzzle': puzzle.data, 'pk': pk}
-        return render(request, 'editor/completed_puzzle.html', context=context)
+        js_boolean = 'true' if puzzle.completed else 'false'
+        context = {'puzzle': puzzle.data, 'pk': pk, 'completed': js_boolean }
+        return render(request, 'editor/puzzle.html', context=context)
     else:
         redirect('home')
 
@@ -81,12 +83,12 @@ def ny_times_pdf(request, pk):
     context = {'puzzle': puzzle, 'rows': rows,
                'across': across, 'down': down, 'address': form_data}
     html = render_to_string('editor/ny_times_pdf.html', context=context)
-    css = CSS('static/css/ny_times_pdf.css')
+    # css = CSS('static/css/ny_times_pdf.css')
     filename = "nyt_format.pdf"
 
     response = HttpResponse(content_type="application/pdf")
     response['Content-Disposition'] = f"attachment; filename={filename}"
-    HTML(string=html).write_pdf(response, stylesheets=[css])
+    HTML(string=html).write_pdf(response)
     return response
 
 
@@ -189,6 +191,15 @@ def user_pdf(pk):
 
     context = {'puzzle': puzzle, 'rows': rows,
                'across': across, 'down': down}
+ userprintoptions
     html = render_to_string('editor/user_pdf.html', context=context)
     css = CSS('static/css/user_all_pdf.css')
     HTML(string=html).write_pdf('./output.pdf', stylesheets=[css])
+
+    html = render_to_string('editor/ny_times_pdf.html', context=context)
+    # css = CSS('static/css/ny_times_pdf.css')
+    filename = "nyt_format.pdf"
+
+    response = HttpResponse(content_type="application/pdf")
+    response['Content-Disposition'] = f"attachment; filename={filename}"
+    HTML(string=html).write_pdf('./output.pdf')
