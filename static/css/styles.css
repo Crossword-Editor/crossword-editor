@@ -544,7 +544,7 @@ ________________________________________________ */
   border-radius: 5px;
 }
 
-#title-inp {
+.prop-inp {
   font-family: "Source Sans Pro", sans-serif;
   border: none;
   background-color: aliceblue;

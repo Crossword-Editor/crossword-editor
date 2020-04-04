@@ -93,11 +93,15 @@
       <div class="properties-container">
         <div class="title-container prop-container">
           <label for="title-inp">Title:</label>
-          <input v-model="title" type="text" id="title-inp" maxlength="64" :disabled="completed">
+          <input v-model="title" type="text" id="title-inp" class="prop-inp" maxlength="64" :disabled="completed">
         </div>
         <div class="description-container prop-container">
           <label for="description-inp">Description/Notes:</label>
           <textarea v-model="description" id="description-inp" maxlength="1023" :disabled="completed"></textarea>
+        </div>
+        <div class="prop-container">
+          <label for="author-inp">Author(s) can be recorded here:</label>
+          <input v-model="author" type="text" id="author-inp" class="prop-inp" maxlength="128" :disabled="completed">
         </div>
 
         <div v-if="!completed" class="symmetry-container prop-container">
@@ -355,6 +359,7 @@
       colN: puzzleData.size.colN,
       title: puzzleData.title,
       description: puzzleData.description,
+      author: puzzleData.author,
       symmetry: puzzleData.symmetry, // default: rotational (other values: none, vertical, horizontal )
       rebus: puzzleData.rebus, // Ex: {idx: {display character: 'R', word: 'REBUS'}, ...}
       completed: completed, // defined line 240
@@ -580,10 +585,11 @@
         let title = this.title
         let description = this.description
         let symmetry = this.symmetry
+        let author = this.author
         let gridnums = this.gridnums // remove later, maybe
         let answers = this.answers // remove later, maybe
         let pk = puzzlePK
-        return { grid, gridnums, clues, size, title, description, answers, symmetry, pk }
+        return { grid, gridnums, clues, size, title, description, author, answers, symmetry, pk }
       },
 
       savePuzzle() {
@@ -813,7 +819,7 @@
 
     created: function () {
       document.addEventListener('keydown', (event) => {
-        const ignoreIds = ['clue-input', 'title-inp', 'description-inp', 'rebus-input']
+        const ignoreIds = ['clue-input', 'title-inp', 'description-inp', 'rebus-input', 'author-inp']
         let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
         for (let inp of addressInputs) {
           ignoreIds.push(inp.id)
