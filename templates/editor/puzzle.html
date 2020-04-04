@@ -57,7 +57,7 @@
                 <span v-if="gridnums[n-1] !== 0">${ gridnums[n-1] }</span>
               </div>
               <div slot="entry" class="entry" :style="entryStyle">
-                ${ grid[n-1].length > 1 ? grid[n-1][0] : grid[n-1] }
+                ${ grid[n-1][0] }
               </div>
             </x-cell>
           </div>
@@ -165,6 +165,22 @@
           <p>✚ <strong>SHIFT + TAB</strong> to edit clue for current word.</p>
           <p>✚ Select <strong>Puzzle Properties</strong> tab to change Symmetry Options.</p>
         </ul>
+
+        <h3>Rebus:</h3>
+        <ul>
+          <p>✚ Entering 'Command+Enter' on a Mac or 'Windows Key + Enter' other PC's allow you to type a rebus entry in
+            the active cell.
+          </p>
+          <p>✚ Click any cell while holding the meta/super key (i.e. windows key or command key on amac) to enter a
+            rebus entry.
+          </p>
+          <p>✚ Press Enter to keep the rebus entry, or click elsewhere on the page to close and cancel the rebus input.
+          </p>
+          <p>✚ Grid cells will be highlighted to indicate they are a rebus entry and show the first character of the
+            rebus word.
+          </p>
+          <p>✚ To unmark a cell as a rebus, edit the rebus word back down to 0 or 1 character.</p>
+        </ul>
       </div>
     </v-tab>
 
@@ -219,13 +235,6 @@
       </div>
     </v-tab>
   </vue-tabs>
-
-  {% comment %}
-  <div class="rebus-container">
-    <p>Rebus Input:</p>
-    Full word: <input type="text" id="rebus-input" v-modal="rebusWord">
-    Display character: <input type="text" id="rebus-initial" maxlength="1" v-modal="rebusInitial">
-  </div> {% endcomment %}
 
   {% endblock main %}
 
@@ -520,8 +529,8 @@
 
       handleCellClick(idx) {
         if (event.metaKey) {
-          this.activeCell = idx;
-          this.rebusHandler(event, idx)
+          this.activeCell = idx
+          this.rebusHandler(event, idx, clicked = true)
         }
         else {
           if (this.activeCell === idx) {
@@ -531,13 +540,11 @@
         }
       },
 
-      rebusHandler(event, idx) {
-        console.log(event.x, event.y)
+      rebusHandler(event, idx, clicked = false) {
         let rebusCell = document.createElement('input', { type: 'text' })
         rebusCell.classList.add('active-rebus')
         rebusCell.id = 'rebus-input'
-        let cell = event.target.closest('.cell')
-        cell.insertAdjacentHTML
+        let cell = clicked ? event.target.closest('.cell') : document.querySelector('.cell.active')
         cell.appendChild(rebusCell)
         let max = Math.max(this.rowN, this.colN)
         rebusCell.style = `font-size:${this.entryFontSize}; height:${525 / max}px`
@@ -760,7 +767,12 @@
           }
         }
         else if (key === 'ENTER' || key === ' ') {
-          this.toggleVertical()
+          if (event.metaKey) {
+            this.rebusHandler(event, this.activeCell)
+          }
+          else {
+            this.toggleVertical()
+          }
         }
         else if (key === "ARROWRIGHT") {
           if (this.isVertical) {

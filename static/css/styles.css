@@ -645,23 +645,13 @@ input:disabled, textarea:disabled {
 
 /* === REBUS === */
 
-#rebus-input, #rebus-initial {
-  font-family: "Source Sans Pro", sans-serif;
-  font-weight: 500;
-  text-transform: uppercase;
-  border: 1px solid #91b5f9;
-  background-color: rgba(240, 248, 255, 0.9);
-  font-size: 1.3rem;
-  padding: 0.5rem 1rem;
-}
-
 .cell input {
+  font-family: "Source Sans Pro", sans-serif;
   position: absolute;
   border: 0.5px solid gray;
   top: 0;
   left: 0;
   text-transform: uppercase;
   background-color: aliceblue;
-  /* width: 3.5rem; */
   z-index: 2;
 }
