@@ -1,0 +1,92 @@
+@charset "UTF-8";
+@page {
+size: letter landscape;
+margin: 1in 1in 1in 1in;
+}* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
+
+
+/* ========= Title =========== */
+
+h3 {
+  font-size: 20px;
+  color: black;
+}
+
+.pdf-empty {
+  display: flex;
+  flex-flow: row nowrap;
+  /* align-items: center; */
+  justify-content: left;
+}
+
+
+/* ========= Grid =========== */
+
+table {
+  border-spacing: 0;
+  border: 1px solid black;
+}
+
+.cell {
+  border: 1px solid black;
+  position: relative;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  border-radius: 0px;
+  font-size: 10px;
+  outline: none;
+  padding: 1px;
+}
+
+.number {
+  font-size: 7px;
+  font-weight: bold;
+  position: absolute;
+  box-sizing: content-box;
+  bottom: 20px;
+  left: 1px;
+  height: 30%;
+}
+
+.number.empty {
+  bottom: 15px;
+}
+
+.entry {
+  height: 70%;
+  margin-top: 8px;
+}
+
+.black {
+  background-color: black;
+}
+
+/* ========= Clue Lists =========== */
+
+.clue-list-container ul {
+  list-style-type: none;
+  /* margin-bottom: 1rem; */
+}
+
+h4 {
+  font-size: 12px;
+  color: black;
+  margin: 1rem 0;
+}
+
+.clue-item {
+  /* margin: 1rem 0; */
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.clue {
+  font-size: 10px;
+  width: 65%;
+}
