@@ -267,19 +267,10 @@ ________________________________________________ */
   font-weight: 600;
 }
 
-.scroll-puzzles {
-  width:275px;
-  height:400px;
-  overflow-y:scroll;
-}
-
 .draft-box a, .completed-box a {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--home-page-link-color);
-  /* width:150px;
-  height:30px;
-  overflow-y:scroll; */
+  color: var(--home-page-link-color)
 }
 
 .draft-box a:hover, .completed-box a:hover {
@@ -288,9 +279,6 @@ ________________________________________________ */
 
 .puzzle-title-display {
   padding: 3px;
-  /* width:150px;
-  height:30px;
-  overflow-y:scroll; */
 }
 
 @media screen and (max-width: 700px) {
