@@ -191,10 +191,29 @@
     <v-tab title="Export">
       <div class="export-list-container">
         <div class="export-container">
-          <a id="export-json" download="my_exported_puzzle.json" href="">
-            <button id="json-btn" class="btn save-btn">Download as JSON</button>
+          <h4>Across Lite text format</h4>
+          <p>
+            If you use the Across Lite solver, you can download the following text files and open them in Across Lite.
+          </p>
+          <p>
+            See the Across List website for <a href="https://icrossword.com/publish/">how to publish</a> your puzzle
+            using
+            their free hosting servive.
+          </p>
+          <p>
+            Across Lite version 1 does not support rebus entries. Rebus entries in this exported
+            format will keep the first character of the rebus entry.
+          </p>
+          <a id="export-txt-v1" download="across-list-v1.txt" href="">
+            <button id="txt-v1-btn" class="btn save-btn">Download v1</button>
           </a>
-          (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/</a> format)
+          <br>
+          <p>
+            Across Lite version 2 supports rebus entries:
+          </p>
+          <a id="export-txt-v2" download="across-list-v2.txt" href="">
+            <button id="txt-v2-btn" class="btn save-btn">Download v2</button>
+          </a>
         </div>
         <div id="nyt-app" class="export-container nytimes">
           Download a pdf of your puzzle in the
@@ -236,6 +255,12 @@
             <button id="nyt-btn" class="btn save-btn" type="submit">Download</button> (this may take a second or two)
           </form>
         </div>
+      </div>
+      <div class="export-container">
+        <a id="export-json" download="my_exported_puzzle.json" href="">
+          <button id="json-btn" class="btn save-btn">Download as JSON</button>
+        </a>
+        (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/</a> format)
       </div>
     </v-tab>
   </vue-tabs>
@@ -483,7 +508,6 @@
           across: [],
           down: []
         }
-
         for (let dir of ['across', 'down']) {
           this.clueNumbers[dir].map((number) => {
             let clue = this.clues[dir][number]
@@ -491,10 +515,49 @@
             clues[dir].push(exportClue)
           })
         }
-
         let answers = this.answers
-
         return JSON.stringify({ grid, gridnums, size, clues, answers })
+      },
+
+      exportTXTv1() {
+        let acrossString = ''
+        for (let number of this.clueNumbers.across) {
+          acrossString += this.clues.across[Number(number)] + '\n'
+        }
+        acrossString = acrossString.trimEnd()
+        let downString = ''
+        for (let number of this.clueNumbers.down) {
+          downString += this.clues.down[Number(number)] + '\n'
+        }
+        downString = downString.trimEnd()
+        let gridString = ''
+        for (let i = 0; i < this.rowN; i++) {
+          let row = ''
+          for (let j = 0; j < this.colN; j++) {
+            row += this.grid[i * this.colN + j][0]
+          }
+          gridString += row + '\n'
+        }
+        gridString = gridString.trimEnd()
+        let returnString = `<ACROSS PUZZLE>
+<TITLE>
+${this.title ? this.title : '\n'}
+<AUTHOR>
+${this.author ? this.author : '\n'}
+<COPYRIGHT>
+
+<SIZE>
+${this.colN}x${this.rowN}
+<GRID>
+${gridString}
+<ACROSS>
+${acrossString}
+<DOWN>
+${downString}
+<NOTEPAD>
+${this.description ? this.description : ''}
+`
+        return returnString
       },
 
 
@@ -860,6 +923,24 @@
     const data = new File([jsn], 'my_exported_puzzle.json', { type: 'application/json' })
     let url = window.URL.createObjectURL(data)
     let anchor = document.querySelector('#export-json')
+    anchor.href = url
+    editor.savePuzzle()
+  })
+
+  document.querySelector('#txt-v1-btn').addEventListener('click', (event) => {
+    const txt = editor.exportTXTv1()
+    const data = new File([txt], 'across-list-v1.txt', { type: 'text/plain' })
+    let url = window.URL.createObjectURL(data)
+    let anchor = document.querySelector('#export-txt-v1')
+    anchor.href = url
+    editor.savePuzzle()
+  })
+
+  document.querySelector('#txt-v2-btn').addEventListener('click', (event) => {
+    const txt = editor.exportTXTv2()
+    const data = new File([txt], 'across-list-v2.txt', { type: 'text/plain' })
+    let url = window.URL.createObjectURL(data)
+    let anchor = document.querySelector('#export-txt-v2')
     anchor.href = url
     editor.savePuzzle()
   })
