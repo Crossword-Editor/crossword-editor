@@ -979,7 +979,15 @@ ${editor.description ? editor.description : ''}
     return returnString
   }
 
-
+  /*
+  *
+  * This format uses footnote style references between
+  * the <grid> and <rebus> sections to indicate where
+  * rebus entries belong.  Because the grid only holds slots for
+  * single chars, and we're using digits as the placeholder,
+  * this will only make sense for up to 10 _unique_ rebus entries.
+  * The other option is to add some special characters as placeholders
+  */
   function exportTXTv2() {
     let rebusList = []
     let grid = editor.grid
