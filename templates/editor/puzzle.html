@@ -205,14 +205,14 @@
             Across Lite version 1 does not support rebus entries. Rebus entries in this exported
             format will keep the first character of the rebus entry.
           </p>
-          <a id="export-txt-v1" download="across-list-v1.txt" href="">
+          <a id="export-txt-v1" download="across-lite-v1.txt" href="">
             <button id="txt-v1-btn" class="btn save-btn">Download v1</button>
           </a>
           <br>
           <p>
             Across Lite version 2 supports rebus entries:
           </p>
-          <a id="export-txt-v2" download="across-list-v2.txt" href="">
+          <a id="export-txt-v2" download="across-lite-v2.txt" href="">
             <button id="txt-v2-btn" class="btn save-btn">Download v2</button>
           </a>
         </div>
@@ -906,7 +906,7 @@
 
   document.querySelector('#txt-v1-btn').addEventListener('click', (event) => {
     const txt = exportTXTv1()
-    const data = new File([txt], 'across-list-v1.txt', { type: 'text/plain' })
+    const data = new File([txt], 'across-lite-v1.txt', { type: 'text/plain' })
     let url = window.URL.createObjectURL(data)
     let anchor = document.querySelector('#export-txt-v1')
     anchor.href = url
@@ -915,7 +915,7 @@
 
   document.querySelector('#txt-v2-btn').addEventListener('click', (event) => {
     const txt = exportTXTv2()
-    const data = new File([txt], 'across-list-v2.txt', { type: 'text/plain' })
+    const data = new File([txt], 'across-lite-v2.txt', { type: 'text/plain' })
     let url = window.URL.createObjectURL(data)
     let anchor = document.querySelector('#export-txt-v2')
     anchor.href = url
@@ -980,9 +980,9 @@
     gridString = gridString.trimEnd()
     let returnString = `<ACROSS PUZZLE>
 <TITLE>
-${editor.title ? editor.title : '\n'}
+${editor.title ? editor.title : ''}
 <AUTHOR>
-${editor.author ? editor.author : '\n'}
+${editor.author ? editor.author : ''}
 <COPYRIGHT>
 
 <SIZE>
@@ -1028,7 +1028,10 @@ ${editor.description ? editor.description : ''}
       markers += `${i}:${rebus}:${rebus[0]}\n`
     })
     markers.trimEnd()
-    let rebusSection = `<REBUS>\n${markers}`
+
+    let marked = editor.circles.includes(1) ? '\nMARK;' : ''
+    let rebusSection = `<REBUS>${marked}\n${markers}`
+
     let acrossString = ''
     for (let number of editor.clueNumbers.across) {
       acrossString += editor.clues.across[Number(number)] + '\n'
@@ -1039,22 +1042,35 @@ ${editor.description ? editor.description : ''}
       downString += editor.clues.down[Number(number)] + '\n'
     }
     downString = downString.trimEnd()
+
     let gridString = ''
     for (let i = 0; i < editor.rowN; i++) {
       let row = ''
       for (let j = 0; j < editor.colN; j++) {
-        let entry = grid[i * editor.colN + j]
-        row += entry.length > 1 ? rebusUniqueList.indexOf(entry) : entry
+        let idx = i * editor.colN + j
+        let entry = grid[idx]
+        if (entry.length === 0) {
+          row += 'X'
+        }
+        else if (entry.length > 1) {
+          row += rebusUniqueList.indexOf(entry)
+        }
+        else if (editor.circles[idx] === 1) {
+          row += entry.toLowerCase()
+        }
+        else {
+          row += entry
+        }
       }
       gridString += row + '\n'
     }
     gridString = gridString.trimEnd()
 
-    let returnString = `<ACROSS PUZZLE V2>
+    return `<ACROSS PUZZLE V2>
 <TITLE>
-${editor.title ? editor.title : '\n'}
+  ${editor.title ? editor.title : ''}
 <AUTHOR>
-${editor.author ? editor.author : '\n'}
+${editor.author ? editor.author : ''}
 <COPYRIGHT>
 
 <SIZE>
@@ -1068,7 +1084,6 @@ ${downString}
 <NOTEPAD>
 ${editor.description ? editor.description : ''}
 `
-    return returnString
   }
 
 </script>
