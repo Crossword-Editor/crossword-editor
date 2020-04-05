@@ -386,7 +386,7 @@
       description: puzzleData.description,
       author: puzzleData.author,
       symmetry: puzzleData.symmetry, // default: rotational (other values: none, vertical, horizontal )
-      rebus: puzzleData.rebus, // Ex: {idx: {display character: 'R', word: 'REBUS'}, ...}
+      //rebus: puzzleData.rebus, // Ex: {idx: {display character: 'R', word: 'REBUS'}, ...}
       completed: completed, // defined line 240
       isVertical: false,
       BLACK: '.',
@@ -729,7 +729,7 @@
       keyhandle(event) {
         const key = event.key.toUpperCase()
         let modifierPressed = event.metaKey || event.ctrlKey || event.altKey
-        const validEntries = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#'
+        const validEntries = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#$%&+?'
         const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', ' ']
         if (validEntries.includes(key) && !modifierPressed) {
           if (this.grid[this.activeCell] === BLACK) {
@@ -837,7 +837,6 @@
 
     },
 
-
     created: function () {
       document.addEventListener('keydown', (event) => {
         const ignoreIds = ['clue-input', 'title-inp', 'description-inp', 'rebus-input', 'author-inp']
@@ -939,8 +938,6 @@
       })
   })
 
-
-
   function exportTXTv1() {
     let acrossString = ''
     for (let number of editor.clueNumbers.across) {
@@ -981,6 +978,71 @@ ${editor.description ? editor.description : ''}
 `
     return returnString
   }
+
+
+  function exportTXTv2() {
+    let rebusList = []
+    let grid = editor.grid
+    grid.map((entry, i) => {
+      if (entry.length > 1) {
+        rebusList.push(entry)
+      }
+    })
+    let rebusUniqueList = []
+    for (let rebus of rebusList) {
+      if (!rebusUniqueList.includes(rebus)) {
+        rebusUniqueList.push(rebus)
+      }
+    }
+
+    let markers = ''
+    rebusUniqueList.map((rebus, i) => {
+      markers += `${i}:${rebus}:${rebus[0]}\n`
+    })
+    markers.trimEnd()
+    let rebusSection = `<REBUS>\n${markers}`
+    let acrossString = ''
+    for (let number of editor.clueNumbers.across) {
+      acrossString += editor.clues.across[Number(number)] + '\n'
+    }
+    acrossString = acrossString.trimEnd()
+    let downString = ''
+    for (let number of editor.clueNumbers.down) {
+      downString += editor.clues.down[Number(number)] + '\n'
+    }
+    downString = downString.trimEnd()
+    let gridString = ''
+    for (let i = 0; i < editor.rowN; i++) {
+      let row = ''
+      for (let j = 0; j < editor.colN; j++) {
+        let entry = grid[i * editor.colN + j]
+        row += entry.length > 1 ? rebusUniqueList.indexOf(entry) : entry
+      }
+      gridString += row + '\n'
+    }
+    gridString = gridString.trimEnd()
+
+    let returnString = `<ACROSS PUZZLE V2>
+<TITLE>
+${editor.title ? editor.title : '\n'}
+<AUTHOR>
+${editor.author ? editor.author : '\n'}
+<COPYRIGHT>
+
+<SIZE>
+${editor.colN}x${editor.rowN}
+<GRID>
+${gridString}
+${rebusList.length > 0 ? rebusSection : ''}<ACROSS>
+${acrossString}
+<DOWN>
+${downString}
+<NOTEPAD>
+${editor.description ? editor.description : ''}
+`
+    return returnString
+  }
+
 </script>
 
 {% endblock content %}
