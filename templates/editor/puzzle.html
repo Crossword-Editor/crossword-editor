@@ -519,48 +519,6 @@
         return JSON.stringify({ grid, gridnums, size, clues, answers })
       },
 
-      exportTXTv1() {
-        let acrossString = ''
-        for (let number of this.clueNumbers.across) {
-          acrossString += this.clues.across[Number(number)] + '\n'
-        }
-        acrossString = acrossString.trimEnd()
-        let downString = ''
-        for (let number of this.clueNumbers.down) {
-          downString += this.clues.down[Number(number)] + '\n'
-        }
-        downString = downString.trimEnd()
-        let gridString = ''
-        for (let i = 0; i < this.rowN; i++) {
-          let row = ''
-          for (let j = 0; j < this.colN; j++) {
-            row += this.grid[i * this.colN + j][0]
-          }
-          gridString += row + '\n'
-        }
-        gridString = gridString.trimEnd()
-        let returnString = `<ACROSS PUZZLE>
-<TITLE>
-${this.title ? this.title : '\n'}
-<AUTHOR>
-${this.author ? this.author : '\n'}
-<COPYRIGHT>
-
-<SIZE>
-${this.colN}x${this.rowN}
-<GRID>
-${gridString}
-<ACROSS>
-${acrossString}
-<DOWN>
-${downString}
-<NOTEPAD>
-${this.description ? this.description : ''}
-`
-        return returnString
-      },
-
-
       getInterval(idx, dir) {
         let returnArr = []
         if (this.grid[idx] === BLACK) {
@@ -928,7 +886,7 @@ ${this.description ? this.description : ''}
   })
 
   document.querySelector('#txt-v1-btn').addEventListener('click', (event) => {
-    const txt = editor.exportTXTv1()
+    const txt = exportTXTv1()
     const data = new File([txt], 'across-list-v1.txt', { type: 'text/plain' })
     let url = window.URL.createObjectURL(data)
     let anchor = document.querySelector('#export-txt-v1')
@@ -937,7 +895,7 @@ ${this.description ? this.description : ''}
   })
 
   document.querySelector('#txt-v2-btn').addEventListener('click', (event) => {
-    const txt = editor.exportTXTv2()
+    const txt = exportTXTv2()
     const data = new File([txt], 'across-list-v2.txt', { type: 'text/plain' })
     let url = window.URL.createObjectURL(data)
     let anchor = document.querySelector('#export-txt-v2')
@@ -981,6 +939,48 @@ ${this.description ? this.description : ''}
       })
   })
 
+
+
+  function exportTXTv1() {
+    let acrossString = ''
+    for (let number of editor.clueNumbers.across) {
+      acrossString += editor.clues.across[Number(number)] + '\n'
+    }
+    acrossString = acrossString.trimEnd()
+    let downString = ''
+    for (let number of editor.clueNumbers.down) {
+      downString += editor.clues.down[Number(number)] + '\n'
+    }
+    downString = downString.trimEnd()
+    let gridString = ''
+    for (let i = 0; i < editor.rowN; i++) {
+      let row = ''
+      for (let j = 0; j < editor.colN; j++) {
+        row += editor.grid[i * editor.colN + j][0]
+      }
+      gridString += row + '\n'
+    }
+    gridString = gridString.trimEnd()
+    let returnString = `<ACROSS PUZZLE>
+<TITLE>
+${editor.title ? editor.title : '\n'}
+<AUTHOR>
+${editor.author ? editor.author : '\n'}
+<COPYRIGHT>
+
+<SIZE>
+${editor.colN}x${editor.rowN}
+<GRID>
+${gridString}
+<ACROSS>
+${acrossString}
+<DOWN>
+${downString}
+<NOTEPAD>
+${editor.description ? editor.description : ''}
+`
+    return returnString
+  }
 </script>
 
 {% endblock content %}
