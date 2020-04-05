@@ -128,7 +128,7 @@
         </div>
 
         <div class="complete-container prop-container">
-          <button v-if="!completed" id="complete-btn" class="btn green" @click="completePuzzle">
+          <button v-if="!completed" id="complete-btn" class="btn green" @click="markComplete">
             Mark as complete
           </button>
           <button v-if="completed" id="complete-btn" class="btn green" @click="editPuzzle">
@@ -642,7 +642,7 @@
           })
       },
 
-      completePuzzle() {
+      markComplete() {
         saveData = this.prepareSaveData(puzzleData)
         return fetch(`/toggle-complete/`, {
           method: 'POST',
