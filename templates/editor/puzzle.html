@@ -52,7 +52,8 @@
         <div class="grid-container" tabindex="0">
           <div class='grid' :style="gridStyle">
             <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea"
-              :grid="grid" :highlighted="highlighted" :col-n="colN" :row-n="rowN" @cell-clicked="handleCellClick">
+              :grid="grid" :highlighted="highlighted" :col-n="colN" :row-n="rowN" :circles="circles"
+              @cell-clicked="handleCellClick">
               <div slot="number" class="number" :style="numberStyle">
                 <span v-if="gridnums[n-1] !== 0">${ gridnums[n-1] }</span>
               </div>
@@ -274,6 +275,8 @@
 <script>
   // get json string store it in a variable
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
+  puzzleData.circles = puzzleData.circles ? puzzleData.circles : Array(225).fill(0)
+
   const puzzlePK = {{ pk }}
   const completed = {{ completed }}
 
@@ -318,7 +321,7 @@
         <slot name="number"></slot>
         <slot name="entry"></slot>
       </div>`,
-    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted', 'colN', 'rowN'],
+    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted', 'colN', 'rowN', 'circles'],
     data: function () {
       return {
         test: 1
@@ -342,7 +345,8 @@
           active: this.isActive,
           black: this.isBlack,
           highlighted: this.isHighlighted,
-          rebus: this.grid[this.idx].length > 1
+          rebus: this.grid[this.idx].length > 1,
+          circle: this.circles[this.idx] === 1
         }
       },
       cellStyle() {
@@ -386,6 +390,7 @@
       description: puzzleData.description,
       author: puzzleData.author,
       symmetry: puzzleData.symmetry, // default: rotational (other values: none, vertical, horizontal )
+      circles: puzzleData.circles, // [0,0,1,0,...] <- 1 means circle, 0 means no circle at the grid index
       //rebus: puzzleData.rebus, // Ex: {idx: {display character: 'R', word: 'REBUS'}, ...}
       completed: completed, // defined line 240
       isVertical: false,
@@ -558,6 +563,10 @@
           this.activeCell = idx
           this.rebusHandler(event, idx, clicked = true)
         }
+        else if (event.altKey) {
+          this.activeCell = idx
+          this.updateCircles(this.activeCell)
+        }
         else {
           if (this.activeCell === idx) {
             this.toggleVertical()
@@ -607,10 +616,11 @@
         let description = this.description
         let symmetry = this.symmetry
         let author = this.author
-        let gridnums = this.gridnums // remove later, maybe
-        let answers = this.answers // remove later, maybe
+        let gridnums = this.gridnums
+        let answers = this.answers
+        let circles = this.circles
         let pk = puzzlePK
-        return { grid, gridnums, clues, size, title, description, author, answers, symmetry, pk }
+        return { grid, gridnums, clues, size, title, description, author, answers, symmetry, circles, pk }
       },
 
       savePuzzle() {
@@ -695,7 +705,13 @@
 
       updateGrid(idx, value) {
         // note: splice works when idx < 0, like in Python
-        this.grid.splice(idx, 1, value);
+        this.grid.splice(idx, 1, value)
+      },
+
+      updateCircles(idx) {
+        let current = this.circles[idx]
+        let newValue = (current + 1) % 2 // toggle between 0 and 1
+        this.circles.splice(idx, 1, newValue)
       },
 
       toggleVertical() {
@@ -796,6 +812,10 @@
         else if (key === 'ENTER' || key === ' ') {
           if (event.metaKey) {
             this.rebusHandler(event, this.activeCell)
+          }
+          else if (event.altKey) {
+            console.log("hi")
+            this.updateCircles(this.activeCell)
           }
           else {
             this.toggleVertical()
