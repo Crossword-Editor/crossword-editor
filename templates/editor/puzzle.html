@@ -782,29 +782,6 @@
         return (idx % this.colN === this.colN - 1) || (this.grid[idx + 1] === BLACK)
       },
 
-      keyhandle(event) {
-        const key = event.key.toUpperCase()
-        let modifierPressed = event.metaKey || event.ctrlKey || event.altKey
-        const validEntries = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#$%&+?'
-        const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', 'HOME', 'END', ' ']
-        if (validEntries.includes(key) && !modifierPressed) {
-          if (this.grid[this.activeCell] === BLACK) {
-            let symmetricEntry = key === BLACK ? BLACK : ''
-            this.applySymmetry(this.activeCell, symmetricEntry)
-            this.updateGrid(this.activeCell, key)
-          }
-          else {
-            this.updateGrid(this.activeCell, key)
-            this.applySymmetry(this.activeCell, BLACK)
-          }
-          this.nextCell()
-        }
-        else if (validDirectives.includes(key)) {
-          event.preventDefault()
-          this.nonAlphaKeys(key)
-        }
-      },
-
       nextCell() {
         if (!this.isVertical) {
           if (this.activeCell < this.length - 1) {
@@ -835,6 +812,29 @@
         let nextNumberIdx = mod(currentNumberIdx + dir, numberArray.length)
         let nextNumber = numberArray[nextNumberIdx]
         this.activeCell = this.gridnums.indexOf(nextNumber)
+      },
+
+      keyhandle(event) {
+        const key = event.key.toUpperCase()
+        let modifierPressed = event.metaKey || event.ctrlKey || event.altKey
+        const validEntries = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#$%&+?'
+        const validKeys = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', 'HOME', 'END', ' ']
+        if (validEntries.includes(key) && !modifierPressed) {
+          if (this.grid[this.activeCell] === BLACK) {
+            let symmetricEntry = key === BLACK ? BLACK : ''
+            this.applySymmetry(this.activeCell, symmetricEntry)
+            this.updateGrid(this.activeCell, key)
+          }
+          else {
+            this.updateGrid(this.activeCell, key)
+            this.applySymmetry(this.activeCell, BLACK)
+          }
+          this.nextCell()
+        }
+        else if (validKeys.includes(key)) {
+          event.preventDefault()
+          this.nonAlphaKeys(key)
+        }
       },
 
       nonAlphaKeys(key) {
