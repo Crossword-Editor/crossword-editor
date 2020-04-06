@@ -804,12 +804,19 @@
 
       jumpWord(dir) {
         // dir should be 1 to jump to next word, or -1 for previous word
-        let numberArray = this.clueNumbers[this.direction]
-        let currentNumber = this.gridnums[this.highlighted[0]]
-        let currentNumberIdx = numberArray.indexOf(currentNumber)
-        let nextNumberIdx = mod(currentNumberIdx + dir, numberArray.length)
-        let nextNumber = numberArray[nextNumberIdx]
-        this.activeCell = this.gridnums.indexOf(nextNumber)
+        if (this.grid[this.activeCell] === BLACK) {
+          while (this.grid[this.activeCell] === BLACK) {
+            this.activeCell += dir
+          }
+        }
+        else {
+          let numberArray = this.clueNumbers[this.direction]
+          let currentNumber = this.gridnums[this.highlighted[0]]
+          let currentNumberIdx = numberArray.indexOf(currentNumber)
+          let nextNumberIdx = mod(currentNumberIdx + dir, numberArray.length)
+          let nextNumber = numberArray[nextNumberIdx]
+          this.activeCell = this.gridnums.indexOf(nextNumber)
+        }
       },
 
       keyhandle(event) {
