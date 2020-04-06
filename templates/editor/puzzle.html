@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block meta %}
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/vue-nav-tabs/themes/vue-tabs.css">
 <script src="https://unpkg.com/vue-nav-tabs/dist/vue-tabs.js"></script>
@@ -247,6 +248,7 @@
             rel="noopener noreferrer">format</a>
           required to submit to the New York Times (requires an address, which we do not save).
           <form id="export-nytimes-pdf">
+            {% csrf_token %}
             <div class="flexrow">
               <div class="inp-label-container">
                 <label for="firstname">First name:</label>
@@ -994,6 +996,7 @@
 
   document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event) => {
     event.preventDefault()
+    let csrftoken = Cookies.get('csrftoken')
     let nytButton = document.querySelector('#nyt-btn')
     nytButton.textContent = 'Loading...'
     let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
@@ -1007,6 +1010,7 @@
         return fetch(`/export/${puzzlePK}/`, {
           method: 'POST',
           headers: {
+            "X-CSRFToken": csrftoken,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(formData)

@@ -61,7 +61,6 @@ def save(request):
     return JsonResponse({"message": "Puzzle saved to database"})
 
 
-@csrf_exempt
 @login_required
 def ny_times_pdf(request, pk):
     form_data = json.loads(request.body)
