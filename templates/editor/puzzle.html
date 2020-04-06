@@ -302,8 +302,6 @@
 <script>
   // get json string store it in a variable
   var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
-  puzzleData.circles = puzzleData.circles ? puzzleData.circles : Array(225).fill(0)
-
   const puzzlePK = {{ pk }}
   const completed = {{ completed }}
 
@@ -417,8 +415,6 @@
       description: puzzleData.description,
       author: puzzleData.author,
       symmetry: puzzleData.symmetry, // default: rotational (other values: none, vertical, horizontal )
-      circles: puzzleData.circles, // [0,0,1,0,...] <- 1 means circle, 0 means no circle at the grid index
-      //rebus: puzzleData.rebus, // Ex: {idx: {display character: 'R', word: 'REBUS'}, ...}
       completed: completed, // defined line 240
       isVertical: false,
       BLACK: '.',
@@ -436,6 +432,10 @@
 
       direction() {
         return this.isVertical ? 'down' : 'across'
+      },
+
+      circles() {
+        return puzzleData.circles ? puzzleData.circles : Array(this.length).fill(0)
       },
 
       gridStyle() {
