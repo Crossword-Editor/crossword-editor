@@ -61,17 +61,20 @@ def save(request):
     return JsonResponse({"message": "Puzzle saved to database"})
 
 
-@csrf_exempt
 @login_required
 def ny_times_pdf(request, pk):
     form_data = json.loads(request.body)
     puzzle_obj = Puzzle.objects.get(pk=pk)
     puzzle = puzzle_obj.data
-    grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
+    grid, gridnums, clues, answers, circles = puzzle['grid'], puzzle[
+        'gridnums'], puzzle['clues'], puzzle['answers'], puzzle['circles']
     colN, rowN = puzzle['size']['colN'], puzzle['size']['rowN']
     cell_class = "cell" if int(colN) <= 15 else "cell small-cell"
     num_class = "number" if int(colN) <= 15 else "number small-num"
-    rows = [[(gridnums[i*colN+j], grid[i*colN+j]) for j in range(colN)]
+
+    def numToCirc(num):
+        return 'circle' if num == 1 else ''
+    rows = [[(gridnums[i*colN+j], grid[i*colN+j], numToCirc(circles[i*colN+j])) for j in range(colN)]
             for i in range(rowN)]
     across = sorted(clues['across'].items(), key=lambda x: int(x[0]))
     down = sorted(clues['down'].items(), key=lambda x: int(x[0]))
@@ -170,11 +173,15 @@ def test_pdf(request, pk):
     """For previewing nyt pdf output styling"""
     puzzle_obj = Puzzle.objects.get(pk=pk)
     puzzle = puzzle_obj.data
-    grid, gridnums, clues, answers = puzzle['grid'], puzzle['gridnums'], puzzle['clues'], puzzle['answers']
+    grid, gridnums, clues, answers, circles = puzzle['grid'], puzzle[
+        'gridnums'], puzzle['clues'], puzzle['answers'], puzzle['circles']
     colN, rowN = puzzle['size']['colN'], puzzle['size']['rowN']
     cell_class = "cell" if int(colN) <= 15 else "cell small-cell"
     num_class = "number" if int(colN) <= 15 else "number small-num"
-    rows = [[(gridnums[i*colN+j], grid[i*colN+j]) for j in range(colN)]
+
+    def numToCirc(num):
+        return 'circle' if num == 1 else ''
+    rows = [[(gridnums[i*colN+j], grid[i*colN+j], numToCirc(circles[i*colN+j])) for j in range(colN)]
             for i in range(rowN)]
     across = sorted(clues['across'].items(), key=lambda x: int(x[0]))
     down = sorted(clues['down'].items(), key=lambda x: int(x[0]))

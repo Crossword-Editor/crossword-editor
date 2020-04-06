@@ -35,7 +35,7 @@
             0
           </td>
           {% else %}
-          <td class="{{ cell_class }}">
+          <td class="{{ cell_class }} {{cell.2}}">
             <div class="number empty">
               {% if cell.0 != 0   %}
               {{ cell.0 }}
@@ -80,7 +80,7 @@
             0
           </td>
           {% else %}
-          <td class="{{ cell_class }}">
+          <td class="{{ cell_class }}  {{cell.2}}">
             <div class="{{ num_class }}">
               {% if cell.0 != 0 %}
               {{ cell.0 }}
