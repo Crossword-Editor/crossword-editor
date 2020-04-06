@@ -521,7 +521,8 @@
           })
         }
         let answers = this.answers
-        return JSON.stringify({ grid, gridnums, size, clues, answers })
+        let circles = this.circles
+        return JSON.stringify({ grid, gridnums, size, clues, answers, circles })
       },
 
       getInterval(idx, dir) {
@@ -746,7 +747,7 @@
         const key = event.key.toUpperCase()
         let modifierPressed = event.metaKey || event.ctrlKey || event.altKey
         const validEntries = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#$%&+?'
-        const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', ' ']
+        const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', 'HOME', 'END', ' ']
         if (validEntries.includes(key) && !modifierPressed) {
           if (this.grid[this.activeCell] === BLACK) {
             let symmetricEntry = key === BLACK ? BLACK : ''
@@ -761,7 +762,7 @@
         }
         else if (validDirectives.includes(key)) {
           event.preventDefault()
-          this.enterArrowsDeleteBackspace(key)
+          this.nonAlphaKeys(key)
         }
       },
 
@@ -787,7 +788,7 @@
         }
       },
 
-      enterArrowsDeleteBackspace(key) {
+      nonAlphaKeys(key) {
         if (key === 'DELETE') {
           if (this.grid[this.activeCell] === BLACK) {
             this.applySymmetry(this.activeCell, '')
@@ -851,6 +852,24 @@
           }
           else {
             this.prevCell()
+          }
+        }
+        else if (key === "HOME") {
+          let coors = this.arrayToCoor(this.activeCell)
+          if (!this.isVertical) {
+            this.activeCell = this.coorToArray(coors.row, 0)
+          }
+          else {
+            this.activeCell = this.coorToArray(0, coors.col)
+          }
+        }
+        else if (key === "END") {
+          let coors = this.arrayToCoor(this.activeCell)
+          if (!this.isVertical) {
+            this.activeCell = this.coorToArray(coors.row, this.colN - 1)
+          }
+          else {
+            this.activeCell = this.coorToArray(this.rowN - 1, coors.col)
           }
         }
       }
