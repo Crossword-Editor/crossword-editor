@@ -89,7 +89,7 @@ table {
 }
 
 .empty .circle::after {
-  top: -14px;
+  top: -13px;
   left: 0px;
 }
 
