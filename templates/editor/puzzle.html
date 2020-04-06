@@ -354,8 +354,10 @@
       scrollClues() {
         let highlightedClue = document.querySelector('.clue.highlighted')
         let secondaryHlClue = document.querySelector('.clue.secondary')
-        highlightedClue.scrollIntoView({ behavior: "smooth", block: "center" })
-        secondaryHlClue.scrollIntoView({ behavior: "smooth", block: "center" })
+        if (highlightedClue) {
+          highlightedClue.scrollIntoView({ behavior: "smooth", block: "center" })
+          secondaryHlClue.scrollIntoView({ behavior: "smooth", block: "center" })
+        }
       }
     }
   });
