@@ -134,8 +134,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Custom user model
 
+# Custom user model
 AUTH_USER_MODEL = 'users.User'
 
 # Debug toolbar config
@@ -149,7 +149,8 @@ INTERNAL_IPS = [
 # django-registration-redux
 
 REGISTRATION_AUTO_LOGIN = True
-LOGIN_REDIRECT_URL= '/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/'
 
 # Configure Django App for Heroku.
 django_heroku.settings(locals())
