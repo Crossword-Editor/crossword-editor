@@ -529,6 +529,12 @@ ________________________________________________ */
   width: 100%;
 }
 
+@media (max-width: 800px) {
+  .tab-container{
+    flex-flow: row wrap;
+  }
+}
+
 .properties-container label {
   font-size: 1.1rem;
   font-weight: 600;
