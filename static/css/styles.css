@@ -580,14 +580,12 @@ ________________________________________________ */
   font-size: 24px;
   color: rgb(46, 116, 49);
   margin: 1rem;
-  margin-top: 40px;
 }
 
 .tips p {
   font-size: 20px;
   color: #17202a;
-  margin: 1.25rem;
-  margin-top: 0;
+  margin: 0.5rem 1rem;
   text-align: left;
 }
 

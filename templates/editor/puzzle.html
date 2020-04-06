@@ -146,19 +146,23 @@
       </div>
     </v-tab>
 
-    <v-tab title="Navigation">
+    <v-tab title="How to ...">
       <div class="tips">
         <h3>Click Tips:</h3>
         <ul>
-          <p>✚ Click <strong>"WordNerd"</strong> in top left corner to return to your home page.</p>
-          <p>✚ Click <strong>CREATE</strong> button to create a new puzzle.</p>
           <p>✚ Click <strong>SAVE</strong> button to save your current puzzle.</p>
-          <p>✚ Click <strong>MARK AS COMPLETE</strong> button to finish your puzzle.</p>
+          <p>✚ Click <strong>"WordNerd"</strong> in top left corner to return to your home page.</p>
+          <p>✚ Click <strong>MARK AS COMPLETE</strong> button on the Puzzle Properties tab to
+            move the puzzle to your completed puzzle list and prevent further edits (or on a completed puzzle, you can
+            choose to reopen the puzzle for editing on the Puzzle Properties tab).</p>
         </ul>
 
         <h3>Cell Tips:</h3>
         <ul>
           <p>✚ Enter a period in a cell to create a black square.</p>
+          <p>✚ Choose the symmetry you would like the black squares to update with automatically, or turn off this feature
+            under the Puzzle Properties tab.
+          </p>
           <p>✚ Use keyboard <strong>ARROWS</strong> to move from cell to cell.</p>
           <p>✚ Press <strong>ENTER</strong> or <strong>SPACEBAR</strong> to change cell direction.</p>
         </ul>
@@ -173,18 +177,35 @@
 
         <h3>Rebus:</h3>
         <ul>
-          <p>✚ Entering 'Command+Enter' on a Mac or 'Windows Key + Enter' other PC's allow you to type a rebus entry in
-            the active cell.
+          <p>
+            ✚ Entering <strong>Command+Enter</strong> on a Mac or <strong>Windows Key + Enter</strong> other PC's
+            allow you to type a rebus entry in the active cell.
           </p>
-          <p>✚ Click any cell while holding the meta/super key (i.e. windows key or command key on amac) to enter a
+          <p>
+            ✚ Click any cell while holding the Meta/Super key (a.k.a. windows key or command key on mac) to enter a
             rebus entry.
           </p>
-          <p>✚ Press Enter to keep the rebus entry, or click elsewhere on the page to close and cancel the rebus input.
+          <p>
+            ✚ Press <strong>Enter</strong> to keep the rebus entry, or click elsewhere on the page to close
+            and cancel the rebus input. Hitting <strong>Tab</strong> while entering a rebus will also cancel the
+            rebus input.
           </p>
-          <p>✚ Grid cells will be highlighted to indicate they are a rebus entry and show the first character of the
+          <p>
+            ✚ Grid cells will be highlighted to indicate they are a rebus entry and show the first character of the
             rebus word.
           </p>
-          <p>✚ To unmark a cell as a rebus, edit the rebus word back down to 0 or 1 character.</p>
+          <p>
+            ✚ To unmark a cell as a rebus, edit the rebus word back down to 0 or 1 character or by typing over it</p>
+        </ul>
+
+        <h3>Circled cells:</h3>
+        <ul>
+          <p>✚ Typing <strong>Option+Enter</strong> on a Mac or <strong>Alt + Enter</strong> other PC's
+            will toggle a circle on the active cell.
+          </p>
+          <p>✚ Clicking any cell while holding the Option key on a Mac or Alt key on other PCs will also toggle
+            a circle on that cell.
+          </p>
         </ul>
       </div>
     </v-tab>
@@ -1016,8 +1037,7 @@ ${gridString}
 ${acrossString}
 <DOWN>
 ${downString}
-<NOTEPAD>
-${editor.description ? editor.description : ''}
+<NOTEPAD>${editor.description ? editor.description : ''}
 `
     return returnString
   }
@@ -1103,8 +1123,7 @@ ${rebusList.length > 0 ? rebusSection : ''}<ACROSS>
 ${acrossString}
 <DOWN>
 ${downString}
-<NOTEPAD>
-${editor.description ? editor.description : ''}
+<NOTEPAD>${editor.description ? editor.description : ''}
 `
   }
 
