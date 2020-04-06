@@ -458,10 +458,10 @@
         this.gridnums.map((number, idx) => {
           if (this.isNumberedCell(idx)) {
             if (this.lookLeft(idx)) {
-              numbs.across.push(String(number))
+              numbs.across.push(number)
             }
             if (this.lookUp(idx)) {
-              numbs.down.push(String(number))
+              numbs.down.push(number)
             }
           }
         })
@@ -503,7 +503,7 @@
       answers() {
         let answers = {}
         answers.across = this.clueNumbers.across.map((num) => {
-          let idx = this.gridnums.indexOf(Number(num))
+          let idx = this.gridnums.indexOf(num)
           return this.getInterval(idx, "across")
             .map((index) => {
               return this.grid[index]
@@ -511,7 +511,7 @@
             .join("")
         })
         answers.down = this.clueNumbers.down.map((num) => {
-          let idx = this.gridnums.indexOf(Number(num))
+          let idx = this.gridnums.indexOf(num)
           return this.getInterval(idx, "down")
             .map((index) => {
               return this.grid[index]
@@ -813,6 +813,14 @@
         }
       },
 
+      nextWord() {
+        let currentNumber = this.gridnums(this.highlighted[0])
+        let nextNumber
+        if (this.isVertical){
+          nextNumber = Number(this.clueNumbers.down)
+        }
+      },
+
       nonAlphaKeys(key) {
         if (key === 'DELETE') {
           if (this.grid[this.activeCell] === BLACK) {
@@ -1005,12 +1013,12 @@
   function exportTXTv1() {
     let acrossString = ''
     for (let number of editor.clueNumbers.across) {
-      acrossString += editor.clues.across[Number(number)] + '\n'
+      acrossString += editor.clues.across[number] + '\n'
     }
     acrossString = acrossString.trimEnd()
     let downString = ''
     for (let number of editor.clueNumbers.down) {
-      downString += editor.clues.down[Number(number)] + '\n'
+      downString += editor.clues.down[number] + '\n'
     }
     downString = downString.trimEnd()
     let gridString = ''
@@ -1076,12 +1084,12 @@ ${downString}
 
     let acrossString = ''
     for (let number of editor.clueNumbers.across) {
-      acrossString += editor.clues.across[Number(number)] + '\n'
+      acrossString += editor.clues.across[String(number)] + '\n'
     }
     acrossString = acrossString.trimEnd()
     let downString = ''
     for (let number of editor.clueNumbers.down) {
-      downString += editor.clues.down[Number(number)] + '\n'
+      downString += editor.clues.down[String(number)] + '\n'
     }
     downString = downString.trimEnd()
 
