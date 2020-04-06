@@ -932,13 +932,9 @@
     },
 
     created: function () {
-      document.addEventListener('keydown', (event) => {
-        const ignoreIds = ['clue-input', 'title-inp', 'description-inp', 'rebus-input', 'author-inp']
-        let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
-        for (let inp of addressInputs) {
-          ignoreIds.push(inp.id)
-        }
-        if (!ignoreIds.includes(event.target.id)) {
+      window.addEventListener('keydown', (event) => {
+        let ignoreInputs = document.querySelectorAll('input')
+        if (event.target.nodeName !== 'INPUT' && event.target.nodeName !== 'TEXTAREA') {
           this.keyhandle(event)
         }
       })
