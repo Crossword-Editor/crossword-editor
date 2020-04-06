@@ -95,11 +95,11 @@
       <div class="properties-container">
         <div class="title-container prop-container">
           <label for="title-inp">Title:</label>
-          <input v-model="title" type="text" id="title-inp" class="prop-inp" maxlength="64" :disabled="completed">
+          <input v-model.trim="title" type="text" id="title-inp" class="prop-inp" maxlength="64" :disabled="completed">
         </div>
         <div class="description-container prop-container">
           <label for="description-inp">Description/Notes:</label>
-          <textarea v-model="description" id="description-inp" maxlength="1023" :disabled="completed"></textarea>
+          <textarea v-model.trim="description" id="description-inp" maxlength="1023" :disabled="completed"></textarea>
         </div>
         <div class="prop-container">
           <label for="author-inp">Author(s) can be recorded here:</label>
@@ -150,7 +150,17 @@
     <v-tab title="Statistics">
       <div class="properties-container">
         <div class="prop-container">
+          <h4>Word count</h4>
+          <dl>
+            <dt>Across</dt>
+            <dd></dd>
 
+            <dt>Down</dt>
+            <dd></dd>
+
+            <dt>Total</dt>
+            <dd></dd>
+          </dl>
         </div>
       </div>
     </v-tab>
@@ -1159,7 +1169,7 @@ ${rebusList.length > 0 ? rebusSection : ''}<ACROSS>
 ${acrossString}
 <DOWN>
 ${downString}
-<NOTEPAD>${editor.description ? editor.description : ''}
+<NOTEPAD>${editor.description ? '\n'+editor.description : ''}
 `
   }
 
