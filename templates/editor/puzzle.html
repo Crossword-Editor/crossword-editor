@@ -410,20 +410,6 @@
   });
 
 
-  Vue.component('x-rebus', {
-    template: `
-    `,
-    props: ['grid', 'idx'],
-    data: function () {
-      return {
-        rebusWord: this.grid[this.idx],
-        rebusInitial: this.grid[this.idx].length > 0 ? this.grid[this.idx][0] : ''
-      }
-    }
-
-
-  })
-
 
   /* ================ Editor APP =================================*/
   const editor = new Vue({
@@ -874,7 +860,6 @@
             this.rebusHandler(event, this.activeCell)
           }
           else if (event.altKey) {
-            console.log("hi")
             this.updateCircles(this.activeCell)
           }
           else if (event.shiftKey) {
@@ -1018,7 +1003,6 @@
     for (let inp of addressInputs) {
       formData[inp.id] = inp.value
     }
-    console.log(formData)
     return editor.savePuzzle()
       .then(r => {
         return fetch(`/export/${puzzlePK}/`, {
