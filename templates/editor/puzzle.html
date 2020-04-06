@@ -221,9 +221,10 @@
             If you use the Across Lite solver, you can download the following text files and open them in Across Lite.
           </p>
           <p>
-            See the Across List website for <a href="https://icrossword.com/publish/">how to publish</a> your puzzle
-            using
-            their free hosting servive.
+            See the Across List website for
+            <a href="https://icrossword.com/publish/" target="_blank" rel="noopener noreferrer">
+              how to publish
+            </a> your puzzle using their free hosting servive.
           </p>
           <p>
             Across Lite version 1 does not support rebus entries. Rebus entries in this exported
@@ -242,7 +243,8 @@
         </div>
         <div id="nyt-app" class="export-container nytimes">
           Download a pdf of your puzzle in the
-          <a href="https://www.nytimes.com/puzzles/submissions/crossword">format</a>
+          <a href="https://www.nytimes.com/puzzles/submissions/crossword" target="_blank"
+            rel="noopener noreferrer">format</a>
           required to submit to the New York Times (requires an address, which we do not save).
           <form id="export-nytimes-pdf">
             <div class="flexrow">
@@ -285,7 +287,8 @@
         <a id="export-json" download="my_exported_puzzle.json" href="">
           <button id="json-btn" class="btn save-btn">Download as JSON</button>
         </a>
-        (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/</a> format)
+        (<a href="https://www.xwordinfo.com/" target="_blank" rel="noopener noreferrer">https://www.xwordinfo.com/
+        </a> format)
       </div>
     </v-tab>
   </vue-tabs>
@@ -854,7 +857,7 @@
             console.log("hi")
             this.updateCircles(this.activeCell)
           }
-          else if (event.shiftKey){
+          else if (event.shiftKey) {
             this.jumpWord(-1)
           }
           else {
