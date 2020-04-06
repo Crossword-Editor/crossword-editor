@@ -160,7 +160,8 @@
         <h3>Cell Tips:</h3>
         <ul>
           <p>✚ Enter a period in a cell to create a black square.</p>
-          <p>✚ Choose the symmetry you would like the black squares to update with automatically, or turn off this feature
+          <p>✚ Choose the symmetry you would like the black squares to update with automatically, or turn off this
+            feature
             under the Puzzle Properties tab.
           </p>
           <p>✚ Use keyboard <strong>ARROWS</strong> to move from cell to cell.</p>
@@ -813,12 +814,14 @@
         }
       },
 
-      nextWord() {
-        let currentNumber = this.gridnums(this.highlighted[0])
-        let nextNumber
-        if (this.isVertical){
-          nextNumber = Number(this.clueNumbers.down)
-        }
+      jumpWord(dir) {
+        // dir should be 1 to jump to next word, or -1 for previous word
+        let numberArray = this.clueNumbers[this.direction]
+        let currentNumber = this.gridnums[this.highlighted[0]]
+        let currentNumberIdx = numberArray.indexOf(currentNumber)
+        let nextNumberIdx = mod(currentNumberIdx + dir, numberArray.length)
+        let nextNumber = numberArray[nextNumberIdx]
+        this.activeCell = this.gridnums.indexOf(nextNumber)
       },
 
       nonAlphaKeys(key) {
@@ -843,7 +846,7 @@
             this.updateGrid(this.activeCell, '')
           }
         }
-        else if (key === 'ENTER' || key === ' ') {
+        else if (key === 'ENTER') {
           if (event.metaKey) {
             this.rebusHandler(event, this.activeCell)
           }
@@ -851,9 +854,15 @@
             console.log("hi")
             this.updateCircles(this.activeCell)
           }
-          else {
-            this.toggleVertical()
+          else if (event.shiftKey){
+            this.jumpWord(-1)
           }
+          else {
+            this.jumpWord(1)
+          }
+        }
+        else if (key === ' ') {
+          this.toggleVertical()
         }
         else if (key === "ARROWRIGHT") {
           if (this.isVertical) {
@@ -922,7 +931,12 @@
       })
     }
   });
+  // End Vue App
 
+  // Non negative modulus function
+  function mod(n, m) {
+    return ((n % m) + m) % m;
+  }
 
 
   const deleteButton = document.querySelector('#delete-btn')
