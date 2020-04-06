@@ -340,9 +340,22 @@
         return { highlighted: this.isHighlighted, secondary: this.isSecondary }
       }
     },
+    watch: {
+      isHighlighted: function () {
+        this.$nextTick(function () {
+          this.scrollClues()
+        })
+      },
+    },
     methods: {
       clicked() {
         this.$emit("clue-clicked", this.number, this.clueType);
+      },
+      scrollClues() {
+        let highlightedClue = document.querySelector('.clue.highlighted')
+        let secondaryHlClue = document.querySelector('.clue.secondary')
+        highlightedClue.scrollIntoView({ behavior: "smooth", block: "center" })
+        secondaryHlClue.scrollIntoView({ behavior: "smooth", block: "center" })
       }
     }
   });
