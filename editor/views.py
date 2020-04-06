@@ -39,7 +39,7 @@ def register(request):
         user = authenticate(username=username, password=password)
         login(request, user)
         messages.success(request, 'Account created successfully')
-        return redirect('editor/welcome.html')
+        return redirect('/')
     else:
         form = UserCreationForm()
     return render(request, 'editor/register.html', {'form': form})
