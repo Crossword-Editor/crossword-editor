@@ -198,6 +198,17 @@ ________________________________________________ */
   font-weight: 400;
 }
 
+footer {
+  z-index: 1;
+  padding-bottom: 0.5rem;
+}
+footer a{
+  font-weight: 600;
+}
+footer a:hover{
+  text-decoration: underline;
+}
+
 /* === Dropdown === */
 
 .dropdown-container {
