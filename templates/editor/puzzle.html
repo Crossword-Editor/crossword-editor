@@ -433,6 +433,7 @@
       activeCell: 0,
       inputArea: 0,
       lastSaved: '',
+      circles: puzzleData.circles ? puzzleData.circles : Array(this.length).fill(0)
     },
 
     computed: {
@@ -442,10 +443,6 @@
 
       direction() {
         return this.isVertical ? 'down' : 'across'
-      },
-
-      circles() {
-        return puzzleData.circles ? puzzleData.circles : Array(this.length).fill(0)
       },
 
       gridStyle() {
