@@ -520,9 +520,13 @@
             clues[dir].push(exportClue)
           })
         }
+        let title = this.title
+        let author = this.author
+        let notepad = this.description
+        let date = new Date().toJSON()
         let answers = this.answers
-        let circles = this.circles
-        return JSON.stringify({ grid, gridnums, size, clues, answers, circles })
+        let circles = this.circles.includes(1) ? this.circles : null
+        return JSON.stringify({ title, author, notepad, date, grid, gridnums, size, clues, answers, circles })
       },
 
       getInterval(idx, dir) {
@@ -967,13 +971,13 @@
           })
       })
       .then(blob => {
-        let url = window.URL.createObjectURL(blob);
-        let a = document.createElement('a');
-        a.href = url;
-        a.download = `${editor.title}_nyt_submit_format.pdf`;
-        document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-        a.click();
-        a.remove();
+        let url = window.URL.createObjectURL(blob)
+        let a = document.createElement('a')
+        a.href = url
+        a.download = `${editor.title}_nyt_submit_format.pdf`
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
       })
   })
 
@@ -1019,7 +1023,6 @@ ${editor.description ? editor.description : ''}
   }
 
   /*
-  *
   * This format uses footnote style references between
   * the <grid> and <rebus> sections to indicate where
   * rebus entries belong.  Because the grid only holds slots for
