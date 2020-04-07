@@ -580,13 +580,19 @@
           across: this.answers.across.filter(word => word.length > 0),
           down: this.answers.down.filter(word => word.length > 0)
         }
+        let noAnswers = nonEmptyAns.across.length === 0 || nonEmptyAns.down.length === 0
         let stats = {}
         stats.blocks = this.grid.reduce((acc, curr) => acc += curr === BLACK ? 1 : 0, 0)
         stats.rebus = this.grid.reduce((acc, curr) => acc += curr.length > 1 ? 1 : 0, 0)
         stats.circles = this.circles.reduce((acc, curr) => acc + curr, 0)
         stats.wc = { across: nonEmptyAns.across.length, down: nonEmptyAns.down.length }
-        let avgNum = nonEmptyAns.across.map(w => w.length).reduce((acc, curr) => acc + curr) + nonEmptyAns.across.map(w => w.length).reduce((acc, curr) => acc + curr)
-        stats.avg = (avgNum / (nonEmptyAns.across.length + nonEmptyAns.down.length)).toFixed(2)
+        if (!noAnswers) {
+          let avgNum = nonEmptyAns.across.map(w => w.length).reduce((acc, curr) => acc + curr) + nonEmptyAns.across.map(w => w.length).reduce((acc, curr) => acc + curr)
+          stats.avg = (avgNum / (nonEmptyAns.across.length + nonEmptyAns.down.length)).toFixed(2)
+        }
+        else {
+          stats.avg = 'NaN'
+        }
         stats.distribution = {}
         alphabet.map(letter => {
           stats.distribution[letter] = this.grid.reduce((acc, curr) => acc += curr === letter ? 1 : 0, 0)
