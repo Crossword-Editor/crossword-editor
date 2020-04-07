@@ -320,12 +320,15 @@
 
 
 <script>
-  // get json string store it in a variable
-  var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
+  // get json string from django, use it to pass in to Vue app
+  let puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent)
+  let totalCellNumber = puzzleData.size.colN * puzzleData.size.rowN
+  puzzleData.circles = puzzleData.circles ? puzzleData.circles : Array(totalCellNumber).fill(0)
   const puzzlePK = {{ pk }}
   const completed = {{ completed }}
 
   const BLACK = '.'
+
 
   /* ================ CLUE Component =================================*/
   Vue.component("x-clue", {
@@ -444,7 +447,7 @@
       activeCell: 0,
       inputArea: 0,
       lastSaved: '',
-      circles: puzzleData.circles ? puzzleData.circles : Array(this.length).fill(0)
+      circles: puzzleData.circles
     },
 
     computed: {
