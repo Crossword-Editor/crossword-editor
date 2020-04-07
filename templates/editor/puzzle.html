@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block meta %}
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.css">
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/vue-nav-tabs/themes/vue-tabs.css">
 <script src="https://unpkg.com/vue-nav-tabs/dist/vue-tabs.js"></script>
-<script src="{% static 'js/letter-chart.js' %}" defer></script>
 {% endblock meta %}
 
 {% block content %}
@@ -168,7 +167,8 @@
             <li><span class="bold">Coverage:</span> ${ stats.coverage } out of 26 letters</li>
             <li><span class="bold">Missing:</span> ${ stats.missing.join(', ') }</li>
           </ul>
-          <canvas id="myChart" width="300" height="50"></canvas>
+
+          <letter-distribution :height="75" :chart-data="chartData"></letter-distribution>
           (Rebus entries do not contribute to any of these totals.)
         </div>
 
@@ -182,7 +182,6 @@
           </ul>
         </div>
       </div>
-
     </v-tab>
 
     <v-tab title="How to ...">
@@ -354,6 +353,32 @@
   const completed = {{ completed }}
 
   const BLACK = '.'
+
+
+  Vue.component('letter-distribution', {
+    extends: VueChartJs.Bar,
+    mixins: [VueChartJs.mixins.reactiveProp],
+    props: ['chartData'],
+    data: function () {
+      return {
+        chartOptions: {
+          tooltips: {
+            enabled: true
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      }
+    },
+    mounted() {
+      this.renderChart(this.chartData, this.chartOptions)
+    }
+  })
 
 
   /* ================ CLUE Component =================================*/
@@ -601,6 +626,20 @@
         stats.missing = alphabet.filter(l => stats.distribution[l] === 0)
 
         return stats
+      },
+
+      chartData() {
+        return {
+          labels: Object.entries(this.stats.distribution), //'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+          datasets: [{
+            label: 'Letter Distribution',
+            data: Object.values(this.stats.distribution),
+            backgroundColor: 'rgba(18, 105, 163, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            hoverBackgroundColor: 'rgba(18, 105, 163, 0.6)',
+            borderWidth: 1
+          }]
+        }
       }
     },
 
