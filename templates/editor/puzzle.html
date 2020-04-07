@@ -759,7 +759,15 @@
 
       prepareSaveData() {
         let grid = this.grid
-        let clues = this.clues
+        let clues = {
+          across: {},
+          down: {}
+        }
+        for (let dir of ['across', 'down']) {
+          this.clueNumbers[dir].map((number) => {
+            clues[dir][String(number)] = this.clues[dir][number]
+          })
+        }
         let size = { rowN: this.rowN, colN: this.colN }
         let title = this.title
         let description = this.description
