@@ -628,6 +628,10 @@ ________________________________________________ */
   border-radius: 5px;
 }
 
+.export-container h4 {
+  margin-bottom: 0.3rem;
+}
+
 .export-container a {
   color: inherit;
   text-decoration: underline;
@@ -673,7 +677,7 @@ input:disabled, textarea:disabled {
   padding: 1rem 2rem;
   border: 1px solid black;
   border-radius: 5px;
-  background-color: aliceblue;
+  background-color: rgb(247, 251, 255);
 }
 
 .stat-container h3 {

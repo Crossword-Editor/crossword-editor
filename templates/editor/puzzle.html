@@ -157,7 +157,7 @@
             <li><span class="bold">Across:</span> ${ stats.wc.across }</li>
             <li><span class="bold">Down:</span> ${ stats.wc.down }</li>
             <li><span class="bold">Total:</span> ${ stats.wc.across + stats.wc.down }</li>
-            <hr>
+            <!-- <hr> -->
             <li><span class="bold">Average word length:</span> ${ stats.avg } (inlcudes full rebus entries in across and
               down answers)</li>
           </ul>
@@ -165,12 +165,13 @@
         <div class="stat-container">
           <h3>Letter Stats</h3>
           <ul class="stats-wc">
-            <li><span class="bold">Coverate:</span> ${ stats.coverage } out of 26 letters</li>
+            <li><span class="bold">Coverage:</span> ${ stats.coverage } out of 26 letters</li>
             <li><span class="bold">Missing:</span> ${ stats.missing.join(', ') }</li>
           </ul>
+          <canvas id="myChart" width="300" height="50"></canvas>
+          (Rebus entries do not contribute to any of these totals.)
         </div>
 
-        <canvas id="myChart" width="300" height="50"></canvas>
 
         <div class="stat-container">
           <h3>Blocks, Circles, Rebused</h3>
@@ -178,9 +179,6 @@
             <li><span class="bold">Blocks (i.e. black squares):</span> ${ stats.blocks }</li>
             <li><span class="bold">Rebus Entries:</span> ${ stats.rebus }</li>
             <li><span class="bold">Circles (i.e. black squares):</span> ${ stats.circles }</li>
-            <!-- <li><span class="bold">Cheaters:</span>
-              Blocks that can be removed with out changing the word count ${  }
-            </li> -->
           </ul>
         </div>
       </div>
@@ -282,7 +280,9 @@
             <button id="txt-v2-btn" class="btn save-btn">Download v2</button>
           </a>
         </div>
+
         <div id="nyt-app" class="export-container nytimes">
+          <h4>New York Times Submission</h4>
           Download a pdf of your puzzle in the
           <a href="https://www.nytimes.com/puzzles/submissions/crossword" target="_blank"
             rel="noopener noreferrer">format</a>
@@ -326,11 +326,14 @@
         </div>
       </div>
       <div class="export-container">
+        <h4>
+          <a href="https://www.xwordinfo.com/" target="_blank" rel="noopener noreferrer">xwordinfo.com
+          </a> JSON format
+        </h4>
         <a id="export-json" download="my_exported_puzzle.json" href="">
-          <button id="json-btn" class="btn save-btn">Download as JSON</button>
+          <button id="json-btn" class="btn save-btn">Download</button>
         </a>
-        (<a href="https://www.xwordinfo.com/" target="_blank" rel="noopener noreferrer">https://www.xwordinfo.com/
-        </a> format)
+
       </div>
     </v-tab>
   </vue-tabs>
@@ -588,8 +591,8 @@
         alphabet.map(letter => {
           stats.distribution[letter] = this.grid.reduce((acc, curr) => acc += curr === letter ? 1 : 0, 0)
         })
-        stats.coverage = []
-        stats.missing = []
+        stats.coverage = alphabet.reduce((acc, curr) => acc += stats.distribution[curr] > 0 ? 1 : 0, 0)
+        stats.missing = alphabet.filter(l => stats.distribution[l] === 0)
 
         return stats
       }

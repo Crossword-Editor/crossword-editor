@@ -8,13 +8,16 @@ let myChart = new Chart(ctx, {
     datasets: [{
       label: 'Letter Distribution',
       data: Object.values(editor.stats.distribution),
-      backgroundColor:
-        'rgba(18, 105, 163, 0.2)',
+      backgroundColor: 'rgba(18, 105, 163, 0.2)',
       borderColor: 'rgba(54, 162, 235, 1)',
+      hoverBackgroundColor: 'rgba(18, 105, 163, 0.6)',
       borderWidth: 1
     }]
   },
   options: {
+    tooltips: {
+      enabled: false
+    },
     scales: {
       yAxes: [{
         ticks: {
