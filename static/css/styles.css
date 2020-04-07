@@ -115,7 +115,7 @@ ________________________________________________ */
 }
 
 .register-area  {
-  font-size: 18px;
+  font-size: 15px;
   font-family: Montserrat, sans-serif;
   font-weight: 600;
   text-align: left;
@@ -127,23 +127,35 @@ ________________________________________________ */
 .register-fields {
   font-size: 1rem;
   width: 100%;
-  padding: 10px 15px;
+  padding: 5px 10px;
   margin: 10px 5px;
   box-sizing: border-box;  
-  border-radius: 5px;
-  border: 0.5px solid gray;
+  border-radius: 7px;
+  border: 0.7px solid gray;
 
 }
 
+.requirements {
+  font-size: 13px;
+  font-weight: 400;
+  list-style: none;
+  color: black;
+  margin-bottom: 10px;
+}
+
 .register-btn {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
-  color: #85abd2;
+  color: #1d54cd;
   background-color: solid gray;
-  padding: 10px;
+  padding: 10px 20px;
   transition: all 0.2s ease;
   border-radius: 5px;
-  border: 0.5px solid gray;
+  border: 1.5px solid gray;
+}
+
+.register-btn:hover {
+  color: #85abd2;
 }
 
 
