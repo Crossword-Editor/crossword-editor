@@ -1168,7 +1168,7 @@ ${editor.author ? editor.author : ''}
 ${editor.colN}x${editor.rowN}
 <GRID>
 ${gridString}
-${rebusList.length > 0 ? rebusSection : ''}<ACROSS>
+${rebusList.length > 0 || marked ? rebusSection : ''}<ACROSS>
 ${acrossString}
 <DOWN>
 ${downString}
