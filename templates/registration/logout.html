@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<title>{% block title %}WordNerd | Logout {% endblock %} </title>
+
+{% block main %}
+
+{% block body_block %}
+
+{% comment %} 
+	<form class="logout" method="post" action="."> {% endcomment %}
+
+	<form class="logout">
+        <h1>You are now logged out</h1>
+            <h3>Keep your pencil sharpened until we cross puzzles again!</h3>
+	</form>
+{% endblock %}
+
+{% endblock main %}
+

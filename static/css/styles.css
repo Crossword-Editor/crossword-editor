@@ -236,6 +236,51 @@ ________________________________________________ */
 }
 
 
+
+
+/* Logout __________________________________________________*/
+
+.logout {
+  background: url("../images/crossword-pencil.jpg") no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  max-height: 100%;
+  min-height: 96vh;
+}
+
+.logout::before {
+  content: "";
+  position: absolute;
+  background-color: #ffffffdd;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.logout h1 {
+  font-size: 40px;
+  font-family: Montserrat, sans-serif;
+  color: #17202a;
+  z-index: 1;
+  padding-bottom: 2rem;
+}
+
+.logout h3 {
+  font-size: 20px;
+  font-family: Montserrat, sans-serif;
+  color: #17202a;
+  z-index: 1;
+  padding-bottom: 2rem;
+}
+
 /* Welcome Index
 ________________________________________________ */
 
