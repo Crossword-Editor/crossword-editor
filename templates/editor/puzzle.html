@@ -43,7 +43,7 @@
       <div class="input-container">
         <span v-if="grid[activeCell]===BLACK" style="visibility:hidden; height:1.4rem"><b>Hide</b></span>
         <span class="clue-input-label" v-if="grid[activeCell]!==BLACK">
-          ${ gridnums[highlighted[0]] } ${direction}:
+          ${ gridnums[highlighted[0]] } ${ direction }:
         </span>
         <div class="clue-input-container">
           <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;"
@@ -150,18 +150,23 @@
     <v-tab title="Statistics">
       <div class="properties-container">
         <div class="prop-container">
-          <h4>Word count</h4>
-          <dl>
-            <dt>Across</dt>
-            <dd></dd>
-
-            <dt>Down</dt>
-            <dd></dd>
-
-            <dt>Total</dt>
-            <dd></dd>
-          </dl>
+          <h3>Word Stats</h3>
+          <ul class="stats-wc">
+            <li><span class="bold">Across:</span> ${ stats.wc.across }</li>
+            <li><span class="bold">Down:</span> ${ stats.wc.down }</li>
+            <li><span class="bold">Total:</span> ${ stats.wc.across + stats.wc.down }</li>
+            <hr>
+            <li><span class="bold">Average word length:</span> ${ stats.avg }</li>
+          </ul>
         </div>
+        <div class="prop-container">
+          <h3>Letter Stats</h3>
+          <ul class="stats-wc">
+            <li><span class="bold">Coverate:</span> ${ stats.coverage } out of 26 letters</li>
+            <li><span class="bold">Missing:</span> ${ stats.missing.join(', ') }</li>
+          </ul>
+        </div>
+        <canvas id="myChart" width="400" height="400"></canvas>
       </div>
     </v-tab>
 
@@ -546,417 +551,433 @@
             .join("")
         })
         return answers
-      }
-    },
-
-    methods: {
-      exportJSON() {
-        let grid = this.grid
-        let gridnums = this.gridnums
-        let size = {
-          cols: this.colN,
-          rows: this.rowN
-        }
-        let clues = {
-          across: [],
-          down: []
-        }
-        for (let dir of ['across', 'down']) {
-          this.clueNumbers[dir].map((number) => {
-            let clue = this.clues[dir][number]
-            let exportClue = `${number}. ${clue}`
-            clues[dir].push(exportClue)
-          })
-        }
-        let title = this.title
-        let author = this.author
-        let notepad = this.description
-        let date = new Date().toJSON()
-        let answers = this.answers
-        let circles = this.circles.includes(1) ? this.circles : null
-        return JSON.stringify({ title, author, notepad, date, grid, gridnums, size, clues, answers, circles })
       },
 
-      getInterval(idx, dir) {
-        let returnArr = []
-        if (this.grid[idx] === BLACK) {
+      stats() {
+        let nonEmptyAns = {
+          across: this.answers.across.filter(word => word.length > 0),
+          down: this.answers.down.filter(word => word.length > 0)
+        }
+        let stats = {}
+        stats.wc = { across: nonEmptyAns.across.length, down: nonEmptyAns.down.length }
+        let avgNum = nonEmptyAns.across.map(w=>w.length).reduce((acc,curr)=>acc+curr)+nonEmptyAns.across.map(w=>w.length).reduce((acc,curr)=>acc+curr)
+        stats.avg = (avgNum / (nonEmptyAns.across.length + nonEmptyAns.down.length)).toFixed(2)
+
+        stats.missing =[]
+        stats.coverage =[]
+
+        return stats
+        }
+      },
+
+      methods: {
+        exportJSON() {
+          let grid = this.grid
+          let gridnums = this.gridnums
+          let size = {
+            cols: this.colN,
+            rows: this.rowN
+          }
+          let clues = {
+            across: [],
+            down: []
+          }
+          for (let dir of ['across', 'down']) {
+            this.clueNumbers[dir].map((number) => {
+              let clue = this.clues[dir][number]
+              let exportClue = `${number}. ${clue}`
+              clues[dir].push(exportClue)
+            })
+          }
+          let title = this.title
+          let author = this.author
+          let notepad = this.description
+          let date = new Date().toJSON()
+          let answers = this.answers
+          let circles = this.circles.includes(1) ? this.circles : null
+          return JSON.stringify({ title, author, notepad, date, grid, gridnums, size, clues, answers, circles })
+        },
+
+        getInterval(idx, dir) {
+          let returnArr = []
+          if (this.grid[idx] === BLACK) {
+            return returnArr
+          }
+          let start = idx
+          let stop = idx
+          let inc = (dir === 'down') ? this.colN : 1
+          if (dir === 'down') {
+            while (!this.lookUp(start)) {
+              start -= inc
+            }
+            while (!this.lookDown(stop)) {
+              stop += inc
+            }
+          }
+          else {
+            while (!this.lookLeft(start)) {
+              start -= inc
+            }
+            while (!this.lookRight(stop)) {
+              stop += inc
+            }
+          }
+          for (let i = start; i <= stop; i += inc) {
+            returnArr.push(i)
+          }
           return returnArr
-        }
-        let start = idx
-        let stop = idx
-        let inc = (dir === 'down') ? this.colN : 1
-        if (dir === 'down') {
-          while (!this.lookUp(start)) {
-            start -= inc
-          }
-          while (!this.lookDown(stop)) {
-            stop += inc
-          }
-        }
-        else {
-          while (!this.lookLeft(start)) {
-            start -= inc
-          }
-          while (!this.lookRight(stop)) {
-            stop += inc
-          }
-        }
-        for (let i = start; i <= stop; i += inc) {
-          returnArr.push(i)
-        }
-        return returnArr
-      },
+        },
 
-      getNumberInterval(dir) {
-        return this.getInterval(this.activeCell, dir).map(i => this.gridnums[i])
-      },
+        getNumberInterval(dir) {
+          return this.getInterval(this.activeCell, dir).map(i => this.gridnums[i])
+        },
 
-      handleCellClick(idx) {
-        if (event.metaKey) {
-          this.activeCell = idx
-          this.rebusHandler(event, idx, clicked = true)
-        }
-        else if (event.altKey) {
-          this.activeCell = idx
-          this.updateCircles(this.activeCell)
-        }
-        else {
-          if (this.activeCell === idx) {
-            this.toggleVertical()
-          }
-          this.activeCell = idx;
-        }
-      },
-
-      rebusHandler(event, idx, clicked = false) {
-        let rebusCell = document.createElement('input', { type: 'text' })
-        rebusCell.classList.add('active-rebus')
-        rebusCell.id = 'rebus-input'
-        let cell = clicked ? event.target.closest('.cell') : document.querySelector('.cell.active')
-        cell.appendChild(rebusCell)
-        let max = Math.max(this.rowN, this.colN)
-        rebusCell.style = `font-size:${this.entryFontSize}; height:${525 / max}px`
-        rebusCell.focus()
-        rebusCell.value = this.grid[idx]
-        rebusCell.style.width = `${rebusCell.value.length + 3}rem`
-        rebusCell.setAttribute('onkeypress', "this.style.width = (this.value.length + 3) + 'rem';")
-        rebusCell.addEventListener('keydown', (e) => {
-          if (e.key.toUpperCase() === 'ENTER') {
-            let value = rebusCell.value.toUpperCase()
-            this.updateGrid(idx, value)
-            rebusCell.remove()
-          }
-        })
-        rebusCell.addEventListener('focusout', (e) => {
-          rebusCell.remove()
-        })
-      },
-
-      handleClueClick(number, clueType) {
-        if (clueType !== this.direction) {
-          this.toggleVertical()
-        }
-        document.querySelector('#clue-input').focus()
-      },
-
-      prepareSaveData() {
-        let grid = this.grid
-        let clues = this.clues
-        let size = { rowN: this.rowN, colN: this.colN }
-        let title = this.title
-        let description = this.description
-        let symmetry = this.symmetry
-        let author = this.author
-        let gridnums = this.gridnums
-        let answers = this.answers
-        let circles = this.circles
-        let pk = puzzlePK
-        return { grid, gridnums, clues, size, title, description, author, answers, symmetry, circles, pk }
-      },
-
-      savePuzzle() {
-        saveData = this.prepareSaveData(puzzleData)
-        return fetch(`/save/`, {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify(saveData)
-        })
-          .then(response => response.json())
-          .then(jsonResp => {
-            console.log(jsonResp.message)
-            let dt = new Date()
-            this.lastSaved = { date: dt.toLocaleDateString(), time: dt.toLocaleTimeString() }
-          })
-      },
-
-      editPuzzle() {
-        saveData = this.prepareSaveData(puzzleData)
-        return fetch(`/toggle-complete/?pk=${puzzlePK}`
-        )
-          .then(resp => resp.json())
-          .then(jsonData => {
-            if (jsonData.redirect === true) {
-              window.location.replace(`/edit/${puzzlePK}`)
-            }
-          })
-      },
-
-      markComplete() {
-        saveData = this.prepareSaveData(puzzleData)
-        return fetch(`/toggle-complete/`, {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify(saveData)
-        })
-          .then(resp => resp.json())
-          .then(jsonData => {
-            if (jsonData.redirect === true) {
-              window.location.replace("/")
-            }
-          })
-      },
-
-      arrayToCoor(idx) {
-        return { row: Math.floor(idx / this.colN), col: idx % this.colN }
-      },
-      coorToArray(row, col) {
-        return row * this.colN + col
-      },
-
-      computeSymmetry(idx) {
-        let row = this.arrayToCoor(idx).row
-        let col = this.arrayToCoor(idx).col
-        let newRow = this.rowN - row - 1
-        let newCol = this.colN - col - 1
-        switch (this.symmetry) {
-          case "rotational":
-            return this.coorToArray(newRow, newCol)
-            break
-          case "vertical":
-            return this.coorToArray(row, newCol)
-            break
-          case "horizontal":
-            return this.coorToArray(newRow, col)
-            break
-          case "none":
-            return this.activeCell
-            break
-        }
-      },
-
-      applySymmetry(idx, value) {
-        if (this.grid[idx] === BLACK) {
-          this.updateGrid(this.computeSymmetry(idx), value)
-        }
-      },
-
-      updateGrid(idx, value) {
-        // note: splice works when idx < 0, like in Python
-        this.grid.splice(idx, 1, value)
-      },
-
-      updateCircles(idx) {
-        let current = this.circles[idx]
-        let newValue = (current + 1) % 2 // toggle between 0 and 1
-        this.circles.splice(idx, 1, newValue)
-      },
-
-      toggleVertical() {
-        this.isVertical = !this.isVertical
-      },
-
-      isNumberedCell(idx) {
-        if (this.grid[idx] === BLACK) {
-          return false
-        }
-        return this.lookUp(idx) || this.lookLeft(idx)
-      },
-
-      lookUp(idx) {
-        // return true if idx is in row 1 or is below black square
-        return (idx < this.colN) || (this.grid[idx - this.colN] === BLACK)
-      },
-      lookDown(idx) {
-        // return true if idx is in row 1 or is below black square
-        return (idx >= this.length - this.colN) || (this.grid[idx + this.colN] === BLACK)
-      },
-      lookLeft(idx) {
-        // return true if idx is in column 1 or to the right of a black square
-        return (idx % this.colN === 0) || (this.grid[idx - 1] === BLACK)
-      },
-      lookRight(idx) {
-        // return true if idx is in column 1 or to the right of a black square
-        return (idx % this.colN === this.colN - 1) || (this.grid[idx + 1] === BLACK)
-      },
-
-      nextCell() {
-        if (!this.isVertical) {
-          if (this.activeCell < this.length - 1) {
-            this.activeCell = this.activeCell + 1
-          }
-        }
-        else {
-          this.activeCell += (this.activeCell + this.colN < this.length) ? this.colN : 0
-        }
-      },
-
-      prevCell() {
-        if (!this.isVertical) {
-          if (this.activeCell > 0) {
-            this.activeCell = this.activeCell - 1
-          }
-        }
-        else {
-          this.activeCell -= (this.activeCell - this.colN >= 0) ? this.colN : 0
-        }
-      },
-
-      jumpWord(dir) {
-        // dir should be 1 to jump to next word, or -1 for previous word
-        if (this.grid[this.activeCell] === BLACK) {
-          while (this.grid[this.activeCell] === BLACK) {
-            this.activeCell += dir
-          }
-        }
-        else {
-          let numberArray = this.clueNumbers[this.direction]
-          let currentNumber = this.gridnums[this.highlighted[0]]
-          let currentNumberIdx = numberArray.indexOf(currentNumber)
-          let nextNumberIdx = mod(currentNumberIdx + dir, numberArray.length)
-          let nextNumber = numberArray[nextNumberIdx]
-          this.activeCell = this.gridnums.indexOf(nextNumber)
-        }
-      },
-
-      keyhandle(event) {
-        const key = event.key.toUpperCase()
-        let modifierPressed = event.metaKey || event.ctrlKey || event.altKey
-        const validEntries = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#$%&+?'
-        const validKeys = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', 'HOME', 'END', ' ']
-        if (validEntries.includes(key) && !modifierPressed) {
-          if (this.grid[this.activeCell] === BLACK) {
-            let symmetricEntry = key === BLACK ? BLACK : ''
-            this.applySymmetry(this.activeCell, symmetricEntry)
-            this.updateGrid(this.activeCell, key)
-          }
-          else {
-            this.updateGrid(this.activeCell, key)
-            this.applySymmetry(this.activeCell, BLACK)
-          }
-          this.nextCell()
-        }
-        else if (validKeys.includes(key)) {
-          event.preventDefault()
-          this.nonAlphaKeys(key)
-        }
-      },
-
-      nonAlphaKeys(key) {
-        if (key === 'DELETE') {
-          if (this.grid[this.activeCell] === BLACK) {
-            this.applySymmetry(this.activeCell, '')
-          }
-          this.updateGrid(this.activeCell, '')
-        }
-        else if (key === 'BACKSPACE') {
-          if (this.grid[this.activeCell] === '') {
-            this.prevCell()
-            if (this.grid[this.activeCell] === BLACK) {
-              this.applySymmetry(this.activeCell, '')
-            }
-            this.updateGrid(this.activeCell, '')
-          }
-          else {
-            if (this.grid[this.activeCell] === BLACK) {
-              this.applySymmetry(this.activeCell, '')
-            }
-            this.updateGrid(this.activeCell, '')
-          }
-        }
-        else if (key === 'ENTER') {
+        handleCellClick(idx) {
           if (event.metaKey) {
-            this.rebusHandler(event, this.activeCell)
+            this.activeCell = idx
+            this.rebusHandler(event, idx, clicked = true)
           }
           else if (event.altKey) {
+            this.activeCell = idx
             this.updateCircles(this.activeCell)
           }
-          else if (event.shiftKey) {
-            this.jumpWord(-1)
-          }
           else {
-            this.jumpWord(1)
+            if (this.activeCell === idx) {
+              this.toggleVertical()
+            }
+            this.activeCell = idx;
           }
-        }
-        else if (key === ' ') {
-          this.toggleVertical()
-        }
-        else if (key === "ARROWRIGHT") {
-          if (this.isVertical) {
+        },
+
+        rebusHandler(event, idx, clicked = false) {
+          let rebusCell = document.createElement('input', { type: 'text' })
+          rebusCell.classList.add('active-rebus')
+          rebusCell.id = 'rebus-input'
+          let cell = clicked ? event.target.closest('.cell') : document.querySelector('.cell.active')
+          cell.appendChild(rebusCell)
+          let max = Math.max(this.rowN, this.colN)
+          rebusCell.style = `font-size:${this.entryFontSize}; height:${525 / max}px`
+          rebusCell.focus()
+          rebusCell.value = this.grid[idx]
+          rebusCell.style.width = `${rebusCell.value.length + 3}rem`
+          rebusCell.setAttribute('onkeypress', "this.style.width = (this.value.length + 3) + 'rem';")
+          rebusCell.addEventListener('keydown', (e) => {
+            if (e.key.toUpperCase() === 'ENTER') {
+              let value = rebusCell.value.toUpperCase()
+              this.updateGrid(idx, value)
+              rebusCell.remove()
+            }
+          })
+          rebusCell.addEventListener('focusout', (e) => {
+            rebusCell.remove()
+          })
+        },
+
+        handleClueClick(number, clueType) {
+          if (clueType !== this.direction) {
             this.toggleVertical()
           }
+          document.querySelector('#clue-input').focus()
+        },
+
+        prepareSaveData() {
+          let grid = this.grid
+          let clues = this.clues
+          let size = { rowN: this.rowN, colN: this.colN }
+          let title = this.title
+          let description = this.description
+          let symmetry = this.symmetry
+          let author = this.author
+          let gridnums = this.gridnums
+          let answers = this.answers
+          let circles = this.circles
+          let pk = puzzlePK
+          return { grid, gridnums, clues, size, title, description, author, answers, symmetry, circles, pk }
+        },
+
+        savePuzzle() {
+          saveData = this.prepareSaveData(puzzleData)
+          return fetch(`/save/`, {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json'
+            },
+            body: JSON.stringify(saveData)
+          })
+            .then(response => response.json())
+            .then(jsonResp => {
+              console.log(jsonResp.message)
+              let dt = new Date()
+              this.lastSaved = { date: dt.toLocaleDateString(), time: dt.toLocaleTimeString() }
+            })
+        },
+
+        editPuzzle() {
+          saveData = this.prepareSaveData(puzzleData)
+          return fetch(`/toggle-complete/?pk=${puzzlePK}`
+          )
+            .then(resp => resp.json())
+            .then(jsonData => {
+              if (jsonData.redirect === true) {
+                window.location.replace(`/edit/${puzzlePK}`)
+              }
+            })
+        },
+
+        markComplete() {
+          saveData = this.prepareSaveData(puzzleData)
+          return fetch(`/toggle-complete/`, {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json'
+            },
+            body: JSON.stringify(saveData)
+          })
+            .then(resp => resp.json())
+            .then(jsonData => {
+              if (jsonData.redirect === true) {
+                window.location.replace("/")
+              }
+            })
+        },
+
+        arrayToCoor(idx) {
+          return { row: Math.floor(idx / this.colN), col: idx % this.colN }
+        },
+        coorToArray(row, col) {
+          return row * this.colN + col
+        },
+
+        computeSymmetry(idx) {
+          let row = this.arrayToCoor(idx).row
+          let col = this.arrayToCoor(idx).col
+          let newRow = this.rowN - row - 1
+          let newCol = this.colN - col - 1
+          switch (this.symmetry) {
+            case "rotational":
+              return this.coorToArray(newRow, newCol)
+              break
+            case "vertical":
+              return this.coorToArray(row, newCol)
+              break
+            case "horizontal":
+              return this.coorToArray(newRow, col)
+              break
+            case "none":
+              return this.activeCell
+              break
+          }
+        },
+
+        applySymmetry(idx, value) {
+          if (this.grid[idx] === BLACK) {
+            this.updateGrid(this.computeSymmetry(idx), value)
+          }
+        },
+
+        updateGrid(idx, value) {
+          // note: splice works when idx < 0, like in Python
+          this.grid.splice(idx, 1, value)
+        },
+
+        updateCircles(idx) {
+          let current = this.circles[idx]
+          let newValue = (current + 1) % 2 // toggle between 0 and 1
+          this.circles.splice(idx, 1, newValue)
+        },
+
+        toggleVertical() {
+          this.isVertical = !this.isVertical
+        },
+
+        isNumberedCell(idx) {
+          if (this.grid[idx] === BLACK) {
+            return false
+          }
+          return this.lookUp(idx) || this.lookLeft(idx)
+        },
+
+        lookUp(idx) {
+          // return true if idx is in row 1 or is below black square
+          return (idx < this.colN) || (this.grid[idx - this.colN] === BLACK)
+        },
+        lookDown(idx) {
+          // return true if idx is in row 1 or is below black square
+          return (idx >= this.length - this.colN) || (this.grid[idx + this.colN] === BLACK)
+        },
+        lookLeft(idx) {
+          // return true if idx is in column 1 or to the right of a black square
+          return (idx % this.colN === 0) || (this.grid[idx - 1] === BLACK)
+        },
+        lookRight(idx) {
+          // return true if idx is in column 1 or to the right of a black square
+          return (idx % this.colN === this.colN - 1) || (this.grid[idx + 1] === BLACK)
+        },
+
+        nextCell() {
+          if (!this.isVertical) {
+            if (this.activeCell < this.length - 1) {
+              this.activeCell = this.activeCell + 1
+            }
+          }
           else {
+            this.activeCell += (this.activeCell + this.colN < this.length) ? this.colN : 0
+          }
+        },
+
+        prevCell() {
+          if (!this.isVertical) {
+            if (this.activeCell > 0) {
+              this.activeCell = this.activeCell - 1
+            }
+          }
+          else {
+            this.activeCell -= (this.activeCell - this.colN >= 0) ? this.colN : 0
+          }
+        },
+
+        jumpWord(dir) {
+          // dir should be 1 to jump to next word, or -1 for previous word
+          if (this.grid[this.activeCell] === BLACK) {
+            while (this.grid[this.activeCell] === BLACK) {
+              this.activeCell += dir
+            }
+          }
+          else {
+            let numberArray = this.clueNumbers[this.direction]
+            let currentNumber = this.gridnums[this.highlighted[0]]
+            let currentNumberIdx = numberArray.indexOf(currentNumber)
+            let nextNumberIdx = mod(currentNumberIdx + dir, numberArray.length)
+            let nextNumber = numberArray[nextNumberIdx]
+            this.activeCell = this.gridnums.indexOf(nextNumber)
+          }
+        },
+
+        keyhandle(event) {
+          const key = event.key.toUpperCase()
+          let modifierPressed = event.metaKey || event.ctrlKey || event.altKey
+          const validEntries = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#$%&+?'
+          const validKeys = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', 'HOME', 'END', ' ']
+          if (validEntries.includes(key) && !modifierPressed) {
+            if (this.grid[this.activeCell] === BLACK) {
+              let symmetricEntry = key === BLACK ? BLACK : ''
+              this.applySymmetry(this.activeCell, symmetricEntry)
+              this.updateGrid(this.activeCell, key)
+            }
+            else {
+              this.updateGrid(this.activeCell, key)
+              this.applySymmetry(this.activeCell, BLACK)
+            }
             this.nextCell()
           }
-        }
-        else if (key === "ARROWLEFT") {
-          if (this.isVertical) {
+          else if (validKeys.includes(key)) {
+            event.preventDefault()
+            this.nonAlphaKeys(key)
+          }
+        },
+
+        nonAlphaKeys(key) {
+          if (key === 'DELETE') {
+            if (this.grid[this.activeCell] === BLACK) {
+              this.applySymmetry(this.activeCell, '')
+            }
+            this.updateGrid(this.activeCell, '')
+          }
+          else if (key === 'BACKSPACE') {
+            if (this.grid[this.activeCell] === '') {
+              this.prevCell()
+              if (this.grid[this.activeCell] === BLACK) {
+                this.applySymmetry(this.activeCell, '')
+              }
+              this.updateGrid(this.activeCell, '')
+            }
+            else {
+              if (this.grid[this.activeCell] === BLACK) {
+                this.applySymmetry(this.activeCell, '')
+              }
+              this.updateGrid(this.activeCell, '')
+            }
+          }
+          else if (key === 'ENTER') {
+            if (event.metaKey) {
+              this.rebusHandler(event, this.activeCell)
+            }
+            else if (event.altKey) {
+              this.updateCircles(this.activeCell)
+            }
+            else if (event.shiftKey) {
+              this.jumpWord(-1)
+            }
+            else {
+              this.jumpWord(1)
+            }
+          }
+          else if (key === ' ') {
             this.toggleVertical()
           }
-          else {
-            this.prevCell()
+          else if (key === "ARROWRIGHT") {
+            if (this.isVertical) {
+              this.toggleVertical()
+            }
+            else {
+              this.nextCell()
+            }
+          }
+          else if (key === "ARROWLEFT") {
+            if (this.isVertical) {
+              this.toggleVertical()
+            }
+            else {
+              this.prevCell()
+            }
+          }
+          else if (key === "ARROWDOWN") {
+            if (!this.isVertical) {
+              this.toggleVertical()
+            }
+            else {
+              this.nextCell()
+            }
+          }
+          else if (key === "ARROWUP") {
+            if (!this.isVertical) {
+              this.toggleVertical()
+            }
+            else {
+              this.prevCell()
+            }
+          }
+          else if (key === "HOME") {
+            let coors = this.arrayToCoor(this.activeCell)
+            if (!this.isVertical) {
+              this.activeCell = this.coorToArray(coors.row, 0)
+            }
+            else {
+              this.activeCell = this.coorToArray(0, coors.col)
+            }
+          }
+          else if (key === "END") {
+            let coors = this.arrayToCoor(this.activeCell)
+            if (!this.isVertical) {
+              this.activeCell = this.coorToArray(coors.row, this.colN - 1)
+            }
+            else {
+              this.activeCell = this.coorToArray(this.rowN - 1, coors.col)
+            }
           }
         }
-        else if (key === "ARROWDOWN") {
-          if (!this.isVertical) {
-            this.toggleVertical()
+
+      },
+
+      created: function () {
+        window.addEventListener('keydown', (event) => {
+          let ignoreInputs = document.querySelectorAll('input')
+          if (event.target.nodeName !== 'INPUT' && event.target.nodeName !== 'TEXTAREA') {
+            this.keyhandle(event)
           }
-          else {
-            this.nextCell()
-          }
-        }
-        else if (key === "ARROWUP") {
-          if (!this.isVertical) {
-            this.toggleVertical()
-          }
-          else {
-            this.prevCell()
-          }
-        }
-        else if (key === "HOME") {
-          let coors = this.arrayToCoor(this.activeCell)
-          if (!this.isVertical) {
-            this.activeCell = this.coorToArray(coors.row, 0)
-          }
-          else {
-            this.activeCell = this.coorToArray(0, coors.col)
-          }
-        }
-        else if (key === "END") {
-          let coors = this.arrayToCoor(this.activeCell)
-          if (!this.isVertical) {
-            this.activeCell = this.coorToArray(coors.row, this.colN - 1)
-          }
-          else {
-            this.activeCell = this.coorToArray(this.rowN - 1, coors.col)
-          }
-        }
+        })
       }
-
-    },
-
-    created: function () {
-      window.addEventListener('keydown', (event) => {
-        let ignoreInputs = document.querySelectorAll('input')
-        if (event.target.nodeName !== 'INPUT' && event.target.nodeName !== 'TEXTAREA') {
-          this.keyhandle(event)
-        }
-      })
-    }
-  });
+    });
   // End Vue App
 
   // Non negative modulus function
@@ -1172,7 +1193,7 @@ ${rebusList.length > 0 || marked ? rebusSection : ''}<ACROSS>
 ${acrossString}
 <DOWN>
 ${downString}
-<NOTEPAD>${editor.description ? '\n'+editor.description : ''}
+<NOTEPAD>${editor.description ? '\n' + editor.description : ''}
 `
   }
 

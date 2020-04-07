@@ -663,6 +663,19 @@ input:disabled, textarea:disabled {
   color: rgb(48, 48, 48);
 }
 
+/* === Stats Tab === */
+.bold {
+  font-weight: 600;
+}
+
+.stats-wc {
+  list-style-type: none;
+}
+
+.stats-wc li {
+  padding: 0.5rem 0;
+}
+
 /* === REBUS === */
 
 .cell input {
