@@ -121,7 +121,6 @@ ________________________________________________ */
   text-align: left;
   color: #17202a;
   z-index: 1;
-
 }
 
 .register-fields {
@@ -132,7 +131,6 @@ ________________________________________________ */
   box-sizing: border-box;  
   border-radius: 7px;
   border: 0.7px solid gray;
-
 }
 
 .requirements {
@@ -144,7 +142,7 @@ ________________________________________________ */
 }
 
 .register-btn {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: #1d54cd;
   background-color: solid gray;
@@ -195,7 +193,7 @@ ________________________________________________ */
 }
 
 .login-area  {
-  font-size: 18px;
+  font-size: 15px;
   font-family: Montserrat, sans-serif;
   font-weight: 600;
   text-align: left;
@@ -207,23 +205,26 @@ ________________________________________________ */
 .login-fields {
   font-size: 1rem;
   width: 100%;
-  padding: 10px 15px;
+  padding: 5px 10px;
   margin: 10px 5px;
   box-sizing: border-box;  
-  border-radius: 5px;
-  border: 0.5px solid gray;
-
+  border-radius: 7px;
+  border: 0.7px solid gray;
 }
 
 .login-btn {
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
-  color: #85abd2;
+  color: #1d54cd;
   background-color: solid gray;
-  padding: 10px;
+  padding: 10px 20px;
   transition: all 0.2s ease;
   border-radius: 5px;
-  border: 0.5px solid gray;
+  border: 1.5px solid gray;
+}
+
+.login-btn:hover {
+  color: #85abd2;
 }
 
 .login-status {
@@ -234,8 +235,6 @@ ________________________________________________ */
   z-index: 1;
   padding-top: 4rem;
 }
-
-
 
 
 /* Logout __________________________________________________*/
@@ -265,21 +264,23 @@ ________________________________________________ */
   width: 100%;
 }
 
-.logout h1 {
-  font-size: 40px;
+.logout h4 {
+  font-size: 25px;
   font-family: Montserrat, sans-serif;
   color: #17202a;
   z-index: 1;
   padding-bottom: 2rem;
 }
 
-.logout h3 {
-  font-size: 20px;
+.logout h2 {
+  font-size: 30px;
   font-family: Montserrat, sans-serif;
   color: #17202a;
   z-index: 1;
   padding-bottom: 2rem;
 }
+
+
 
 /* Welcome Index
 ________________________________________________ */
