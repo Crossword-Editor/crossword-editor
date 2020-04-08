@@ -6,14 +6,16 @@
 
 {% block meta %}
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/vue-nav-tabs/themes/vue-tabs.css">
 <script src="https://unpkg.com/vue-nav-tabs/dist/vue-tabs.js"></script>
 {% endblock meta %}
 
 {% block content %}
 
-<!-- Pass in puzzle json from Django template context -->
-{{ puzzle|json_script:"puzzle-data" }}
+
 
 <div id="editor-app">
 
@@ -24,7 +26,7 @@
         <a class="logo" href="{% url 'home' %}">
           <h1>WordNerd</h1>
         </a>
-        <div class="save-container">
+        <div v-if="!completed" class="save-container">
           <button class="btn save-btn" @click="savePuzzle">Save</button>
           <div class="last-saved-container">
             <p v-show="lastSaved">Last saved at ${ lastSaved.time }</p>
@@ -33,7 +35,7 @@
         </div>
       </div>
       <ul class="nav-top-links">
-        <a href="{% url 'auth_logout' %}">Logout </a>
+        <a href="{% url 'auth_logout' %}?next=/">Logout </a>
       </ul>
     </nav>
   </header>
@@ -46,7 +48,7 @@
       <div class="input-container">
         <span v-if="grid[activeCell]===BLACK" style="visibility:hidden; height:1.4rem"><b>Hide</b></span>
         <span class="clue-input-label" v-if="grid[activeCell]!==BLACK">
-          ${ gridnums[highlighted[0]] } ${direction}:
+          ${ gridnums[highlighted[0]] } ${ direction }:
         </span>
         <div class="clue-input-container">
           <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;"
@@ -56,7 +58,8 @@
         <div class="grid-container" tabindex="0">
           <div class='grid' :style="gridStyle">
             <x-cell v-for="n in length" :key="n" :idx="n-1" :active-cell="activeCell" :input-area="inputArea"
-              :grid="grid" :highlighted="highlighted" :col-n="colN" :row-n="rowN" @cell-clicked="handleCellClick">
+              :grid="grid" :highlighted="highlighted" :col-n="colN" :row-n="rowN" :circles="circles"
+              @cell-clicked="handleCellClick">
               <div slot="number" class="number" :style="numberStyle">
                 <span v-if="gridnums[n-1] !== 0">${ gridnums[n-1] }</span>
               </div>
@@ -97,11 +100,11 @@
       <div class="properties-container">
         <div class="title-container prop-container">
           <label for="title-inp">Title:</label>
-          <input v-model="title" type="text" id="title-inp" class="prop-inp" maxlength="64" :disabled="completed">
+          <input v-model.trim="title" type="text" id="title-inp" class="prop-inp" maxlength="64" :disabled="completed">
         </div>
         <div class="description-container prop-container">
           <label for="description-inp">Description/Notes:</label>
-          <textarea v-model="description" id="description-inp" maxlength="1023" :disabled="completed"></textarea>
+          <textarea v-model.trim="description" id="description-inp" maxlength="1023" :disabled="completed"></textarea>
         </div>
         <div class="prop-container">
           <label for="author-inp">Author(s) can be recorded here:</label>
@@ -132,7 +135,7 @@
         </div>
 
         <div class="complete-container prop-container">
-          <button v-if="!completed" id="complete-btn" class="btn green" @click="completePuzzle">
+          <button v-if="!completed" id="complete-btn" class="btn green" @click="markComplete">
             Mark as complete
           </button>
           <button v-if="completed" id="complete-btn" class="btn green" @click="editPuzzle">
@@ -149,21 +152,64 @@
       </div>
     </v-tab>
 
-    <v-tab title="Navigation">
+    <v-tab title="Statistics">
+      <div class="properties-container">
+        <div class="stat-container">
+          <h3>Word Stats</h3>
+          <ul class="stats-wc">
+            <li><span class="bold">Across:</span> ${ stats.wc.across }</li>
+            <li><span class="bold">Down:</span> ${ stats.wc.down }</li>
+            <li><span class="bold">Total:</span> ${ stats.wc.across + stats.wc.down }</li>
+            <!-- <hr> -->
+            <li><span class="bold">Average word length:</span> ${ stats.avg } (inlcudes full rebus entries in across and
+              down answers)</li>
+          </ul>
+        </div>
+        <div class="stat-container">
+          <h3>Letter Stats</h3>
+          <ul class="stats-wc">
+            <li><span class="bold">Coverage:</span> ${ stats.coverage } out of 26 letters</li>
+            <li><span class="bold">Missing:</span> ${ stats.missing.join(', ') }</li>
+          </ul>
+
+          <letter-distribution :height="75" :chart-data="chartData"></letter-distribution>
+          (Rebus entries do not contribute to any of these totals.)
+        </div>
+
+
+        <div class="stat-container">
+          <h3>Blocks, Circles, Rebused</h3>
+          <ul class="stats-wc">
+            <li><span class="bold">Blocks (i.e. black squares):</span> ${ stats.blocks }</li>
+            <li><span class="bold">Rebus Entries:</span> ${ stats.rebus }</li>
+            <li><span class="bold">Circles (i.e. black squares):</span> ${ stats.circles }</li>
+          </ul>
+        </div>
+      </div>
+    </v-tab>
+
+    <v-tab title="How to ...">
       <div class="tips">
         <h3>Click Tips:</h3>
         <ul>
-          <p>✚ Click <strong>"WordNerd"</strong> in top left corner to return to your home page.</p>
-          <p>✚ Click <strong>CREATE</strong> button to create a new puzzle.</p>
           <p>✚ Click <strong>SAVE</strong> button to save your current puzzle.</p>
-          <p>✚ Click <strong>MARK AS COMPLETE</strong> button to finish your puzzle.</p>
+          <p>✚ Click <strong>"WordNerd"</strong> in top left corner to return to your home page.</p>
+          <p>✚ Click <strong>MARK AS COMPLETE</strong> button on the Puzzle Properties tab to
+            move the puzzle to your completed puzzle list and prevent further edits (or on a completed puzzle, you can
+            choose to reopen the puzzle for editing on the Puzzle Properties tab).</p>
         </ul>
 
         <h3>Cell Tips:</h3>
         <ul>
           <p>✚ Enter a period in a cell to create a black square.</p>
+          <p>✚ Choose the symmetry you would like the black squares to update with automatically, or turn off this
+            feature
+            under the Puzzle Properties tab.
+          </p>
           <p>✚ Use keyboard <strong>ARROWS</strong> to move from cell to cell.</p>
-          <p>✚ Press <strong>ENTER</strong> or <strong>SPACEBAR</strong> to change cell direction.</p>
+          <p>✚ Press <strong>ENTER</strong> to jump to the next word in the grid, and
+            <strong>SHIFT+ENTER</strong> to jump backwards one word.</p>
+          <p>✚ Press <strong>SPACEBAR</strong> to change the direction.</p>
         </ul>
 
         <h3>Grid Tips:</h3>
@@ -176,18 +222,35 @@
 
         <h3>Rebus:</h3>
         <ul>
-          <p>✚ Entering 'Command+Enter' on a Mac or 'Windows Key + Enter' other PC's allow you to type a rebus entry in
-            the active cell.
+          <p>
+            ✚ Entering <strong>Command+Enter</strong> on a Mac or <strong>Windows Key + Enter</strong> other PC's
+            allow you to type a rebus entry in the active cell.
           </p>
-          <p>✚ Click any cell while holding the meta/super key (i.e. windows key or command key on amac) to enter a
+          <p>
+            ✚ Click any cell while holding the Meta/Super key (a.k.a. windows key or command key on mac) to enter a
             rebus entry.
           </p>
-          <p>✚ Press Enter to keep the rebus entry, or click elsewhere on the page to close and cancel the rebus input.
+          <p>
+            ✚ Press <strong>Enter</strong> to keep the rebus entry, or click elsewhere on the page to close
+            and cancel the rebus input. Hitting <strong>Tab</strong> while entering a rebus will also cancel the
+            rebus input.
           </p>
-          <p>✚ Grid cells will be highlighted to indicate they are a rebus entry and show the first character of the
+          <p>
+            ✚ Grid cells will be highlighted to indicate they are a rebus entry and show the first character of the
             rebus word.
           </p>
-          <p>✚ To unmark a cell as a rebus, edit the rebus word back down to 0 or 1 character.</p>
+          <p>
+            ✚ To unmark a cell as a rebus, edit the rebus word back down to 0 or 1 character or by typing over it</p>
+        </ul>
+
+        <h3>Circled cells:</h3>
+        <ul>
+          <p>✚ Typing <strong>Option+Enter</strong> on a Mac or <strong>Alt + Enter</strong> other PC's
+            will toggle a circle on the active cell.
+          </p>
+          <p>✚ Clicking any cell while holding the Option key on a Mac or Alt key on other PCs will also toggle
+            a circle on that cell.
+          </p>
         </ul>
       </div>
     </v-tab>
@@ -195,16 +258,40 @@
     <v-tab title="Export">
       <div class="export-list-container">
         <div class="export-container">
-          <a id="export-json" download="my_exported_puzzle.json" href="">
-            <button id="json-btn" class="btn save-btn">Download as JSON</button>
+          <h4>Across Lite text format</h4>
+          <p>
+            If you use the Across Lite solver, you can download the following text files and open them in Across Lite.
+          </p>
+          <p>
+            See the Across List website for
+            <a href="https://icrossword.com/publish/" target="_blank" rel="noopener noreferrer">
+              how to publish
+            </a> your puzzle using their free hosting servive.
+          </p>
+          <p>
+            Across Lite version 1 does not support rebus entries or circled cells. Rebus puzzles can still be
+            opened in Across Lite, but will keep only the first character of the rebus entry.
+          </p>
+          <a id="export-txt-v1" download="across-lite-v1.txt" href="">
+            <button id="txt-v1-btn" class="btn save-btn">Download v1</button>
           </a>
-          (<a href="https://www.xwordinfo.com/">https://www.xwordinfo.com/</a> format)
+          <br>
+          <p>
+            Across Lite version 2 supports rebus entries:
+          </p>
+          <a id="export-txt-v2" download="across-lite-v2.txt" href="">
+            <button id="txt-v2-btn" class="btn save-btn">Download v2</button>
+          </a>
         </div>
+
         <div id="nyt-app" class="export-container nytimes">
+          <h4>New York Times Submission</h4>
           Download a pdf of your puzzle in the
-          <a href="https://www.nytimes.com/puzzles/submissions/crossword">format</a>
+          <a href="https://www.nytimes.com/puzzles/submissions/crossword" target="_blank"
+            rel="noopener noreferrer">format</a>
           required to submit to the New York Times (requires an address, which we do not save).
           <form id="export-nytimes-pdf">
+            {% csrf_token %}
             <div class="flexrow">
               <div class="inp-label-container">
                 <label for="firstname">First name:</label>
@@ -241,6 +328,16 @@
           </form>
         </div>
       </div>
+      <div class="export-container">
+        <h4>
+          <a href="https://www.xwordinfo.com/" target="_blank" rel="noopener noreferrer">xwordinfo.com
+          </a> JSON format
+        </h4>
+        <a id="export-json" download="my_exported_puzzle.json" href="">
+          <button id="json-btn" class="btn save-btn">Download</button>
+        </a>
+
+      </div>
     </v-tab>
   </vue-tabs>
 
@@ -248,15 +345,45 @@
 
 </div>
 
-
+<!-- Pass in puzzle json from Django template context -->
+{{ puzzle|json_script:"puzzle-data" }}
 
 <script>
-  // get json string store it in a variable
-  var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
+  // get json string from django, use it to pass in to Vue app
+  let puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent)
+  let totalCellNumber = puzzleData.size.colN * puzzleData.size.rowN
+  puzzleData.circles = puzzleData.circles ? puzzleData.circles : Array(totalCellNumber).fill(0)
   const puzzlePK = {{ pk }}
   const completed = {{ completed }}
 
   const BLACK = '.'
+
+
+  Vue.component('letter-distribution', {
+    extends: VueChartJs.Bar,
+    mixins: [VueChartJs.mixins.reactiveProp],
+    props: ['chartData'],
+    data: function () {
+      return {
+        chartOptions: {
+          tooltips: {
+            enabled: false
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      }
+    },
+    mounted() {
+      this.renderChart(this.chartData, this.chartOptions)
+    }
+  })
+
 
   /* ================ CLUE Component =================================*/
   Vue.component("x-clue", {
@@ -281,9 +408,24 @@
         return { highlighted: this.isHighlighted, secondary: this.isSecondary }
       }
     },
+    watch: {
+      isHighlighted: function () {
+        this.$nextTick(function () {
+          this.scrollClues()
+        })
+      },
+    },
     methods: {
       clicked() {
         this.$emit("clue-clicked", this.number, this.clueType);
+      },
+      scrollClues() {
+        let highlightedClue = document.querySelector('.clue.highlighted')
+        let secondaryHlClue = document.querySelector('.clue.secondary')
+        if (highlightedClue) {
+          highlightedClue.scrollIntoView({ behavior: "smooth", block: "center" })
+          secondaryHlClue.scrollIntoView({ behavior: "smooth", block: "center" })
+        }
       }
     }
   });
@@ -297,7 +439,7 @@
         <slot name="number"></slot>
         <slot name="entry"></slot>
       </div>`,
-    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted', 'colN', 'rowN'],
+    props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted', 'colN', 'rowN', 'circles'],
     data: function () {
       return {
         test: 1
@@ -321,7 +463,8 @@
           active: this.isActive,
           black: this.isBlack,
           highlighted: this.isHighlighted,
-          rebus: this.grid[this.idx].length > 1
+          rebus: this.grid[this.idx].length > 1,
+          circle: this.circles[this.idx] === 1
         }
       },
       cellStyle() {
@@ -337,20 +480,6 @@
   });
 
 
-  Vue.component('x-rebus', {
-    template: `
-    `,
-    props: ['grid', 'idx'],
-    data: function () {
-      return {
-        rebusWord: this.grid[this.idx],
-        rebusInitial: this.grid[this.idx].length > 0 ? this.grid[this.idx][0] : ''
-      }
-    }
-
-
-  })
-
 
   /* ================ Editor APP =================================*/
   const editor = new Vue({
@@ -365,7 +494,6 @@
       description: puzzleData.description,
       author: puzzleData.author,
       symmetry: puzzleData.symmetry, // default: rotational (other values: none, vertical, horizontal )
-      rebus: puzzleData.rebus, // Ex: {idx: {display character: 'R', word: 'REBUS'}, ...}
       completed: completed, // defined line 240
       isVertical: false,
       BLACK: '.',
@@ -374,6 +502,7 @@
       activeCell: 0,
       inputArea: 0,
       lastSaved: '',
+      circles: puzzleData.circles
     },
 
     computed: {
@@ -411,10 +540,10 @@
         this.gridnums.map((number, idx) => {
           if (this.isNumberedCell(idx)) {
             if (this.lookLeft(idx)) {
-              numbs.across.push(String(number))
+              numbs.across.push(number)
             }
             if (this.lookUp(idx)) {
-              numbs.down.push(String(number))
+              numbs.down.push(number)
             }
           }
         })
@@ -456,7 +585,7 @@
       answers() {
         let answers = {}
         answers.across = this.clueNumbers.across.map((num) => {
-          let idx = this.gridnums.indexOf(Number(num))
+          let idx = this.gridnums.indexOf(num)
           return this.getInterval(idx, "across")
             .map((index) => {
               return this.grid[index]
@@ -464,7 +593,7 @@
             .join("")
         })
         answers.down = this.clueNumbers.down.map((num) => {
-          let idx = this.gridnums.indexOf(Number(num))
+          let idx = this.gridnums.indexOf(num)
           return this.getInterval(idx, "down")
             .map((index) => {
               return this.grid[index]
@@ -472,6 +601,50 @@
             .join("")
         })
         return answers
+      },
+
+      stats() {
+        let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+        let nonEmptyAns = {
+          across: this.answers.across.filter(word => word.length > 0),
+          down: this.answers.down.filter(word => word.length > 0)
+        }
+        let stats = {}
+        stats.blocks = this.grid.reduce((acc, curr) => acc += curr === BLACK ? 1 : 0, 0)
+        stats.rebus = this.grid.reduce((acc, curr) => acc += curr.length > 1 ? 1 : 0, 0)
+        stats.circles = this.circles.reduce((acc, curr) => acc + curr, 0)
+        stats.wc = { across: nonEmptyAns.across.length, down: nonEmptyAns.down.length }
+        let noAnswers = stats.wc.across === 0 && stats.wc.down === 0
+        if (!noAnswers) {
+          let avgNum = nonEmptyAns.across.reduce((acc, curr) => acc + curr.length, 0)
+            + nonEmptyAns.across.reduce((acc, curr) => acc + curr.length, 0)
+          stats.avg = (avgNum / (stats.wc.across + stats.wc.down)).toFixed(2)
+        }
+        else {
+          stats.avg = 'NaN'
+        }
+        stats.distribution = {}
+        alphabet.map(letter => {
+          stats.distribution[letter] = this.grid.reduce((acc, curr) => acc += curr === letter ? 1 : 0, 0)
+        })
+        stats.coverage = alphabet.reduce((acc, curr) => acc += stats.distribution[curr] > 0 ? 1 : 0, 0)
+        stats.missing = alphabet.filter(l => stats.distribution[l] === 0)
+
+        return stats
+      },
+
+      chartData() {
+        return {
+          labels: Object.entries(this.stats.distribution), //'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+          datasets: [{
+            label: 'Letter Distribution',
+            data: Object.values(this.stats.distribution),
+            backgroundColor: 'rgba(18, 105, 163, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            hoverBackgroundColor: 'rgba(18, 105, 163, 0.6)',
+            borderWidth: 1
+          }]
+        }
       }
     },
 
@@ -487,7 +660,6 @@
           across: [],
           down: []
         }
-
         for (let dir of ['across', 'down']) {
           this.clueNumbers[dir].map((number) => {
             let clue = this.clues[dir][number]
@@ -495,12 +667,14 @@
             clues[dir].push(exportClue)
           })
         }
-
+        let title = this.title
+        let author = this.author
+        let notepad = this.description
+        let date = new Date().toJSON()
         let answers = this.answers
-
-        return JSON.stringify({ grid, gridnums, size, clues, answers })
+        let circles = this.circles.includes(1) ? this.circles : null
+        return JSON.stringify({ title, author, notepad, date, grid, gridnums, size, clues, answers, circles })
       },
-
 
       getInterval(idx, dir) {
         let returnArr = []
@@ -541,6 +715,10 @@
           this.activeCell = idx
           this.rebusHandler(event, idx, clicked = true)
         }
+        else if (event.altKey) {
+          this.activeCell = idx
+          this.updateCircles(this.activeCell)
+        }
         else {
           if (this.activeCell === idx) {
             this.toggleVertical()
@@ -574,6 +752,7 @@
       },
 
       handleClueClick(number, clueType) {
+        console.log('hi')
         if (clueType !== this.direction) {
           this.toggleVertical()
         }
@@ -584,16 +763,25 @@
 
       prepareSaveData() {
         let grid = this.grid
-        let clues = this.clues
+        let clues = {
+          across: {},
+          down: {}
+        }
+        for (let dir of ['across', 'down']) {
+          this.clueNumbers[dir].map((number) => {
+            clues[dir][String(number)] = this.clues[dir][number]
+          })
+        }
         let size = { rowN: this.rowN, colN: this.colN }
         let title = this.title ? this.title : 'untitled'
         let description = this.description
         let symmetry = this.symmetry
         let author = this.author
-        let gridnums = this.gridnums // remove later, maybe
-        let answers = this.answers // remove later, maybe
+        let gridnums = this.gridnums
+        let answers = this.answers
+        let circles = this.circles
         let pk = puzzlePK
-        return { grid, gridnums, clues, size, title, description, author, answers, symmetry, pk }
+        return { grid, gridnums, clues, size, title, description, author, answers, symmetry, circles, pk }
       },
 
       savePuzzle() {
@@ -625,7 +813,7 @@
           })
       },
 
-      completePuzzle() {
+      markComplete() {
         saveData = this.prepareSaveData(puzzleData)
         return fetch(`/toggle-complete/`, {
           method: 'POST',
@@ -678,7 +866,18 @@
 
       updateGrid(idx, value) {
         // note: splice works when idx < 0, like in Python
-        this.grid.splice(idx, 1, value);
+        if (value === BLACK && this.circles[idx] === 1) {
+          this.updateCircles(idx)
+        }
+        this.grid.splice(idx, 1, value)
+      },
+
+      updateCircles(idx) {
+        if (this.grid[idx] !== BLACK) {
+          let current = this.circles[idx]
+          let newValue = (current + 1) % 2 // toggle between 0 and 1
+          this.circles.splice(idx, 1, newValue)
+        }
       },
 
       toggleVertical() {
@@ -709,29 +908,6 @@
         return (idx % this.colN === this.colN - 1) || (this.grid[idx + 1] === BLACK)
       },
 
-      keyhandle(event) {
-        const key = event.key.toUpperCase()
-        let modifierPressed = event.metaKey || event.ctrlKey || event.altKey
-        const validEntries = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#'
-        const validDirectives = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', ' ']
-        if (validEntries.includes(key) && !modifierPressed) {
-          if (this.grid[this.activeCell] === BLACK) {
-            let symmetricEntry = key === BLACK ? BLACK : ''
-            this.applySymmetry(this.activeCell, symmetricEntry)
-            this.updateGrid(this.activeCell, key)
-          }
-          else {
-            this.updateGrid(this.activeCell, key)
-            this.applySymmetry(this.activeCell, BLACK)
-          }
-          this.nextCell()
-        }
-        else if (validDirectives.includes(key)) {
-          event.preventDefault()
-          this.enterArrowsDeleteBackspace(key)
-        }
-      },
-
       nextCell() {
         if (!this.isVertical) {
           if (this.activeCell < this.length - 1) {
@@ -754,7 +930,47 @@
         }
       },
 
-      enterArrowsDeleteBackspace(key) {
+      jumpWord(dir) {
+        // dir should be 1 to jump to next word, or -1 for previous word
+        if (this.grid[this.activeCell] === BLACK) {
+          while (this.grid[this.activeCell] === BLACK) {
+            this.activeCell += dir
+          }
+        }
+        else {
+          let numberArray = this.clueNumbers[this.direction]
+          let currentNumber = this.gridnums[this.highlighted[0]]
+          let currentNumberIdx = numberArray.indexOf(currentNumber)
+          let nextNumberIdx = mod(currentNumberIdx + dir, numberArray.length)
+          let nextNumber = numberArray[nextNumberIdx]
+          this.activeCell = this.gridnums.indexOf(nextNumber)
+        }
+      },
+
+      keyhandle(event) {
+        const key = event.key.toUpperCase()
+        let modifierPressed = event.metaKey || event.ctrlKey || event.altKey
+        const validEntries = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#$%&+?'
+        const validKeys = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', 'HOME', 'END', ' ']
+        if (validEntries.includes(key) && !modifierPressed && !this.completed) {
+          if (this.grid[this.activeCell] === BLACK) {
+            let symmetricEntry = key === BLACK ? BLACK : ''
+            this.applySymmetry(this.activeCell, symmetricEntry)
+            this.updateGrid(this.activeCell, key)
+          }
+          else {
+            this.updateGrid(this.activeCell, key)
+            this.applySymmetry(this.activeCell, BLACK)
+          }
+          this.nextCell()
+        }
+        else if (validKeys.includes(key)) {
+          event.preventDefault()
+          this.nonAlphaKeys(key)
+        }
+      },
+
+      nonAlphaKeys(key) {
         if (key === 'DELETE') {
           if (this.grid[this.activeCell] === BLACK) {
             this.applySymmetry(this.activeCell, '')
@@ -776,13 +992,22 @@
             this.updateGrid(this.activeCell, '')
           }
         }
-        else if (key === 'ENTER' || key === ' ') {
+        else if (key === 'ENTER') {
           if (event.metaKey) {
             this.rebusHandler(event, this.activeCell)
           }
-          else {
-            this.toggleVertical()
+          else if (event.altKey) {
+            this.updateCircles(this.activeCell)
           }
+          else if (event.shiftKey) {
+            this.jumpWord(-1)
+          }
+          else {
+            this.jumpWord(1)
+          }
+        }
+        else if (key === ' ') {
+          this.toggleVertical()
         }
         else if (key === "ARROWRIGHT") {
           if (this.isVertical) {
@@ -816,25 +1041,43 @@
             this.prevCell()
           }
         }
+        else if (key === "HOME") {
+          let coors = this.arrayToCoor(this.activeCell)
+          if (!this.isVertical) {
+            this.activeCell = this.coorToArray(coors.row, 0)
+          }
+          else {
+            this.activeCell = this.coorToArray(0, coors.col)
+          }
+        }
+        else if (key === "END") {
+          let coors = this.arrayToCoor(this.activeCell)
+          if (!this.isVertical) {
+            this.activeCell = this.coorToArray(coors.row, this.colN - 1)
+          }
+          else {
+            this.activeCell = this.coorToArray(this.rowN - 1, coors.col)
+          }
+        }
       }
 
     },
 
-
     created: function () {
-      document.addEventListener('keydown', (event) => {
-        const ignoreIds = ['clue-input', 'title-inp', 'description-inp', 'rebus-input', 'author-inp']
-        let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
-        for (let inp of addressInputs) {
-          ignoreIds.push(inp.id)
-        }
-        if (!ignoreIds.includes(event.target.id)) {
+      window.addEventListener('keydown', (event) => {
+        let ignoreInputs = document.querySelectorAll('input')
+        if (event.target.nodeName !== 'INPUT' && event.target.nodeName !== 'TEXTAREA') {
           this.keyhandle(event)
         }
       })
     }
   });
+  // End Vue App
 
+  // Non negative modulus function
+  function mod(n, m) {
+    return ((n % m) + m) % m;
+  }
 
 
   const deleteButton = document.querySelector('#delete-btn')
@@ -868,9 +1111,28 @@
     editor.savePuzzle()
   })
 
+  document.querySelector('#txt-v1-btn').addEventListener('click', (event) => {
+    const txt = exportTXTv1()
+    const data = new File([txt], 'across-lite-v1.txt', { type: 'text/plain' })
+    let url = window.URL.createObjectURL(data)
+    let anchor = document.querySelector('#export-txt-v1')
+    anchor.href = url
+    editor.savePuzzle()
+  })
+
+  document.querySelector('#txt-v2-btn').addEventListener('click', (event) => {
+    const txt = exportTXTv2()
+    const data = new File([txt], 'across-lite-v2.txt', { type: 'text/plain' })
+    let url = window.URL.createObjectURL(data)
+    let anchor = document.querySelector('#export-txt-v2')
+    anchor.href = url
+    editor.savePuzzle()
+  })
+
 
   document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event) => {
     event.preventDefault()
+    let csrftoken = Cookies.get('csrftoken')
     let nytButton = document.querySelector('#nyt-btn')
     nytButton.textContent = 'Loading...'
     let addressInputs = document.querySelectorAll('#export-nytimes-pdf input')
@@ -878,12 +1140,12 @@
     for (let inp of addressInputs) {
       formData[inp.id] = inp.value
     }
-    console.log(formData)
     return editor.savePuzzle()
       .then(r => {
         return fetch(`/export/${puzzlePK}/`, {
           method: 'POST',
           headers: {
+            "X-CSRFToken": csrftoken,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(formData)
@@ -894,15 +1156,140 @@
           })
       })
       .then(blob => {
-        let url = window.URL.createObjectURL(blob);
-        let a = document.createElement('a');
-        a.href = url;
-        a.download = `${editor.title}_nyt_submit_format.pdf`;
-        document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-        a.click();
-        a.remove();
+        let url = window.URL.createObjectURL(blob)
+        let a = document.createElement('a')
+        a.href = url
+        a.download = `${editor.title}_nyt_submit_format.pdf`
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
       })
   })
+
+  function exportTXTv1() {
+    let acrossString = ''
+    for (let number of editor.clueNumbers.across) {
+      acrossString += editor.clues.across[number] + '\n'
+    }
+    acrossString = acrossString.trimEnd()
+    let downString = ''
+    for (let number of editor.clueNumbers.down) {
+      downString += editor.clues.down[number] + '\n'
+    }
+    downString = downString.trimEnd()
+    let gridString = ''
+    for (let i = 0; i < editor.rowN; i++) {
+      let row = ''
+      for (let j = 0; j < editor.colN; j++) {
+        row += editor.grid[i * editor.colN + j][0]
+      }
+      gridString += row + '\n'
+    }
+    gridString = gridString.trimEnd()
+    let returnString = `<ACROSS PUZZLE>
+<TITLE>
+${editor.title ? editor.title : ''}
+<AUTHOR>
+${editor.author ? editor.author : ''}
+<COPYRIGHT>
+
+<SIZE>
+${editor.colN}x${editor.rowN}
+<GRID>
+${gridString}
+<ACROSS>
+${acrossString}
+<DOWN>
+${downString}
+<NOTEPAD>${editor.description ? editor.description : ''}
+`
+    return returnString
+  }
+
+  /*
+  * This format uses footnote style references between
+  * the <grid> and <rebus> sections to indicate where
+  * rebus entries belong.  Because the grid only holds slots for
+  * single chars, and we're using digits as the placeholder,
+  * this will only make sense for up to 10 _unique_ rebus entries.
+  * The other option is to add some special characters as placeholders
+  */
+  function exportTXTv2() {
+    let rebusList = []
+    let grid = editor.grid
+    grid.map((entry, i) => {
+      if (entry.length > 1) {
+        rebusList.push(entry)
+      }
+    })
+    let rebusUniqueList = []
+    for (let rebus of rebusList) {
+      if (!rebusUniqueList.includes(rebus)) {
+        rebusUniqueList.push(rebus)
+      }
+    }
+
+    let markers = ''
+    rebusUniqueList.map((rebus, i) => {
+      markers += `${i}:${rebus}:${rebus[0]}\n`
+    })
+    markers.trimEnd()
+
+    let marked = editor.circles.includes(1) ? '\nMARK;' : ''
+    let rebusSection = `<REBUS>${marked}\n${markers}`
+
+    let acrossString = ''
+    for (let number of editor.clueNumbers.across) {
+      acrossString += editor.clues.across[String(number)] + '\n'
+    }
+    acrossString = acrossString.trimEnd()
+    let downString = ''
+    for (let number of editor.clueNumbers.down) {
+      downString += editor.clues.down[String(number)] + '\n'
+    }
+    downString = downString.trimEnd()
+
+    let gridString = ''
+    for (let i = 0; i < editor.rowN; i++) {
+      let row = ''
+      for (let j = 0; j < editor.colN; j++) {
+        let idx = i * editor.colN + j
+        let entry = grid[idx]
+        if (entry.length === 0) {
+          row += 'X'
+        }
+        else if (entry.length > 1) {
+          row += rebusUniqueList.indexOf(entry)
+        }
+        else if (editor.circles[idx] === 1) {
+          row += entry.toLowerCase()
+        }
+        else {
+          row += entry
+        }
+      }
+      gridString += row + '\n'
+    }
+    gridString = gridString.trimEnd()
+
+    return `<ACROSS PUZZLE V2>
+<TITLE>
+  ${editor.title ? editor.title : ''}
+<AUTHOR>
+${editor.author ? editor.author : ''}
+<COPYRIGHT>
+
+<SIZE>
+${editor.colN}x${editor.rowN}
+<GRID>
+${gridString}
+${rebusList.length > 0 || marked ? rebusSection : ''}<ACROSS>
+${acrossString}
+<DOWN>
+${downString}
+<NOTEPAD>${editor.description ? '\n' + editor.description : ''}
+`
+  }
 
 </script>
 

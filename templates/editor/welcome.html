@@ -3,38 +3,40 @@
 
 <title>{% block title %}WordNerd | Welcome! {% endblock %} </title>
 
+
 {% block main %}
 
+<div class="welcome">
+  <div class="welcome-text">
+    <h1>Welcome to <strong>WordNerd</strong></h1>
+    <h2>the tool designed for authoring New York Times-styled crossword puzzles</h2>
+  </div>
 
-  <div class="welcome">
-      <div class="welcome-text">
-      <h1>Welcome to <strong>WordNerd</strong></h1>
-      <h2>the tool designed for authoring New York Times-styled crossword puzzles</h2>
-      </div>
-
-      <!-- <div class="flex-grid"> -->
-      <div class="welcome-info">
-        <div class="you-box">
-          <h3>WordNerd Is Just For You!</h3>
-            <ul>
-              <p><strong>✚ Novice.</strong> Begin your very first crossword</p>
-              <p><strong>✚ Expert.</strong> Design your dream-themed puzzle</p>
-              <p><strong>✚ Master-Class.</strong> Construct and submit to the New York Times!</p>
-            </ul>
-        </div>
-
-        <div class="feature-box">
-          <h3>Features include:</h3>
-            <ul>
-              <p>✚ Fill in a puzzle grid, clues, title and description of a crossword</p>
-              <p>✚ Grid numbering and black square symmetry automatically completed</p>
-              <p>✚ Save drafts and make them public/private</p>
-              <p>✚ Mimic the style of the web and mobile crossword apps from the NY Times</p>
-            </ul>
-        </div>
+  <!-- <div class="flex-grid"> -->
+  <div class="welcome-info">
+    <div class="you-box">
+      <h3>WordNerd Is Just For You!</h3>
+      <ul>
+        <p><strong>✚ Novice.</strong> Begin your very first crossword</p>
+        <p><strong>✚ Expert.</strong> Design your dream-themed puzzle</p>
+        <p><strong>✚ Master-Class.</strong> Construct and submit to the New York Times!</p>
+      </ul>
     </div>
+
+    <div class="feature-box">
+      <h3>Features include:</h3>
+      <ul>
+        <p>✚ Fill in a puzzle grid, clues, title and description of a crossword</p>
+        <p>✚ Grid numbering and black square symmetry automatically completed</p>
+        <p>✚ Save drafts and make them public/private</p>
+        <p>✚ Add rebus entries and circled entries</p>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Source code on <a href="https://github.com/Crossword-Editor/crossword-editor">GitHub</a>
+  </footer>
 </div>
 
 {% endblock main %}
-
-

@@ -323,8 +323,6 @@ ________________________________________________ */
   font-family: Montserrat, sans-serif;
   color: #17202a;
   text-align: center;
-  margin-left: 75px;
-  width: 95%;
 }
 
 .welcome-info {
@@ -400,6 +398,17 @@ ________________________________________________ */
 
 .date {
   font-weight: 400;
+}
+
+footer {
+  z-index: 1;
+  padding-bottom: 0.5rem;
+}
+footer a{
+  font-weight: 600;
+}
+footer a:hover{
+  text-decoration: underline;
 }
 
 /* === Dropdown === */
@@ -521,21 +530,25 @@ ________________________________________________ */
   width: 100%;
 }
 
-/* .grid-container:after {
-  content: "";
-  display: block;
-  padding-bottom: 100%;
-} */
-
 .cell {
-  /* width: 30px;
-  height: 30px; */
   position: relative;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
   cursor: default;
   border: 0.5px solid gray;
+}
+
+.circle::after {
+  border: 0.5px solid rgb(78, 78, 78);
+  border-radius: 50%;
+  content: '';
+  position: absolute;
+  top:0;
+  left:0;
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+  z-index: 0;
 }
 
 .rebus {
@@ -729,6 +742,12 @@ ________________________________________________ */
   width: 100%;
 }
 
+@media (max-width: 800px) {
+  .tab-container{
+    flex-flow: row wrap;
+  }
+}
+
 .properties-container label {
   font-size: 1.1rem;
   font-weight: 600;
@@ -780,14 +799,12 @@ ________________________________________________ */
   font-size: 24px;
   color: rgb(46, 116, 49);
   margin: 1rem;
-  margin-top: 40px;
 }
 
 .tips p {
   font-size: 20px;
   color: #17202a;
-  margin: 1.25rem;
-  margin-top: 0;
+  margin: 0.5rem 1rem;
   text-align: left;
 }
 
@@ -811,6 +828,10 @@ ________________________________________________ */
   width: 100%;
   height: 2rem;
   border-radius: 5px;
+}
+
+.export-container h4 {
+  margin-bottom: 0.3rem;
 }
 
 .export-container a {
@@ -846,6 +867,31 @@ ________________________________________________ */
 
 input:disabled, textarea:disabled {
   color: rgb(48, 48, 48);
+}
+
+/* === Stats Tab === */
+.bold {
+  font-weight: 600;
+}
+
+.stat-container {
+  margin: 1rem;
+  padding: 1rem 2rem;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: rgb(247, 251, 255);
+}
+
+.stat-container h3 {
+  text-decoration: underline;
+}
+
+.stats-wc {
+  list-style-type: none;
+}
+
+.stats-wc li {
+  padding: 0.5rem 0;
 }
 
 /* === REBUS === */
