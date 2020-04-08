@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block meta %}
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/vue-nav-tabs/themes/vue-tabs.css">
 <script src="https://unpkg.com/vue-nav-tabs/dist/vue-tabs.js"></script>
 {% endblock meta %}
 
 {% block content %}
 
-<!-- Pass in puzzle json from Django template context -->
-{{ puzzle|json_script:"puzzle-data" }}
+
 
 <div id="editor-app">
 
@@ -21,7 +22,7 @@
         <a class="logo" href="{% url 'home' %}">
           <h1>WordNerd</h1>
         </a>
-        <div class="save-container">
+        <div v-if="!completed" class="save-container">
           <button class="btn save-btn" @click="savePuzzle">Save</button>
           <div class="last-saved-container">
             <p v-show="lastSaved">Last saved at ${ lastSaved.time }</p>
@@ -43,7 +44,7 @@
       <div class="input-container">
         <span v-if="grid[activeCell]===BLACK" style="visibility:hidden; height:1.4rem"><b>Hide</b></span>
         <span class="clue-input-label" v-if="grid[activeCell]!==BLACK">
-          ${ gridnums[highlighted[0]] } ${direction}:
+          ${ gridnums[highlighted[0]] } ${ direction }:
         </span>
         <div class="clue-input-container">
           <textarea id="clue-input" wrap="soft" maxlength="200" style="overflow:auto; resize:none;"
@@ -95,11 +96,11 @@
       <div class="properties-container">
         <div class="title-container prop-container">
           <label for="title-inp">Title:</label>
-          <input v-model="title" type="text" id="title-inp" class="prop-inp" maxlength="64" :disabled="completed">
+          <input v-model.trim="title" type="text" id="title-inp" class="prop-inp" maxlength="64" :disabled="completed">
         </div>
         <div class="description-container prop-container">
           <label for="description-inp">Description/Notes:</label>
-          <textarea v-model="description" id="description-inp" maxlength="1023" :disabled="completed"></textarea>
+          <textarea v-model.trim="description" id="description-inp" maxlength="1023" :disabled="completed"></textarea>
         </div>
         <div class="prop-container">
           <label for="author-inp">Author(s) can be recorded here:</label>
@@ -149,8 +150,36 @@
 
     <v-tab title="Statistics">
       <div class="properties-container">
-        <div class="prop-container">
+        <div class="stat-container">
+          <h3>Word Stats</h3>
+          <ul class="stats-wc">
+            <li><span class="bold">Across:</span> ${ stats.wc.across }</li>
+            <li><span class="bold">Down:</span> ${ stats.wc.down }</li>
+            <li><span class="bold">Total:</span> ${ stats.wc.across + stats.wc.down }</li>
+            <!-- <hr> -->
+            <li><span class="bold">Average word length:</span> ${ stats.avg } (inlcudes full rebus entries in across and
+              down answers)</li>
+          </ul>
+        </div>
+        <div class="stat-container">
+          <h3>Letter Stats</h3>
+          <ul class="stats-wc">
+            <li><span class="bold">Coverage:</span> ${ stats.coverage } out of 26 letters</li>
+            <li><span class="bold">Missing:</span> ${ stats.missing.join(', ') }</li>
+          </ul>
 
+          <letter-distribution :height="75" :chart-data="chartData"></letter-distribution>
+          (Rebus entries do not contribute to any of these totals.)
+        </div>
+
+
+        <div class="stat-container">
+          <h3>Blocks, Circles, Rebused</h3>
+          <ul class="stats-wc">
+            <li><span class="bold">Blocks (i.e. black squares):</span> ${ stats.blocks }</li>
+            <li><span class="bold">Rebus Entries:</span> ${ stats.rebus }</li>
+            <li><span class="bold">Circles (i.e. black squares):</span> ${ stats.circles }</li>
+          </ul>
         </div>
       </div>
     </v-tab>
@@ -250,7 +279,9 @@
             <button id="txt-v2-btn" class="btn save-btn">Download v2</button>
           </a>
         </div>
+
         <div id="nyt-app" class="export-container nytimes">
+          <h4>New York Times Submission</h4>
           Download a pdf of your puzzle in the
           <a href="https://www.nytimes.com/puzzles/submissions/crossword" target="_blank"
             rel="noopener noreferrer">format</a>
@@ -294,11 +325,14 @@
         </div>
       </div>
       <div class="export-container">
+        <h4>
+          <a href="https://www.xwordinfo.com/" target="_blank" rel="noopener noreferrer">xwordinfo.com
+          </a> JSON format
+        </h4>
         <a id="export-json" download="my_exported_puzzle.json" href="">
-          <button id="json-btn" class="btn save-btn">Download as JSON</button>
+          <button id="json-btn" class="btn save-btn">Download</button>
         </a>
-        (<a href="https://www.xwordinfo.com/" target="_blank" rel="noopener noreferrer">https://www.xwordinfo.com/
-        </a> format)
+
       </div>
     </v-tab>
   </vue-tabs>
@@ -307,15 +341,45 @@
 
 </div>
 
-
+<!-- Pass in puzzle json from Django template context -->
+{{ puzzle|json_script:"puzzle-data" }}
 
 <script>
-  // get json string store it in a variable
-  var puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent);
+  // get json string from django, use it to pass in to Vue app
+  let puzzleData = JSON.parse(document.querySelector("#puzzle-data").textContent)
+  let totalCellNumber = puzzleData.size.colN * puzzleData.size.rowN
+  puzzleData.circles = puzzleData.circles ? puzzleData.circles : Array(totalCellNumber).fill(0)
   const puzzlePK = {{ pk }}
   const completed = {{ completed }}
 
   const BLACK = '.'
+
+
+  Vue.component('letter-distribution', {
+    extends: VueChartJs.Bar,
+    mixins: [VueChartJs.mixins.reactiveProp],
+    props: ['chartData'],
+    data: function () {
+      return {
+        chartOptions: {
+          tooltips: {
+            enabled: false
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      }
+    },
+    mounted() {
+      this.renderChart(this.chartData, this.chartOptions)
+    }
+  })
+
 
   /* ================ CLUE Component =================================*/
   Vue.component("x-clue", {
@@ -434,7 +498,7 @@
       activeCell: 0,
       inputArea: 0,
       lastSaved: '',
-      circles: puzzleData.circles ? puzzleData.circles : Array(this.length).fill(0)
+      circles: puzzleData.circles
     },
 
     computed: {
@@ -533,6 +597,50 @@
             .join("")
         })
         return answers
+      },
+
+      stats() {
+        let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+        let nonEmptyAns = {
+          across: this.answers.across.filter(word => word.length > 0),
+          down: this.answers.down.filter(word => word.length > 0)
+        }
+        let stats = {}
+        stats.blocks = this.grid.reduce((acc, curr) => acc += curr === BLACK ? 1 : 0, 0)
+        stats.rebus = this.grid.reduce((acc, curr) => acc += curr.length > 1 ? 1 : 0, 0)
+        stats.circles = this.circles.reduce((acc, curr) => acc + curr, 0)
+        stats.wc = { across: nonEmptyAns.across.length, down: nonEmptyAns.down.length }
+        let noAnswers = stats.wc.across === 0 && stats.wc.down === 0
+        if (!noAnswers) {
+          let avgNum = nonEmptyAns.across.reduce((acc, curr) => acc + curr.length, 0)
+            + nonEmptyAns.across.reduce((acc, curr) => acc + curr.length, 0)
+          stats.avg = (avgNum / (stats.wc.across + stats.wc.down)).toFixed(2)
+        }
+        else {
+          stats.avg = 'NaN'
+        }
+        stats.distribution = {}
+        alphabet.map(letter => {
+          stats.distribution[letter] = this.grid.reduce((acc, curr) => acc += curr === letter ? 1 : 0, 0)
+        })
+        stats.coverage = alphabet.reduce((acc, curr) => acc += stats.distribution[curr] > 0 ? 1 : 0, 0)
+        stats.missing = alphabet.filter(l => stats.distribution[l] === 0)
+
+        return stats
+      },
+
+      chartData() {
+        return {
+          labels: Object.entries(this.stats.distribution), //'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+          datasets: [{
+            label: 'Letter Distribution',
+            data: Object.values(this.stats.distribution),
+            backgroundColor: 'rgba(18, 105, 163, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            hoverBackgroundColor: 'rgba(18, 105, 163, 0.6)',
+            borderWidth: 1
+          }]
+        }
       }
     },
 
@@ -640,15 +748,26 @@
       },
 
       handleClueClick(number, clueType) {
+        console.log('hi')
         if (clueType !== this.direction) {
           this.toggleVertical()
         }
+        const idx = this.gridnums.indexOf(Number(number))
+        this.activeCell = idx;
         document.querySelector('#clue-input').focus()
       },
 
       prepareSaveData() {
         let grid = this.grid
-        let clues = this.clues
+        let clues = {
+          across: {},
+          down: {}
+        }
+        for (let dir of ['across', 'down']) {
+          this.clueNumbers[dir].map((number) => {
+            clues[dir][String(number)] = this.clues[dir][number]
+          })
+        }
         let size = { rowN: this.rowN, colN: this.colN }
         let title = this.title
         let description = this.description
@@ -743,13 +862,18 @@
 
       updateGrid(idx, value) {
         // note: splice works when idx < 0, like in Python
+        if (value === BLACK && this.circles[idx] === 1) {
+          this.updateCircles(idx)
+        }
         this.grid.splice(idx, 1, value)
       },
 
       updateCircles(idx) {
-        let current = this.circles[idx]
-        let newValue = (current + 1) % 2 // toggle between 0 and 1
-        this.circles.splice(idx, 1, newValue)
+        if (this.grid[idx] !== BLACK) {
+          let current = this.circles[idx]
+          let newValue = (current + 1) % 2 // toggle between 0 and 1
+          this.circles.splice(idx, 1, newValue)
+        }
       },
 
       toggleVertical() {
@@ -824,7 +948,7 @@
         let modifierPressed = event.metaKey || event.ctrlKey || event.altKey
         const validEntries = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.*@#$%&+?'
         const validKeys = ['ARROWUP', 'ARROWDOWN', 'ARROWLEFT', 'ARROWRIGHT', 'BACKSPACE', 'DELETE', 'ENTER', 'HOME', 'END', ' ']
-        if (validEntries.includes(key) && !modifierPressed) {
+        if (validEntries.includes(key) && !modifierPressed && !this.completed) {
           if (this.grid[this.activeCell] === BLACK) {
             let symmetricEntry = key === BLACK ? BLACK : ''
             this.applySymmetry(this.activeCell, symmetricEntry)
@@ -1155,11 +1279,11 @@ ${editor.author ? editor.author : ''}
 ${editor.colN}x${editor.rowN}
 <GRID>
 ${gridString}
-${rebusList.length > 0 ? rebusSection : ''}<ACROSS>
+${rebusList.length > 0 || marked ? rebusSection : ''}<ACROSS>
 ${acrossString}
 <DOWN>
 ${downString}
-<NOTEPAD>${editor.description ? editor.description : ''}
+<NOTEPAD>${editor.description ? '\n' + editor.description : ''}
 `
   }
 

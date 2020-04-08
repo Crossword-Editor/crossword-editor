@@ -119,8 +119,6 @@ ________________________________________________ */
   font-family: Montserrat, sans-serif;
   color: #17202a;
   text-align: center;
-  margin-left: 75px;
-  width: 95%;
 }
 
 .welcome-info {
@@ -628,6 +626,10 @@ ________________________________________________ */
   border-radius: 5px;
 }
 
+.export-container h4 {
+  margin-bottom: 0.3rem;
+}
+
 .export-container a {
   color: inherit;
   text-decoration: underline;
@@ -661,6 +663,31 @@ ________________________________________________ */
 
 input:disabled, textarea:disabled {
   color: rgb(48, 48, 48);
+}
+
+/* === Stats Tab === */
+.bold {
+  font-weight: 600;
+}
+
+.stat-container {
+  margin: 1rem;
+  padding: 1rem 2rem;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: rgb(247, 251, 255);
+}
+
+.stat-container h3 {
+  text-decoration: underline;
+}
+
+.stats-wc {
+  list-style-type: none;
+}
+
+.stats-wc li {
+  padding: 0.5rem 0;
 }
 
 /* === REBUS === */
