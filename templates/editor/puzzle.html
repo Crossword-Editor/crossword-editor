@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
+
+<title>{% block title %}WordNerd | Puzzle {% endblock %} </title>
+
+
 {% block meta %}
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
@@ -256,13 +260,17 @@
         <div class="export-container">
           <h4>Across Lite text format</h4>
           <p>
-            If you use the Across Lite solver, you can download the following text files and open them in Across Lite.
+            If you use the Across Lite solver (free to <a href="https://www.litsoft.com/across/alite/download/">download</a>),
+            you can download the following text files and open them in Across Lite.
           </p>
           <p>
             See the Across List website for
             <a href="https://icrossword.com/publish/" target="_blank" rel="noopener noreferrer">
               how to publish
-            </a> your puzzle using their free hosting servive.
+            </a> your puzzle using their free hosting service.
+            <br>
+            Once loaded into Across Lite, you can also print out copies of your puzzle for friends and family to solve on paper.
+
           </p>
           <p>
             Across Lite version 1 does not support rebus entries or circled cells. Rebus puzzles can still be
@@ -753,7 +761,7 @@
           this.toggleVertical()
         }
         const idx = this.gridnums.indexOf(Number(number))
-        this.activeCell = idx;
+        this.activeCell = idx
         document.querySelector('#clue-input').focus()
       },
 
@@ -769,7 +777,7 @@
           })
         }
         let size = { rowN: this.rowN, colN: this.colN }
-        let title = this.title
+        let title = this.title ? this.title : 'untitled'
         let description = this.description
         let symmetry = this.symmetry
         let author = this.author

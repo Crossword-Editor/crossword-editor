@@ -6,12 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_http_methods
 from django.template.loader import render_to_string
-from django.utils.text import slugify
 
 from weasyprint import HTML, CSS
-
 from .models import Puzzle
-from users.models import User
 
 
 def home(request):

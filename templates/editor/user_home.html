@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 
-
+ <title>{% block title %}WordNerd | Home {% endblock %} </title>
 
 {% block main %}
 <div class="user-homepage">
@@ -40,8 +40,6 @@
             <p>
               {% if puzzle.data.title %}
               {{ puzzle.data.title }}
-              {% else %}
-              untitled
               {% endif %}
             </p>
             <p>
