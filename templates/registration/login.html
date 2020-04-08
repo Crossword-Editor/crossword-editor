@@ -1,37 +1,31 @@
 {% extends 'base.html' %}
-{% load static %}
-
 
 <title>{% block title %}WordNerd | Login {% endblock %} </title>
 
 {% block main %}
 
-{% block body_block %}
-	<form class="login" method="post" action=".">
-		<h1 class="login-text">Login</h1>
-		{% csrf_token %}
-	<div class="login-area">
-		<p>
-			<label for="id_username">Username:</label>
-			<input class="login-fields" id="id_username" name="username" type="text" />
-		</p>
-		<p>
-			<label for="id_password">Password: </label>
-			<input class="login-fields" id="id_password" name="password" type="password" required/>
-		</p>
+<form class="login" method="post" action=".">
+  <h1 class="login-text">Login</h1>
+  {% csrf_token %}
+  <div class="login-area">
+    <p>
+      <label for="id_username">Username:</label>
+      <input class="login-fields" id="id_username" name="username" type="text" />
+    </p>
+    <p>
+      <label for="id_password">Password: </label>
+      <input class="login-fields" id="id_password" name="password" type="password" required />
+    </p>
 
-		<input class="login-btn" type="submit" value="Log in" />
-		<input type="hidden" name="next" value="{{ next }}" />
+    <input class="login-btn" type="submit" value="Log in" />
+    <input type="hidden" name="next" value="{{ next }}" />
 
-		<ul  class="login-status">
-		<p>Not a WordNerd?</p>
-		<a href="{% url 'registration_register' %}">Register Now!</a>
-		</ul>
-	</div>
+    <ul class="login-status">
+      <p>Not a WordNerd?</p>
+      <a href="{% url 'registration_register' %}">Register Now!</a>
+    </ul>
+  </div>
 
-	</form>
-
-
-{% endblock %}
+</form>
 
 {% endblock main %}

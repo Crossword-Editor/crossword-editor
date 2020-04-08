@@ -17,13 +17,11 @@ from django.contrib import admin
 from django.conf import settings
 from django.urls import include, path
 
-from registration.backends.simple.views import RegistrationView
 from editor import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('registration.backends.simple.urls')),
-    path('register/', views.register, name='regisgtration_register'),
     path('', views.home, name="home"),
     path('edit/<int:pk>', views.edit, name='edit'),
     path('save/', views.save, name='save'),

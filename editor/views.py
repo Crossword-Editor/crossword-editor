@@ -1,21 +1,14 @@
 import json
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from django.contrib.auth import login, authenticate
-from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_http_methods
-
 from django.template.loader import render_to_string
-from django.utils.text import slugify
 
-from editor.forms import UserCreationForm
 from weasyprint import HTML, CSS
 from .models import Puzzle
-from users.models import User
 
 
 def home(request):
@@ -28,21 +21,6 @@ def home(request):
     completes = sort_by(completes, sort_option)
     context = {'drafts': drafts, 'completes': completes}
     return render(request, 'editor/user_home.html', context=context)
-
-
-def register(request):
-    form = UserCreationForm(request.POST)
-    if form.is_valid():
-        form.save()
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password1')
-        user = authenticate(username=username, password=password)
-        login(request, user)
-        messages.success(request, 'Account created successfully')
-        return redirect('/')
-    else:
-        form = UserCreationForm()
-    return render(request, 'editor/register.html', {'form': form})
 
 
 @login_required

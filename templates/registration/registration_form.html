@@ -1,53 +1,48 @@
 {% extends 'base.html' %}
-{% load static %}
-
 
 <title>{% block title %}WordNerd | Register {% endblock %} </title>
 
 
 {% block main %}
 
-
-{% block body_block %}
-
-  <form class="register" method="post" action=".">
+<form class="register" method="post" action=".">
   <h1>WordNerd Registration</h1>
   {% csrf_token %}
 
   <div class="register-area">
-	<p>
-		<label for="id_username">Username:</label>
-		<input class="register-fields" id="id_username" name="username" type="text" />
-	</p>
-	<ul class="requirements">
-		<li>✚ Your Username requires 150 characters or fewer, including letters, digits and these symbols: @/./+/-/_ only.</li>
-	</ul>
+    <p>
+      <label for="id_username">Username:</label>
+      <input class="register-fields" id="id_username" name="username" type="text" />
+    </p>
+    <ul class="requirements">
+      <li>✚ Your Username requires 150 characters or fewer, including letters, digits and these symbols: @/./+/-/_
+        only.</li>
+    </ul>
 
     <p>
-		<label for="id_email">Email: </label>
-		<input class="register-fields" id="id_email" name="email" type="email" required/>
-	</p>
-	<p>
-		<label for="id_password1">Password: </label>
-		<input class="register-fields" id="id_password1" name="password1" type="password" required/>
-	</p>
-	<ul class="requirements">
-		<li>✚ Your password must not be too similar to your other personal information.</li>
-		<li>✚ Your password must contain at least 8 characters.</li>
-		<li>✚ Your password must not be a commonly used password.</li>
-		<li>✚ Your password must not be entirely numeric.</li>
-	</ul>
+      <label for="id_email">Email: </label>
+      <input class="register-fields" id="id_email" name="email" type="email" required />
+    </p>
+    <p>
+      <label for="id_password1">Password: </label>
+      <input class="register-fields" id="id_password1" name="password1" type="password" required />
+    </p>
+    <ul class="requirements">
+      <li>✚ Your password must not be too similar to your other personal information.</li>
+      <li>✚ Your password must contain at least 8 characters.</li>
+      <li>✚ Your password must not be a commonly used password.</li>
+      <li>✚ Your password must not be entirely numeric.</li>
+    </ul>
 
-	<p>
-		<label for="id_password1">Confirm Password: </label>
-		<input class="register-fields" id="id_password2" name="password2" type="password" required/>
-	</p>
-	<ul class="requirements">
-		<li>✚ Enter the same password for verification.</li>
-	</ul>
+    <p>
+      <label for="id_password1">Confirm Password: </label>
+      <input class="register-fields" id="id_password2" name="password2" type="password" required />
+    </p>
+    <ul class="requirements">
+      <li>✚ Enter the same password for verification.</li>
+    </ul>
 
-	<input class="register-btn" type="submit" value="Submit" />
-</div>
-{% endblock %}
+    <input class="register-btn" type="submit" value="Submit" />
+  </div>
 
-{% endblock main %}
+  {% endblock main %}
