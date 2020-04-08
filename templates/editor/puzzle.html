@@ -578,7 +578,7 @@
           this.toggleVertical()
         }
         const idx = this.gridnums.indexOf(Number(number))
-        this.activeCell = idx;
+        this.activeCell = idx
         document.querySelector('#clue-input').focus()
       },
 
@@ -586,7 +586,7 @@
         let grid = this.grid
         let clues = this.clues
         let size = { rowN: this.rowN, colN: this.colN }
-        let title = this.title
+        let title = this.title ? this.title : 'untitled'
         let description = this.description
         let symmetry = this.symmetry
         let author = this.author
