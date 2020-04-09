@@ -5,9 +5,11 @@ authoring tool called, “WordNerd.”
 I started solving puzzles with my fiancee when we first starting dating a few years ago, and we still solve them together when we have free time in the evenings.
 I have since wanted to try my hand at writing and submitting a puzzle to be published in the New York times,
 but the crossword authoring programs were out there are native apps that are either platform specific, or come with a price tag that I couldn't afford at the time.
+And now I'll Cheryl introduce herself and start demoing the app.
+
 
 This online application is intended not only for cruciverbalists
-– yeah, there’s a name for folks crossword aficionados –
+– yeah, there’s a name for crossword aficionados –
 but also for anyone wishing to create puzzles as a personal hobby.
 Thus, I used it as an opportunity to learn about web development to create a free web app that provides the
 features a seasoned or budding puzzle writer would expect, including export to the submission format required
