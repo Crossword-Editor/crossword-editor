@@ -715,7 +715,7 @@
       },
 
       handleCellClick(idx) {
-        if (event.metaKey) {
+        if (event.altKey && event.shiftKey) {
           this.activeCell = idx
           this.rebusHandler(event, idx, clicked = true)
         }
