@@ -997,7 +997,7 @@
           }
         }
         else if (key === 'ENTER') {
-          if (event.metaKey) {
+          if (event.shiftKey && event.altKey) {
             this.rebusHandler(event, this.activeCell)
           }
           else if (event.altKey) {
