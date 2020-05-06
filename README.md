@@ -28,11 +28,3 @@ At this point, since we're using a new database, we need to migrate again:
 python manage.py migrate
 ```
 Hopefully, you see a lot of OK's.  Then try running the server to make sure everything is working.
-
-
-## Viewing the pitch slides
-[pitch.md](pitch.md) was written with [Marpit: Markdown slide deck framework](https://marpit.marp.app/).
-
-You can also install the [Marp for VS Code](https://marketplace.visualstudio.com/items?itemName=marp-team.marp-vscode) vscode extension to view slides with the markdown preview or to easily export to other formats.
-
-You can also just read [pitch.md](pitch.md) as a plain text file of course 🙂
