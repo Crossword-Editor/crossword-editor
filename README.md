@@ -15,7 +15,8 @@ Some of the highlights of the editor page are:
 
 * Basic stats like word/letter counts are also updated in real time. ![Screenshot of the puzzle stats view](screenshot_stats.png "Screenshot of the puzzle stats view")
 
-* Finally, puzzles can be exported to Across Lite format (a common native cross word solving application) or to a pdf that meets the format required to [submit to the New York Times](https://www.nytimes.com/puzzles/submissions/crossword "New York Times submission guidelines") 
+* Puzzles can be exported to Across Lite format (a common native cross word solving application) to send to a friend to solve or print out.
+Finally, the user can download a pdf that meets the format required to [submit to the New York Times](https://www.nytimes.com/puzzles/submissions/crossword "New York Times submission guidelines") 
 
 
 ## Local Setup
