@@ -5,132 +5,21 @@ puzzleData.circles = puzzleData.circles ? puzzleData.circles : Array(totalCellNu
 
 const BLACK = '.'
 
-
-Vue.component('letter-distribution', {
-  extends: VueChartJs.Bar,
-  mixins: [VueChartJs.mixins.reactiveProp],
-  props: ['chartData'],
-  data: function () {
-    return {
-      chartOptions: {
-        tooltips: {
-          enabled: false
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
-            }
-          }]
-        }
-      }
-    }
-  },
-  mounted() {
-    this.renderChart(this.chartData, this.chartOptions)
-  }
-})
-
-
-/* ================ CLUE Component =================================*/
-Vue.component("x-clue", {
-  template: `
-      <li class="clue" :class="clueClasses" @click="clicked">
-        <slot></slot>
-      </li>`,
-  props: ['direction', 'gridnums', 'highlighted', 'clueType', 'number', 'crossNumbers'],
-  data: function () {
-    return {
-      test: 1
-    };
-  },
-  computed: {
-    isHighlighted() {
-      return this.direction === this.clueType && this.gridnums[this.highlighted[0]] == this.number
-    },
-    isSecondary() {
-      return this.direction !== this.clueType && this.crossNumbers[0] == this.number
-    },
-    clueClasses() {
-      return {highlighted: this.isHighlighted, secondary: this.isSecondary}
-    }
-  },
-  watch: {
-    isHighlighted: function () {
-      this.$nextTick(function () {
-        this.scrollClues()
-      })
-    },
-  },
-  methods: {
-    clicked() {
-      this.$emit("clue-clicked", this.number, this.clueType);
-    },
-    scrollClues() {
-      let highlightedClue = document.querySelector('.clue.highlighted')
-      let secondaryHlClue = document.querySelector('.clue.secondary')
-      if (highlightedClue) {
-        highlightedClue.scrollIntoView({behavior: "smooth", block: "center"})
-        secondaryHlClue.scrollIntoView({behavior: "smooth", block: "center"})
-      }
-    }
-  }
-});
-
-
-
-/* ================ CELL Component =================================*/
-Vue.component("x-cell", {
-  template: `
-      <div class="cell" :class="cellClasses" :style="cellStyle" @click="clicked">
-        <slot name="number"></slot>
-        <slot name="entry"></slot>
-      </div>`,
-  props: ['idx', 'activeCell', 'inputArea', 'grid', 'highlighted', 'colN', 'rowN', 'circles'],
-  data: function () {
-    return {
-      test: 1
-    };
-  },
-  computed: {
-    isActive() {
-      return this.idx === this.activeCell;
-    },
-    currentInput() {
-      return this.idx === this.inputArea;
-    },
-    isBlack() {
-      return this.grid[this.idx] === BLACK
-    },
-    isHighlighted() {
-      return this.highlighted.includes(this.idx)
-    },
-    cellClasses() {
-      return {
-        active: this.isActive,
-        black: this.isBlack,
-        highlighted: this.isHighlighted,
-        rebus: this.grid[this.idx].length > 1,
-        circle: this.circles[this.idx] === 1
-      }
-    },
-    cellStyle() {
-      let max = Math.max(this.rowN, this.colN)
-      return {'width': `${525 / max}px`, 'height': `${525 / max}px`}
-    }
-  },
-  methods: {
-    clicked() {
-      this.$emit("cell-clicked", this.idx)
-    }
-  }
-});
-
-
+import XCell from './components/x-cell.js'
+import XClue from './components/x-clue.js'
+import letterBarChart from './components/letterBarChart.js'
+import {exportTXTv1, exportTXTv2} from './components/exportFunctions.js'
 
 /* ================ Editor APP =================================*/
+Vue.config.devtools = false;
+
 const editor = new Vue({
   el: "#editor-app",
+  components: {
+    'x-cell': XCell,
+    'x-clue': XClue,
+    'letter-distribution': letterBarChart,
+  },
   delimiters: ["${", "}"],
   data: {
     grid: puzzleData.grid, // flat array representation of the grid (left->right, top->bottom)
@@ -393,7 +282,7 @@ const editor = new Vue({
           rebusCell.remove()
         }
       })
-      rebusCell.addEventListener('focusout', (e) => {
+      rebusCell.addEventListener('focusout', () => {
         rebusCell.remove()
       })
     },
@@ -432,7 +321,7 @@ const editor = new Vue({
     },
 
     savePuzzle() {
-      saveData = this.prepareSaveData(puzzleData)
+      let saveData = this.prepareSaveData(puzzleData)
       return fetch(`/save/`, {
         method: 'POST',
         headers: {
@@ -712,7 +601,6 @@ const editor = new Vue({
 
   created: function () {
     window.addEventListener('keydown', (event) => {
-      let ignoreInputs = document.querySelectorAll('input')
       if (event.target.nodeName !== 'INPUT' && event.target.nodeName !== 'TEXTAREA') {
         this.keyhandle(event)
       }
@@ -729,7 +617,8 @@ function mod(n, m) {
 
 const deleteButton = document.querySelector('#delete-btn')
 deleteButton.addEventListener('click', deleteEvent)
-function deleteEvent(event) {
+
+function deleteEvent() {
   const result = confirm('Do you want to permanently delete this puzzle?')
   if (result) {
     return fetch(`/delete/${puzzlePK}/`, {method: 'DELETE'})
@@ -749,7 +638,7 @@ function deleteEvent(event) {
 
 
 // === Export Handlers ===
-document.querySelector('#json-btn').addEventListener('click', (event) => {
+document.querySelector('#json-btn').addEventListener('click', () => {
   const jsn = editor.exportJSON()
   const data = new File([jsn], 'my_exported_puzzle.json', {type: 'application/json'})
   let url = window.URL.createObjectURL(data)
@@ -758,8 +647,8 @@ document.querySelector('#json-btn').addEventListener('click', (event) => {
   editor.savePuzzle()
 })
 
-document.querySelector('#txt-v1-btn').addEventListener('click', (event) => {
-  const txt = exportTXTv1()
+document.querySelector('#txt-v1-btn').addEventListener('click', () => {
+  const txt = exportTXTv1(editor)
   const data = new File([txt], 'across-lite-v1.txt', {type: 'text/plain'})
   let url = window.URL.createObjectURL(data)
   let anchor = document.querySelector('#export-txt-v1')
@@ -767,8 +656,8 @@ document.querySelector('#txt-v1-btn').addEventListener('click', (event) => {
   editor.savePuzzle()
 })
 
-document.querySelector('#txt-v2-btn').addEventListener('click', (event) => {
-  const txt = exportTXTv2()
+document.querySelector('#txt-v2-btn').addEventListener('click', () => {
+  const txt = exportTXTv2(editor)
   const data = new File([txt], 'across-lite-v2.txt', {type: 'text/plain'})
   let url = window.URL.createObjectURL(data)
   let anchor = document.querySelector('#export-txt-v2')
@@ -788,7 +677,7 @@ document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event)
     formData[inp.id] = inp.value
   }
   return editor.savePuzzle()
-    .then(r => {
+    .then(() => {
       return fetch(`/export/${puzzlePK}/`, {
         method: 'POST',
         headers: {
@@ -813,127 +702,3 @@ document.querySelector('#export-nytimes-pdf').addEventListener('submit', (event)
     })
 })
 
-function exportTXTv1() {
-  let acrossString = ''
-  for (let number of editor.clueNumbers.across) {
-    acrossString += editor.clues.across[number] + '\n'
-  }
-  acrossString = acrossString.trimEnd()
-  let downString = ''
-  for (let number of editor.clueNumbers.down) {
-    downString += editor.clues.down[number] + '\n'
-  }
-  downString = downString.trimEnd()
-  let gridString = ''
-  for (let i = 0; i < editor.rowN; i++) {
-    let row = ''
-    for (let j = 0; j < editor.colN; j++) {
-      row += editor.grid[i * editor.colN + j][0]
-    }
-    gridString += row + '\n'
-  }
-  gridString = gridString.trimEnd()
-  let returnString = `<ACROSS PUZZLE>
-<TITLE>
-${editor.title ? editor.title : ''}
-<AUTHOR>
-${editor.author ? editor.author : ''}
-<COPYRIGHT>
-
-<SIZE>
-${editor.colN}x${editor.rowN}
-<GRID>
-${gridString}
-<ACROSS>
-${acrossString}
-<DOWN>
-${downString}
-<NOTEPAD>${editor.description ? editor.description : ''}
-`
-  return returnString
-}
-
-/*
-* This format uses footnote style references between
-* the <grid> and <rebus> sections to indicate where
-* rebus entries belong.  Because the grid only holds slots for
-* single chars, and we're using digits as the placeholder,
-* this will only make sense for up to 10 _unique_ rebus entries.
-* The other option is to add some special characters as placeholders
-*/
-function exportTXTv2() {
-  let rebusList = []
-  let grid = editor.grid
-  grid.map((entry, i) => {
-    if (entry.length > 1) {
-      rebusList.push(entry)
-    }
-  })
-  let rebusUniqueList = []
-  for (let rebus of rebusList) {
-    if (!rebusUniqueList.includes(rebus)) {
-      rebusUniqueList.push(rebus)
-    }
-  }
-
-  let markers = ''
-  rebusUniqueList.map((rebus, i) => {
-    markers += `${i}:${rebus}:${rebus[0]}\n`
-  })
-  markers.trimEnd()
-
-  let marked = editor.circles.includes(1) ? '\nMARK;' : ''
-  let rebusSection = `<REBUS>${marked}\n${markers}`
-
-  let acrossString = ''
-  for (let number of editor.clueNumbers.across) {
-    acrossString += editor.clues.across[String(number)] + '\n'
-  }
-  acrossString = acrossString.trimEnd()
-  let downString = ''
-  for (let number of editor.clueNumbers.down) {
-    downString += editor.clues.down[String(number)] + '\n'
-  }
-  downString = downString.trimEnd()
-
-  let gridString = ''
-  for (let i = 0; i < editor.rowN; i++) {
-    let row = ''
-    for (let j = 0; j < editor.colN; j++) {
-      let idx = i * editor.colN + j
-      let entry = grid[idx]
-      if (entry.length === 0) {
-        row += 'X'
-      }
-      else if (entry.length > 1) {
-        row += rebusUniqueList.indexOf(entry)
-      }
-      else if (editor.circles[idx] === 1) {
-        row += entry.toLowerCase()
-      }
-      else {
-        row += entry
-      }
-    }
-    gridString += row + '\n'
-  }
-  gridString = gridString.trimEnd()
-
-  return `<ACROSS PUZZLE V2>
-<TITLE>
-  ${editor.title ? editor.title : ''}
-<AUTHOR>
-${editor.author ? editor.author : ''}
-<COPYRIGHT>
-
-<SIZE>
-${editor.colN}x${editor.rowN}
-<GRID>
-${gridString}
-${rebusList.length > 0 || marked ? rebusSection : ''}<ACROSS>
-${acrossString}
-<DOWN>
-${downString}
-<NOTEPAD>${editor.description ? '\n' + editor.description : ''}
-`
-}
