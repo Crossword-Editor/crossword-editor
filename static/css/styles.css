@@ -128,7 +128,7 @@ ________________________________________________ */
   width: 100%;
   padding: 5px 10px;
   margin: 10px 5px;
-  box-sizing: border-box;  
+  box-sizing: border-box;
   border-radius: 7px;
   border: 0.7px solid gray;
 }
@@ -207,7 +207,7 @@ ________________________________________________ */
   width: 100%;
   padding: 5px 10px;
   margin: 10px 5px;
-  box-sizing: border-box;  
+  box-sizing: border-box;
   border-radius: 7px;
   border: 0.7px solid gray;
 }
@@ -906,3 +906,4 @@ input:disabled, textarea:disabled {
   background-color: aliceblue;
   z-index: 2;
 }
+
