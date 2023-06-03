@@ -10,8 +10,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/vue-nav-tabs/themes/vue-tabs.css">
+
+
 <script src="https://unpkg.com/vue-nav-tabs/dist/vue-tabs.js"></script>
-<script src="{% static 'js/main.js'%}" defer></script>
+<script type="module" src="{% static 'js/main.js'%}" defer></script>
 
 {% endblock meta %}
 
@@ -354,7 +356,7 @@
 <!-- Pass in puzzle json from Django template context -->
 {{ puzzle|json_script:"puzzle-data" }}
 
-<<script>
+<script>
  // Pass other values from Django context into JavaScript variables
  // These are used in 'static/js/main.js', which is defered
   const puzzlePK = {{ pk }}
